@@ -1,0 +1,10 @@
+[
+    {
+        "Id": "HeadAdministrator",
+        "ChatTag": "<color=#F5A9B8><b>Head Administrator</b></color>",
+        "DutyOnly": true,
+        "Permissions": [
+            "all"
+        ]
+    }
+]

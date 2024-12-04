@@ -1,0 +1,49 @@
+{
+    "LoggingLevel": "Debug",
+    "ChatIconUrl": "https://i.imgur.com/904npoX.png",
+    "LocalChatDistance": 75.0,
+    "DiscordInviteLink": "https://discord.gg/QBjuRAkarC",
+    "Sql": {
+        "Server": "",
+        "Database": "",
+        "UserID": "",
+        "Password": ""
+    },
+    "Bot": {
+        "Enabled": true,
+        "Host": "127.0.0.1",
+        "Port": 5001
+    },
+    "Fishing": [
+        {
+            "Xp": 10,
+            "Id": 1347,
+            "Level": 0,
+            "Weight": 500
+        },
+        {
+            "Xp": 15,
+            "Id": 1349,
+            "Level": 10,
+            "Weight": 500
+        },
+        {
+            "Xp": 20,
+            "Id": 1347,
+            "Level": 20,
+            "Weight": 400
+        },
+        {
+            "Xp": 30,
+            "Id": 1351,
+            "Level": 30,
+            "Weight": 300
+        },
+        {
+            "Xp": 50,
+            "Id": 1434,
+            "Level": 40,
+            "Weight": 30
+        }
+    ]
+}
