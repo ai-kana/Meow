@@ -1,14 +1,16 @@
 [discord-shield]: https://img.shields.io/discord/502421788693757965?color=5865F2&logo=discord&logoColor=white
-[discord-invite]: https://discord.gg/unturnov
+[discord-invite]: https://discord.gg/QBjuRAkarC
 
 [ ![discord-shield][] ][discord-invite]
 
-# Unturnov
+# Kronstadt
+Plugins and discord bot for Kronstadt
 
-Unturnov plugins and discord bot for Kronstadt
+## Kronstadt.Core
+Framework, custom module, C#
 
-## Unturnov.Core
-Plugins, custom module, C#
+## Kronstadt.Unturnov
+Plugins for Unturnov, C#
 
 ## Unturnov.Bot
 Discord bot, concord, C
