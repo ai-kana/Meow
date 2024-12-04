@@ -70,8 +70,7 @@ public sealed class KronstadtHost
             Dedicator.commandWindow?.addIOHandler(console);
         }
 
-        // Static ctor moment(s)
-        KronstadtPlayerManager.Players.Count();
+        KronstadtPlayerManager.Load();
 
         await TranslationManager.LoadTranslations();
 

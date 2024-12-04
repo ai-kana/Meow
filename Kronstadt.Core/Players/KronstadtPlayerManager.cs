@@ -44,6 +44,10 @@ public class KronstadtPlayerManager
         PlayerVoice.onRelayVoice += OnRelayVoice;
     }
 
+    internal static void Load()
+    {
+    }
+
     private static void OnRelayVoice(PlayerVoice speaker, bool wantsToUseWalkieTalkie, ref bool shouldAllow, ref bool shouldBroadcastOverRadio, ref PlayerVoice.RelayVoiceCullingHandler cullingHandler)
     {
         TryGetPlayer(speaker.player, out KronstadtPlayer player);
