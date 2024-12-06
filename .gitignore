@@ -404,3 +404,5 @@ Kronstadt.Bot/concord/
 Kronstadt.Core/Makefile
 Kronstadt.Unturnov/Makefile
 Kronstadt.Module/Makefile
+Kronstadt.WebServer
+Kronstadt.Website
