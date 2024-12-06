@@ -31,6 +31,7 @@ public class KronstadtPlayer : IPlayer, IFormattable
     public readonly KronstadtPlayerModeration Moderation;
     public readonly KronstadtPlayerAdministration Administration;
     public readonly KronstadtPlayerRank Rank;
+    public readonly KronstadtPlayerStats Stats;
 
     public FishingSkill FishingSkill => SaveData.Fishing;
 
@@ -64,6 +65,7 @@ public class KronstadtPlayer : IPlayer, IFormattable
         Moderation = new(this);
         Administration = new(this);
         Rank = new(this);
+        Stats = new(this);
     }
 
     public string ToString(string format, IFormatProvider formatProvider)

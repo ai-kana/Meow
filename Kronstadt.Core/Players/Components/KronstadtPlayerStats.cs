@@ -1,7 +1,17 @@
 using Cysharp.Threading.Tasks;
+using Kronstadt.Core.Stats;
 using SDG.Unturned;
 
 namespace Kronstadt.Core.Players.Components;
+
+public class PlayerStats
+{
+    public uint Kills {get;set;} = 0;
+    public uint Deaths {get;set;} = 0;
+    public uint Fish {get;set;} = 0;
+    public uint ItemsLooted {get;set;} = 0;
+    public ulong PlayTime {get;set;} = 0;
+}
 
 public class KronstadtPlayerStats
 {
@@ -10,6 +20,17 @@ public class KronstadtPlayerStats
     {
         Owner = owner;
         Player.onPlayerStatIncremented += OnStatTicked;
+        owner.Life.OnPlayerDied += OnPlayerDied;
+    }
+
+    ~KronstadtPlayerStats()
+    {
+        Player.onPlayerStatIncremented += OnStatTicked;
+    }
+
+    private void OnPlayerDied()
+    {
+        OnStatTicked(Owner.Player, EPlayerStat.DEATHS_PLAYERS);
     }
 
     private void OnStatTicked(Player player, EPlayerStat stat)
@@ -52,7 +73,7 @@ public class KronstadtPlayerStats
 
 
     /// <summary>Stats for from logon to logoff</summary>
-    public Session ServerSession {get;set;} = new();
+    public Session ServerSession {get; private set;} = new();
     /// <summary>Stats for current life</summary>
     public Session LifeSession {get;private set;} = new();
 
@@ -71,6 +92,7 @@ public class KronstadtPlayerStats
     {
         LifeSession.Deaths++;
         ServerSession.Deaths++;
+        StartNewLife();
     }
 
     public void AddFish()
@@ -87,5 +109,11 @@ public class KronstadtPlayerStats
 
     public async UniTask CommitStatsAsync()
     {
+        await StatsManager.CommitSession(Owner, ServerSession);
+    }
+
+    public async UniTask<PlayerStats?> GetStatsAsync()
+    {
+        return await StatsManager.GetStats(Owner.SteamID);
     }
 }

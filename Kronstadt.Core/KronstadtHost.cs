@@ -15,6 +15,7 @@ using Kronstadt.Core.Offenses;
 using Kronstadt.Core.Bot;
 using Kronstadt.Core.Ranks;
 using Kronstadt.Core.Plugins;
+using Kronstadt.Core.Stats;
 
 namespace Kronstadt.Core;
 
@@ -78,7 +79,7 @@ public sealed class KronstadtHost
         _Harmony.PatchAll();
 
         _Owner = new("Kronstadt");
-        _Owner.AddComponent<MainThreadWorker>();
+        _Owner.AddComponent<CommandQueue>();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();
@@ -87,6 +88,7 @@ public sealed class KronstadtHost
         await PlayerIdManager.CreateTables();
         await LinkManager.CreateTables();
         await RankManager.CreateTables();
+        await StatsManager.CreateTables();
 
         _ = BotManager.Start();
 

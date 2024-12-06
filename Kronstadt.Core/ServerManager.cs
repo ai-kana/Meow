@@ -3,6 +3,7 @@ using Kronstadt.Core.Chat;
 using Kronstadt.Core.Formatting;
 using Kronstadt.Core.Players;
 using Kronstadt.Core.Translations;
+using Kronstadt.Core.Workers;
 
 namespace Kronstadt.Core;
 
@@ -74,8 +75,6 @@ public static class ServerManager
             }
         }
 
-
-        //Provider.shutdown();
-        Shutdown();
+        CommandQueue.Enqueue(new Work(Shutdown));
     }
 }

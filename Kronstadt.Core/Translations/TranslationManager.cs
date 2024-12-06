@@ -6,7 +6,7 @@ using Kronstadt.Core.Logging;
 
 namespace Kronstadt.Core.Translations;
 
-public class TranslationManager
+internal class TranslationManager
 {
     private static readonly ILogger _Logger;
     private const string TranslationsDirectory = "Translations";

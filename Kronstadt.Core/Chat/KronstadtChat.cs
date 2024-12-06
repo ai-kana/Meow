@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Kronstadt.Core.Commands.Framework;
 using Kronstadt.Core.Roles;
 using Kronstadt.Core.Translations;
+using Kronstadt.Core.Workers;
 
 namespace Kronstadt.Core.Chat;
 
@@ -44,7 +45,7 @@ public class KronstadtChat
                 continue;
             }
 
-            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
         }
     }
 
@@ -59,7 +60,7 @@ public class KronstadtChat
                 continue;
             }
 
-            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
         }
     }
 
@@ -69,7 +70,7 @@ public class KronstadtChat
         _Logger.LogInformation($"{sender.LogName}: {text}");
         foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
         {
-            ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
         }
     }
 
@@ -166,7 +167,7 @@ public class KronstadtChat
     {
         _Logger.LogInformation(translation.Translate(player, args));
         string message = translation.Translate(player, args);
-        ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
     }
 
     private static void Broadcast(IEnumerable<KronstadtPlayer> players, string message)
@@ -180,16 +181,50 @@ public class KronstadtChat
     private static void Broadcast(KronstadtPlayer player, string message)
     {
         _Logger.LogInformation(message);
-        ChatManager.serverSendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+    }
+
+    private static IWork CreateMessageWork(
+            string message, 
+            Color color, 
+            SteamPlayer? sender, 
+            SteamPlayer? reciever, 
+            EChatMode mode, 
+            string? icon, 
+            bool useRichText)
+    {
+        Work<string, Color, SteamPlayer?, SteamPlayer?, EChatMode, string?, bool> work = new(
+                ChatManager.serverSendMessage, 
+                message,
+                color,
+                sender,
+                reciever,
+                mode,
+                icon,
+                useRichText);
+
+        return work;
+    }
+
+    private static void SendMessage(
+            string message, 
+            Color color, 
+            SteamPlayer? sender, 
+            SteamPlayer? reciever, 
+            EChatMode mode = EChatMode.SAY, 
+            string? icon = null, 
+            bool useRichText = true)
+    {
+        CommandQueue.Enqueue(CreateMessageWork(message, color, sender, reciever, mode, icon, useRichText));
     }
     
     public static void SendPrivateMessage(KronstadtPlayer sender, KronstadtPlayer receiver, string text)
     {
-        text = text.Replace("<", "< ");
+        text = Formatter.RemoveRichText(text);
         string message = $"[{Formatter.RedColor.ColorText("PM")}] {sender.Name} -> {receiver.Name}: {text}";
         _Logger.LogInformation(message);
 
-        ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, receiver.SteamPlayer, useRichTextFormatting:true);
-        ChatManager.serverSendMessage(message, Color.white, sender.SteamPlayer, sender.SteamPlayer, useRichTextFormatting:true);
+        SendMessage(message, Color.white, sender.SteamPlayer, receiver.SteamPlayer);
+        SendMessage(message, Color.white, sender.SteamPlayer, sender.SteamPlayer);
     }
 }

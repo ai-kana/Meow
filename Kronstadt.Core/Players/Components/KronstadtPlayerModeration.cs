@@ -6,6 +6,7 @@ using Steamworks;
 using UnityEngine;
 using Kronstadt.Core.Offenses;
 using Kronstadt.Core.Translations;
+using Kronstadt.Core.Workers;
 
 namespace Kronstadt.Core.Players.Components;
 
@@ -39,7 +40,7 @@ public class KronstadtPlayerModeration
     public void EnqueueUnmute(long duration)
     {
         _UnmuteRoutine = WaitForUnmute(Owner.SteamID, duration);
-        MainThreadWorker.EnqueueCoroutine(_UnmuteRoutine);
+        CommandQueue.EnqueueCoroutine(_UnmuteRoutine);
     }
 
     public void CancelUnmute()
@@ -49,7 +50,7 @@ public class KronstadtPlayerModeration
             return;
         }
 
-        MainThreadWorker.CancelCoroutine(_UnmuteRoutine);
+        CommandQueue.CancelCoroutine(_UnmuteRoutine);
     }
 
     public async UniTask<IEnumerable<Offense>> GetAllOffenses()
@@ -105,14 +106,24 @@ public class KronstadtPlayerModeration
         _ = AddBan(issuerId, duration, reason);
     }
 
+    private IWork CreateKickWork(CSteamID steamId, string reason)
+    {
+        return new Work<CSteamID, string>(Provider.kick, steamId, reason);
+    }
+
+    private void EnqueueKick(string reason)
+    {
+        CommandQueue.Enqueue(CreateKickWork(Owner.SteamID, reason));
+    }
+
     public void Kick()
     {
-        Provider.kick(Owner.SteamID, "No reason provided");
+        EnqueueKick("No reason provided");
     }
 
     public void Kick(string reason)
     {
-        Provider.kick(Owner.SteamID, reason);
+        EnqueueKick(reason);
     }
 
     public void Kick(Translation translation, params object[] args)

@@ -65,7 +65,7 @@ public class FishingSkill
 }
 
 [HarmonyPatch]
-public class FishingManager
+internal class FishingManager
 {
     private static string OnGetRewardErrorContext(UseableFisher instance) {
         return "fishing " + instance.player.equipment.asset?.FriendlyName + " reward";
@@ -98,7 +98,7 @@ public class FishingManager
     private static FieldInfo LuckTimeField = typeof(UseableFisher).GetField("luckTime", BindingFlags.Instance | BindingFlags.NonPublic);
     private static FieldInfo HasSplashedField = typeof(UseableFisher).GetField("hasSplashed", BindingFlags.Instance | BindingFlags.NonPublic);
     private static FieldInfo HasTuggedField = typeof(UseableFisher).GetField("hasTugged", BindingFlags.Instance | BindingFlags.NonPublic);
-    private static readonly ClientInstanceMethod<float> SendLuckTime = ClientInstanceMethod<float>.Get(typeof(UseableFisher), "SendLuckTime");
+    private static readonly ClientInstanceMethod<float> SendLuckTime = ClientInstanceMethod<float>.Get(typeof(UseableFisher), "ReceiveLuckTime");
 
     [HarmonyPatch(typeof(UseableFisher), "resetLuck", new Type[0])]
     [HarmonyPrefix]
@@ -109,7 +109,7 @@ public class FishingManager
             return false;
         }
 
-        FishingSkill skill = player.FishingSkill;
+        FishingSkill? skill = player.FishingSkill;
 
         LastLuckField.SetValue(__instance, Time.realtimeSinceStartup);
         LuckTimeField.SetValue(__instance, UnityEngine.Random.Range(skill.GetLowerTimeRange(), skill.GetHigherTimeRange()));
@@ -131,7 +131,7 @@ public class FishingManager
     private static FieldInfo StrengthTimeField = typeof(UseableFisher).GetField("strengthTime", BindingFlags.Instance | BindingFlags.NonPublic); 
     private static FieldInfo StrengthMultiplierField = typeof(UseableFisher).GetField("strengthMultiplier", BindingFlags.Instance | BindingFlags.NonPublic); 
     private static MethodInfo ReelMethod = typeof(UseableFisher).GetMethod("reel", BindingFlags.Instance | BindingFlags.NonPublic); 
-    private static ClientInstanceMethod SendPlayReel = ClientInstanceMethod.Get(typeof(UseableFisher), "SendPlayReel");
+    private static readonly ClientInstanceMethod SendPlayReel = ClientInstanceMethod.Get(typeof(UseableFisher), "ReceivePlayReel");
 
     // Close ur eyes
     [HarmonyPatch(typeof(UseableFisher), "startPrimary", new Type[0])]

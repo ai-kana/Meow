@@ -80,7 +80,7 @@ public class KronstadtPlayerManager
 
     public static void KickAll(string reason)
     {
-        foreach (KronstadtPlayer player in GetPlayerListCopy())
+        foreach (KronstadtPlayer player in GetPlayerListCopy().ToArray())
         {
             player.Moderation.Kick(reason);
         }

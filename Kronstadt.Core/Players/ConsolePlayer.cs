@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 
 namespace Kronstadt.Core.Players;
 
-public class ConsolePlayer : IPlayer
+internal class ConsolePlayer : IPlayer
 {
     public string Name => "Console";
     public string LogName => "Console";
