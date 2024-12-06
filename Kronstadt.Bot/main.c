@@ -100,6 +100,34 @@ void on_ready(struct discord *client, const struct discord_ready *event) {
         }
     };
     discord_create_guild_application_command(client, event->application->id, GUILD_ID, &rcon_command, NULL);
+
+    struct discord_application_command_option stats_options[] = {
+        {
+            .name = "steamid",
+            .description = "SteamID64 of user to query stats. If not specified uses linked account",
+            .type = DISCORD_APPLICATION_OPTION_STRING,
+            .required = false,
+            .options = NULL,
+        },
+        {
+            .name = "discord",
+            .description = "Use linked discord user",
+            .type = DISCORD_APPLICATION_OPTION_USER,
+            .required = false,
+            .options = NULL,
+        }
+    };
+    struct discord_create_guild_application_command stats_command = {
+        .name = "stats",
+        .description = "See your server stats",
+        .type = 1,
+        .default_permission = false,
+        .options = &(struct discord_application_command_options) {
+            .size = 2,
+            .array = stats_options,
+        }
+    };
+    discord_create_guild_application_command(client, event->application->id, GUILD_ID, &stats_command, NULL);
 }
 
 void on_interaction(struct discord *client, const struct discord_interaction *event) {
