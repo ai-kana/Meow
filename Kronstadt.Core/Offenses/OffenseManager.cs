@@ -31,8 +31,7 @@ public class OffenseManager
     {OffenseIssuer} BIGINT UNSIGNED,
     {OffenseIssued} BIGINT,
     {OffenseDuration} BIGINT,
-    {OffensePardoned} TINYINT,
-    {OffenseReason} VARCHAR(100),
+    {OffensePardoned} TINYINT, {OffenseReason} VARCHAR(100),
     PRIMARY KEY (Id)
     );
     """;
@@ -143,13 +142,13 @@ public class OffenseManager
     }
 
     private const string PardonOffenseCommand = $"UPDATE {OffenseTable} SET {OffensePardoned}=1 WHERE {OffenseId}=@{OffenseId}";
-    public static async UniTask PardonOffense(int id)
+    public static async UniTask<bool> PardonOffense(int id)
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
         await using MySqlCommand command = new(PardonOffenseCommand, connection);
         command.Parameters.Add($"@{OffenseId}", MySqlDbType.Int32).Value = id;
 
-        await command.ExecuteNonQueryAsync();
+        return await command.ExecuteNonQueryAsync() > 0;
     }
 }

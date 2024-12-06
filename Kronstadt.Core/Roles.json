@@ -21,6 +21,7 @@
         "DutyOnly": true,
         "Permissions": [
             "broadcast",
+            "pardon",
             "clear",
             "duty",
             "sduty",
