@@ -123,6 +123,25 @@ public class KronstadtChat
         }
     }
 
+    private static IEnumerable<KronstadtPlayer> GetStaffChatMembers()
+    {
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        {
+            if (player.Permissions.HasPermission("staffchat"))
+            {
+                yield return player;
+            }
+        }
+    }
+
+    public static void SendStaffChat(string message, KronstadtPlayer sender)
+    {
+        foreach (KronstadtPlayer player in GetStaffChatMembers())
+        {
+            SendMessage($"[{Formatter.RedColor.ColorText("SC")}] {player.Name}: " + message, Color.white, sender.SteamPlayer, player.SteamPlayer, useRichText:true);
+        }
+    }
+
     public static void BroadcastMessage(KronstadtPlayer player, string message, params object[] args)
     {
         Broadcast(player, Formatter.Format(message, args));

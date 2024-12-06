@@ -82,7 +82,7 @@ public class KronstadtPlayerModeration
     {
         string discordInvite = KronstadtHost.Configuration.GetValue<string>("DiscordInviteLink")!;
         Kick(TranslationList.BanPermanent, "No reason provided", discordInvite);
-        _ = AddBan(issuerId, long.MaxValue , "No reason provided");
+        _ = AddBan(issuerId, 0, "No reason provided");
     }
     
     public void Ban(CSteamID issuerId, long duration)
