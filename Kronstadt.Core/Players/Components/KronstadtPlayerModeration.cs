@@ -32,7 +32,6 @@ public class KronstadtPlayerModeration
         if (KronstadtPlayerManager.TryGetPlayer(id, out KronstadtPlayer player))
         {
             player.Moderation.IsMuted = false;
-            player.SendMessage(player.Moderation.IsMuted.ToString());
             player.SendMessage(TranslationList.Unmuted);
         }
     }
@@ -70,12 +69,36 @@ public class KronstadtPlayerModeration
 
     public async UniTask AddMute(CSteamID issuer, long duration, string reason)
     {
+        if (duration != 0)
+        {
+            EnqueueUnmute(duration);
+        }
+
         await OffenseManager.AddOffense(Offense.Create(OffenseType.Mute, Owner.SteamID, issuer, reason, duration));
     }
 
     public async UniTask AddBan(CSteamID issuer, long duration, string reason)
     {
         await OffenseManager.AddOffense(Offense.Create(OffenseType.Ban, Owner.SteamID, issuer, reason, duration));
+    }
+
+    public void Mute(CSteamID issuerId)
+    {
+        string discordInvite = KronstadtHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        Kick(TranslationList.MutePermanent, "No reason provided", discordInvite);
+        _ = AddMute(issuerId, 0, "No reason provided");
+    }
+
+    public void Mute(CSteamID issuerId, long duration)
+    {
+        string discordInvite = KronstadtHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        _ = AddMute(issuerId, duration, "No reason provided");
+    }
+
+    public void Mute(CSteamID issuerId, long duration, string reason)
+    {
+        string discordInvite = KronstadtHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        _ = AddMute(issuerId, duration, reason);
     }
 
     public void Ban(CSteamID issuerId)
