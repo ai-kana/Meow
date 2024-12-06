@@ -6,5 +6,75 @@
         "Permissions": [
             "all"
         ]
-    }
+    },
+    {
+        "Id": "Administrator",
+        "ChatTag": "<color=#D84848><b>Administrator</b></color>",
+        "DutyOnly": true,
+        "Permissions": [
+            "all"
+        ]
+    },
+    {
+        "Id": "SeniorModerator",
+        "ChatTag": "<color=#1B7925><b>Senior Moderator</b></color>",
+        "DutyOnly": true,
+        "Permissions": [
+            "broadcast",
+            "clear",
+            "duty",
+            "sduty",
+            "exit",
+            "freeze",
+            "god",
+            "heal",
+            "kick",
+            "offenses",
+            "position",
+            "spy",
+            "staffchat",
+            "teleport",
+            "unfreeze",
+            "mute",
+            "warn",
+            "ban",
+            "experience"
+        ]
+    },
+    {
+        "Id": "Moderator",
+        "ChatTag": "<color=#42C54F><b>Moderator</b></color>",
+        "DutyOnly": true,
+        "Permissions": [
+            "duty",
+            "god",
+            "kick",
+            "offenses",
+            "position",
+            "spy",
+            "staffchat",
+            "teleport",
+            "mute",
+            "warn",
+            "ban"
+        ]
+    },
+    {
+        "Id": "TrialModerator",
+        "ChatTag": "<color=#86DD8E><b>Trial Moderator</b></color>",
+        "DutyOnly": true,
+        "Permissions": [
+            "duty",
+            "god",
+            "kick",
+            "offenses",
+            "position",
+            "spy",
+            "staffchat",
+            "teleport",
+            "mute",
+            "warn",
+            "ban"
+        ]
+    },
 ]

@@ -12,7 +12,6 @@ internal class ExperienceCommand : Command
     public ExperienceCommand (CommandContext context) : base(context)
     {
     }
-    
     public static bool IsXpValid(uint xp)
     {
         return xp is > 0 and < uint.MaxValue;
