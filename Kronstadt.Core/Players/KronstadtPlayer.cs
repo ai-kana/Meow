@@ -5,6 +5,7 @@ using Kronstadt.Core.Chat;
 using Kronstadt.Core.Fishing;
 using Kronstadt.Core.Players.Components;
 using Kronstadt.Core.Translations;
+using SDG.NetTransport;
 
 namespace Kronstadt.Core.Players;
 
@@ -18,6 +19,8 @@ public class KronstadtPlayer : IPlayer, IFormattable
     public CSteamID SteamID => SteamPlayer.playerID.steamID;
 
     public PlayerData SaveData {get; private set;}
+
+    public ITransportConnection TransportConnection => SteamPlayer.transportConnection;
 
     public readonly KronstadtPlayerMovement Movement; 
     public readonly KronstadtPlayerRoles Roles; 
@@ -80,6 +83,6 @@ public class KronstadtPlayer : IPlayer, IFormattable
 
     public void SendMessage(Translation translation, params object[] args)
     {
-        KronstadtChat.BroadcastMessage(translation.Translate(Language, args));
+        KronstadtChat.BroadcastMessage(this, translation.Translate(Language, args));
     }
 }

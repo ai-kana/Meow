@@ -200,7 +200,13 @@ public class KronstadtPlayerManager
 
     private static async void OnServerDisconnected(CSteamID steamID)
     {
-        Players.TryRemove(steamID, out KronstadtPlayer player);
+        Players.TryGetValue(steamID, out KronstadtPlayer player);
+        if (player.Administration.FakedDisconnected)
+        {
+           return;
+        }
+
+        Players.TryRemove(steamID, out _);
         await PlayerDataManager.SaveDataAsync(player);
 
         OnPlayerDisconnected?.Invoke(player);

@@ -20,6 +20,7 @@
         "ChatTag": "<color=#1B7925><b>Senior Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "vanish",
             "broadcast",
             "pardon",
             "clear",
@@ -47,6 +48,7 @@
         "ChatTag": "<color=#42C54F><b>Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "vanish",
             "duty",
             "god",
             "kick",
@@ -65,6 +67,7 @@
         "ChatTag": "<color=#86DD8E><b>Trial Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "vanish",
             "duty",
             "god",
             "kick",
