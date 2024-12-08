@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using UnityEngine;
-using Kronstadt.Core.Commands.Framework;
-using Kronstadt.Core.Logging;
+using Kronstadt.Core.Commands.Framework; 
+using Kronstadt.Core.Logging; 
 using Kronstadt.Core.Roles;
 using Kronstadt.Core.Players;
 using Kronstadt.Core.Translations;
@@ -16,6 +16,7 @@ using Kronstadt.Core.Bot;
 using Kronstadt.Core.Ranks;
 using Kronstadt.Core.Plugins;
 using Kronstadt.Core.Stats;
+using UnityEngine.LowLevel;
 
 namespace Kronstadt.Core;
 
@@ -62,6 +63,9 @@ public sealed class KronstadtHost
         LoggerProvider.AddLogging(new KronstadtLoggerProvider($"./Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<KronstadtHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
+
+        PlayerLoopSystem system = PlayerLoop.GetCurrentPlayerLoop();
+        PlayerLoopHelper.Initialize(ref system);
 
         // Windows no liekly console
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
