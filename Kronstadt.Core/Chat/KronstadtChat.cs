@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Kronstadt.Core.Commands.Framework;
 using Kronstadt.Core.Roles;
 using Kronstadt.Core.Translations;
-using Kronstadt.Core.Workers;
+using Cysharp.Threading.Tasks;
 
 namespace Kronstadt.Core.Chat;
 
@@ -45,7 +45,7 @@ public class KronstadtChat
                 continue;
             }
 
-            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true).Forget();
         }
     }
 
@@ -60,7 +60,7 @@ public class KronstadtChat
                 continue;
             }
 
-            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true).Forget();
         }
     }
 
@@ -70,7 +70,7 @@ public class KronstadtChat
         _Logger.LogInformation($"{sender.LogName}: {text}");
         foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
         {
-            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true);
+            SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true).Forget();
         }
     }
 
@@ -138,7 +138,12 @@ public class KronstadtChat
     {
         foreach (KronstadtPlayer player in GetStaffChatMembers())
         {
-            SendMessage($"[{Formatter.RedColor.ColorText("SC")}] {player.Name}: " + message, Color.white, sender.SteamPlayer, player.SteamPlayer, useRichText:true);
+            SendMessage(
+                $"[{Formatter.RedColor.ColorText("SC")}] {player.Name}: " + message, 
+                Color.white, 
+                sender.SteamPlayer, 
+                player.SteamPlayer, 
+                useRichText:true).Forget();
         }
     }
 
@@ -186,7 +191,7 @@ public class KronstadtChat
     {
         _Logger.LogInformation(translation.Translate(player, args));
         string message = translation.Translate(player, args);
-        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true).Forget();
     }
 
     private static void Broadcast(IEnumerable<KronstadtPlayer> players, string message)
@@ -200,41 +205,20 @@ public class KronstadtChat
     private static void Broadcast(KronstadtPlayer player, string message)
     {
         _Logger.LogInformation(message);
-        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true);
+        SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true).Forget();
     }
 
-    private static IWork CreateMessageWork(
+    private static async UniTask SendMessage(
             string message, 
             Color color, 
-            SteamPlayer? sender, 
-            SteamPlayer? reciever, 
-            EChatMode mode, 
-            string? icon, 
-            bool useRichText)
-    {
-        Work<string, Color, SteamPlayer?, SteamPlayer?, EChatMode, string?, bool> work = new(
-                ChatManager.serverSendMessage, 
-                message,
-                color,
-                sender,
-                reciever,
-                mode,
-                icon,
-                useRichText);
-
-        return work;
-    }
-
-    private static void SendMessage(
-            string message, 
-            Color color, 
-            SteamPlayer? sender, 
-            SteamPlayer? reciever, 
+            SteamPlayer? sender = null, 
+            SteamPlayer? reciever = null, 
             EChatMode mode = EChatMode.SAY, 
             string? icon = null, 
             bool useRichText = true)
     {
-        CommandQueue.Enqueue(CreateMessageWork(message, color, sender, reciever, mode, icon, useRichText));
+        await UniTask.Yield();
+        ChatManager.serverSendMessage(message, color, sender, reciever, mode, icon, useRichText);
     }
     
     public static void SendPrivateMessage(KronstadtPlayer sender, KronstadtPlayer receiver, string text)
@@ -243,7 +227,7 @@ public class KronstadtChat
         string message = $"[{Formatter.RedColor.ColorText("PM")}] {sender.Name} -> {receiver.Name}: {text}";
         _Logger.LogInformation(message);
 
-        SendMessage(message, Color.white, sender.SteamPlayer, receiver.SteamPlayer);
-        SendMessage(message, Color.white, sender.SteamPlayer, sender.SteamPlayer);
+        SendMessage(message, Color.white, sender.SteamPlayer, receiver.SteamPlayer).Forget();
+        SendMessage(message, Color.white, sender.SteamPlayer, sender.SteamPlayer).Forget();
     }
 }

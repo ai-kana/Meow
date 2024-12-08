@@ -5,7 +5,6 @@ using HarmonyLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
-using UnityEngine;
 using Kronstadt.Core.Commands.Framework; 
 using Kronstadt.Core.Logging; 
 using Kronstadt.Core.Roles;
@@ -24,8 +23,6 @@ public sealed class KronstadtHost
 {
     private ILogger? _Logger;
     private Harmony? _Harmony;
-
-    private GameObject? _Owner;
 
     public static IConfiguration Configuration {get; private set;} = null!;
 
@@ -81,9 +78,6 @@ public sealed class KronstadtHost
 
         _Harmony = new("Kronstadt.Core");
         _Harmony.PatchAll();
-
-        _Owner = new("Kronstadt");
-        _Owner.AddComponent<CommandQueue>();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();

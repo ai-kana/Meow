@@ -3,7 +3,7 @@ using Kronstadt.Core.Chat;
 using Kronstadt.Core.Formatting;
 using Kronstadt.Core.Players;
 using Kronstadt.Core.Translations;
-using Kronstadt.Core.Workers;
+using Cysharp.Threading.Tasks;
 
 namespace Kronstadt.Core;
 
@@ -47,7 +47,7 @@ public static class ServerManager
         _ = DoShutdown(delay, _Source.Token);
     }
 
-    private static async Task DoShutdown(uint delay, CancellationToken token)
+    private static async UniTask DoShutdown(uint delay, CancellationToken token)
     {
         bool first = false;
         KronstadtChat.BroadcastMessage(TranslationList.Shutdown, Formatter.FormatTime(delay));
@@ -66,7 +66,7 @@ public static class ServerManager
                 }
             }
 
-            await Task.Delay(1000);
+            await UniTask.Delay(1000);
             first = true;
 
             if (_Source?.IsCancellationRequested ?? true)
@@ -75,6 +75,7 @@ public static class ServerManager
             }
         }
 
-        CommandQueue.Enqueue(new Work(Shutdown));
+        await UniTask.Yield();
+        Shutdown();
     }
 }

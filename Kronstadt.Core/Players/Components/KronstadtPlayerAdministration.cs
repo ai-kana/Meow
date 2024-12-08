@@ -30,7 +30,6 @@ public class KronstadtPlayerAdministration
         */
     }
 
-    private bool _Vanished = false;
     private bool _VanishMode = false;
     public bool VanishMode
     {

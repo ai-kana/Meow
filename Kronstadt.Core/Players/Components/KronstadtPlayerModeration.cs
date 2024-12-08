@@ -3,10 +3,8 @@ using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SDG.Unturned;
 using Steamworks;
-using UnityEngine;
 using Kronstadt.Core.Offenses;
 using Kronstadt.Core.Translations;
-using Kronstadt.Core.Workers;
 
 namespace Kronstadt.Core.Players.Components;
 
@@ -14,10 +12,22 @@ public class KronstadtPlayerModeration
 {
     public readonly KronstadtPlayer Owner;
     public bool IsMuted {get; set;} = false;
+    private CancellationTokenSource? _UnmuteSource = null;
 
     public KronstadtPlayerModeration(KronstadtPlayer owner)
     {
         Owner = owner;
+        KronstadtPlayerManager.OnPlayerDisconnected += OnDisconnected;
+    }
+
+    ~KronstadtPlayerModeration()
+    {
+        KronstadtPlayerManager.OnPlayerDisconnected -= OnDisconnected;
+    }
+
+    private void OnDisconnected(KronstadtPlayer player)
+    {
+        _UnmuteSource?.Cancel();
     }
 
     public void Spy(KronstadtPlayer caller)
@@ -25,10 +35,14 @@ public class KronstadtPlayerModeration
         Owner.Player.sendScreenshot(caller.SteamID, null);
     }
 
-    private IEnumerator? _UnmuteRoutine;
-    private static IEnumerator WaitForUnmute(CSteamID id, long time)
+    private static async UniTask WaitForUnmute(CSteamID id, long time, CancellationToken token)
     {
-        yield return new WaitForSeconds(time);
+        await UniTask.Delay((int)(time * 1000), cancellationToken: token);
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
         if (KronstadtPlayerManager.TryGetPlayer(id, out KronstadtPlayer player))
         {
             player.Moderation.IsMuted = false;
@@ -38,18 +52,19 @@ public class KronstadtPlayerModeration
 
     public void EnqueueUnmute(long duration)
     {
-        _UnmuteRoutine = WaitForUnmute(Owner.SteamID, duration);
-        CommandQueue.EnqueueCoroutine(_UnmuteRoutine);
+        _UnmuteSource = new();
+        WaitForUnmute(Owner.SteamID, duration, _UnmuteSource.Token).Forget();
     }
 
     public void CancelUnmute()
     {
-        if (_UnmuteRoutine == null)
+        if (_UnmuteSource == null)
         {
             return;
         }
 
-        CommandQueue.CancelCoroutine(_UnmuteRoutine);
+        _UnmuteSource.Cancel();
+        _UnmuteSource = null;
     }
 
     public async UniTask<IEnumerable<Offense>> GetAllOffenses()
@@ -129,24 +144,20 @@ public class KronstadtPlayerModeration
         _ = AddBan(issuerId, duration, reason);
     }
 
-    private IWork CreateKickWork(CSteamID steamId, string reason)
+    private async UniTask DoKick(string reason)
     {
-        return new Work<CSteamID, string>(Provider.kick, steamId, reason);
-    }
-
-    private void EnqueueKick(string reason)
-    {
-        CommandQueue.Enqueue(CreateKickWork(Owner.SteamID, reason));
+        await UniTask.Yield();
+        Provider.kick(Owner.SteamID, reason);
     }
 
     public void Kick()
     {
-        EnqueueKick("No reason provided");
+        DoKick("No reason provided").Forget();
     }
 
     public void Kick(string reason)
     {
-        EnqueueKick(reason);
+        DoKick(reason).Forget();
     }
 
     public void Kick(Translation translation, params object[] args)

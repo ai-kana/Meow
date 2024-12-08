@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Kronstadt.Core.Commands.Framework;
 using Kronstadt.Core.Players;
+using Kronstadt.Core.Translations;
 using SDG.Unturned;
 using UnityEngine;
 using Command = Kronstadt.Core.Commands.Framework.Command;
@@ -19,6 +20,7 @@ internal class WreckCommand : Command
     private async UniTask<bool> TryDestroy(Vector3 origin, Vector3 dir)
     {
         await UniTask.Yield();
+
         if (!Physics.Raycast(new(origin, dir), out RaycastHit hit, 64, RayMasks.BLOCK_COLLISION))
         {
             return false;
