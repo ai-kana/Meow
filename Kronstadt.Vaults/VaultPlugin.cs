@@ -43,7 +43,6 @@ internal class VaultPlugin : Plugin
         IEnumerable<VaultData> vaults = JsonConvert.DeserializeObject<IEnumerable<VaultData>>(content) ?? throw new("Failed to get vault data");
         foreach (VaultData vault in vaults)
         {
-            _Logger.LogDebug($"Registered vault {vault.Name}");
             VaultDatas.Add(vault.Name, vault);
         }
 

@@ -17,7 +17,7 @@ internal class PluginManager
     }
 
     private const string PluginsDirectory = "Plugins";
-    public static async UniTask LoadPlugins()
+    public static async UniTask LoadPluginsAsync()
     {
         Directory.CreateDirectory(PluginsDirectory);
         string[] paths = Directory.GetFiles(PluginsDirectory, "*.dll");

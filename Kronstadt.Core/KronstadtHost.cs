@@ -16,6 +16,7 @@ using Kronstadt.Core.Ranks;
 using Kronstadt.Core.Plugins;
 using Kronstadt.Core.Stats;
 using UnityEngine.LowLevel;
+using Kronstadt.Core.Zones;
 
 namespace Kronstadt.Core;
 
@@ -90,8 +91,10 @@ public sealed class KronstadtHost
 
         _ = BotManager.Start();
 
-        await PluginManager.LoadPlugins();
-        
+        await ZoneManager.LoadZonesAsync();
+
+        await PluginManager.LoadPluginsAsync();
+
         _Logger.LogInformation("Started Kronstadt!");
     }
 

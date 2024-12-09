@@ -10,17 +10,17 @@ public struct Position
     public float Y = 0;
     public float Z = 0;
 
-    public bool IsZero() => X == 0 && Y == 0 && Z == 0;
+    public readonly bool IsZero() => X == 0 && Y == 0 && Z == 0;
 
-    public static implicit operator Position(Vector3 vector) => new() 
+    public static implicit operator Position(in Vector3 vector) => new() 
     {
         X = vector.x,
         Y = vector.y,
         Z = vector.z
     };
 
-    public Vector3 ToVector3() => new(X, Y, Z);
-    public static Position FromVector3(Vector3 v) => new() {X = v.x, Y = v.y, Z = v.z};
+    public readonly Vector3 ToVector3() => new(X, Y, Z);
+    public static Position FromVector3(in Vector3 v) => new() {X = v.x, Y = v.y, Z = v.z};
 
     public Position()
     {

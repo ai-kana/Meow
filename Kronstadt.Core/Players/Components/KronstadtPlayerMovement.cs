@@ -1,3 +1,4 @@
+using Kronstadt.Core.Zones;
 using SDG.Unturned;
 using UnityEngine;
 
@@ -12,10 +13,54 @@ public class KronstadtPlayerMovement
     private PlayerMovement _PlayerMovement => Owner.Player.movement;
 
     public bool IsFrozen => _PlayerMovement.pluginSpeedMultiplier == 0;
+
+    private HashSet<Zone> _ActiveZones = new();
     
     public KronstadtPlayerMovement(KronstadtPlayer owner)
     {
         Owner = owner;
+
+        ZoneManager.OnZoneEntered += OnZoneEntered;
+        ZoneManager.OnZoneExited += OnZoneExited;
+    }
+
+    ~KronstadtPlayerMovement()
+    {
+        ZoneManager.OnZoneEntered -= OnZoneEntered;
+        ZoneManager.OnZoneExited -= OnZoneExited;
+    }
+
+    private void OnZoneEntered(KronstadtPlayer player, Zone zone)
+    {
+        if (player != Owner)
+        {
+            return;
+        }
+
+        _ActiveZones.Add(zone);
+    }
+
+    private void OnZoneExited(KronstadtPlayer player, Zone zone)
+    {
+        if (player != Owner)
+        {
+            return;
+        }
+
+        _ActiveZones.Remove(zone);
+    }
+
+    public bool HasZoneFlag(string flag)
+    {
+        foreach (Zone zone in _ActiveZones)
+        {
+            if (zone.Flags.Contains(flag))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void Teleport(Vector3 location, Quaternion rotation)

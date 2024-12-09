@@ -24,6 +24,7 @@ internal class VaultCommand : Command
         if (Context.HasArguments(1))
         {
             name = Context.Current;
+            Context.AssertZoneFlag(name);
         }
 
         if (!VaultPlugin.Vaults.TryGetValue(caller.SteamID, out IEnumerable<VaultItems> items))

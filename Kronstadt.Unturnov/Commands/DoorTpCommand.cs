@@ -18,6 +18,7 @@ public class DoorTpCommand : Command
 
     public override UniTask ExecuteAsync()
     {
+        Context.AssertZoneFlag("doortp");
         Context.AssertPlayer(out KronstadtPlayer caller);
         Context.AssertCooldown();
         

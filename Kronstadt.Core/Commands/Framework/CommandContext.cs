@@ -105,6 +105,7 @@ public sealed class CommandContext
         throw Reply(TranslationList.AssertCooldown, Formatter.FormatTime(time));
     }
 
+    private static readonly Translation AssertDuty = new("AssertDuty", "You must be on duty to use this command");
     public void AssertOnDuty()
     {
         if (Caller is not KronstadtPlayer player)
@@ -114,7 +115,21 @@ public sealed class CommandContext
 
         if (!player.Administration.OnDuty)
         {
-            throw Reply("You must be on duty to use this command");
+            throw Reply(AssertDuty);
+        }
+    }
+
+    private static readonly Translation AssertZone = new("AssertZone", "You cannot use that command here");
+    public void AssertZoneFlag(string flag)
+    {
+        if (Caller is not KronstadtPlayer player)
+        {
+            return;
+        }
+
+        if (!player.Movement.HasZoneFlag(flag))
+        {
+            throw Reply(AssertZone);
         }
     }
 
@@ -127,6 +142,7 @@ public sealed class CommandContext
 
         player.Cooldowns.AddCooldown(_Type.FullName, length);
     }
+
 
     public bool MatchParameter(params string[] matches)
     {
