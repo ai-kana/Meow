@@ -45,5 +45,6 @@ internal static class PlayerDataManager
 
         using StreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write));
         await writer.WriteAsync(data);
+        await writer.FlushAsync();
     }
 }

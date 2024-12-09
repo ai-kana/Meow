@@ -10,6 +10,7 @@ using Kronstadt.Core.Formatting;
 using Kronstadt.Core.Logging;
 using Kronstadt.Core.Offenses;
 using Kronstadt.Core.Translations;
+using Newtonsoft.Json;
 
 namespace Kronstadt.Core.Players;
 
@@ -206,10 +207,10 @@ public class KronstadtPlayerManager
            return;
         }
 
+        OnPlayerDisconnected?.Invoke(player);
+
         Players.TryRemove(steamID, out _);
         await PlayerDataManager.SaveDataAsync(player);
-
-        OnPlayerDisconnected?.Invoke(player);
 
         player.Moderation.CancelUnmute();
 

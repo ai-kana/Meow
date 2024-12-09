@@ -40,11 +40,11 @@ public class PlayerData
     public Dictionary<string, long> Cooldowns {get; private set;} = new();
 
     [JsonProperty]
-    public string Language {get;set;} = "English";
+    public string Language {get; set;} = "English";
 
     [JsonProperty]
-    public FishingSkill Fishing {get;private set;} = new();
+    public FishingSkill Fishing {get; private set;} = new();
 
     [JsonProperty]
-    public Dictionary<string, object> Data {get;private set;} = new();
+    public Dictionary<string, object> Data {get; private set;} = new();
 }
