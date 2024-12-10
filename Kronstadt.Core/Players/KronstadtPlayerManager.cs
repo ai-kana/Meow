@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,7 @@ using Kronstadt.Core.Formatting;
 using Kronstadt.Core.Logging;
 using Kronstadt.Core.Offenses;
 using Kronstadt.Core.Translations;
-using Newtonsoft.Json;
+using System.Net;
 
 namespace Kronstadt.Core.Players;
 
@@ -19,7 +18,7 @@ public delegate void PlayerDisconnected(KronstadtPlayer player);
 
 public class KronstadtPlayerManager
 {
-    public static ConcurrentDictionary<CSteamID, KronstadtPlayer> Players {get; private set;}
+    public static List<KronstadtPlayer> Players {get; private set;}
 
     public static event PlayerConnected? OnPlayerConnected;
     public static event PlayerDisconnected? OnPlayerDisconnected;
@@ -73,7 +72,7 @@ public class KronstadtPlayerManager
 
     private static IEnumerable<KronstadtPlayer> GetPlayerListCopy()
     {
-        foreach (KronstadtPlayer player in Players.Values)
+        foreach (KronstadtPlayer player in Players)
         {
             yield return player;
         }
@@ -81,7 +80,9 @@ public class KronstadtPlayerManager
 
     public static void KickAll(string reason)
     {
-        foreach (KronstadtPlayer player in GetPlayerListCopy().ToArray())
+        KronstadtPlayer[] players = new KronstadtPlayer[Players.Count];
+        Players.CopyTo(players);
+        foreach (KronstadtPlayer player in players)
         {
             player.Moderation.Kick(reason);
         }
@@ -99,34 +100,49 @@ public class KronstadtPlayerManager
         while (Players.Count != 0);
     }
 
+    private static bool TryFindPlayer(CSteamID steamId, out KronstadtPlayer player)
+    {
+        player = null!;
+        for (int i = 0; i < Players.Count; i++)
+        {
+            player = Players[i];
+            if (player.SteamID == steamId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static bool TryGetPlayer(Player inPlayer, out KronstadtPlayer player)
     {
-        return Players.TryGetValue(inPlayer.channel.owner.playerID.steamID, out player);
+        return TryFindPlayer(inPlayer.channel.owner.playerID.steamID, out player);
     }
 
     public static bool TryGetPlayer(SteamPlayer inPlayer, out KronstadtPlayer player)
     {
-        return Players.TryGetValue(inPlayer.playerID.steamID, out player);
+        return TryFindPlayer(inPlayer.playerID.steamID, out player);
     }
 
     public static bool TryGetPlayer(CSteamID id, out KronstadtPlayer player)
     {
-        return Players.TryGetValue(id, out player);
+        return TryFindPlayer(id, out player);
     }
     
     public static bool IsOnline(CSteamID steamID)
     {
-        return Players.TryGetValue(steamID, out _);
+        return TryFindPlayer(steamID, out _);
     }
 
     public static bool TryFindPlayer(string search, out KronstadtPlayer player)
     {
         if (PlayerTool.tryGetSteamID(search, out CSteamID steamID))
         {
-            return KronstadtPlayerManager.Players.TryGetValue(steamID, out player);
+            return TryGetPlayer(steamID, out player);
         }
 
-        player = KronstadtPlayerManager.Players.Values.FirstOrDefault(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+        player = KronstadtPlayerManager.Players.FirstOrDefault(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
         if (player == null)
         {
             return false;
@@ -135,11 +151,48 @@ public class KronstadtPlayerManager
         return true;
     }
 
+    public static void Relog(KronstadtPlayer player)
+    {
+        Relog(player.SteamPlayer);
+    }
+
+    public static void Relog(SteamPlayer player)
+    {
+        IConfigurationSection section = KronstadtHost.Configuration.GetRequiredSection("RelayInfo");
+        string addrStr = section.GetValue<string>("IP") ?? throw new("Failed to get IP address value");
+        IPAddress address = IPAddress.Parse(addrStr);
+        uint realAddr = BitConverter.ToUInt32(address.MapToIPv4().GetAddressBytes(), 0);
+        ushort port = section.GetValue<ushort>("Port");
+        _Logger.LogInformation($"Recon: {address.MapToIPv4()}, {port}");
+
+        SendRelayToServer(player.player, realAddr, port);
+    }
+
+    public static void SendRelayToServer(KronstadtPlayer player, uint ip, ushort port)
+    {
+        player.Player.sendRelayToServer(ip, port, "", false);
+    }
+
+    public static void SendRelayToServer(Player player, uint ip, ushort port)
+    {
+        player.sendRelayToServer(ip, port, "", false);
+    }
+
     private static async UniTask OnConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
+        /*
+        TODO: fix on real server
+        uint ip = steamPlayer.getIPv4AddressOrZero();
+        if (ip == 0)
+        {
+            Relog(steamPlayer);
+            return;
+        }
+        */
+
         KronstadtPlayer player = await KronstadtPlayer.CreateAsync(steamPlayer);
-        Players.TryAdd(player.SteamID, player);
+        Players.Add(player);
 
         IEnumerable<Offense> offenses = await PlayerIdManager.GetOffensesAsync(player);
 
@@ -170,7 +223,7 @@ public class KronstadtPlayerManager
         }
         else
         {
-            Offense? tempMute = offenses.Where(x => x.OffenseType == OffenseType.Mute && !x.IsPermanent)
+            Offense? tempMute = offenses.Where(x => x.OffenseType == OffenseType.Mute && !x.IsPermanent && x.IsActive)
                 .OrderByDescending(x => x.Remaining).FirstOrDefault();
             if (tempMute != null)
             {
@@ -201,7 +254,7 @@ public class KronstadtPlayerManager
 
     private static async void OnServerDisconnected(CSteamID steamID)
     {
-        Players.TryGetValue(steamID, out KronstadtPlayer player);
+        TryGetPlayer(steamID, out KronstadtPlayer player);
         if (player.Administration.FakedDisconnected)
         {
            return;
@@ -209,7 +262,7 @@ public class KronstadtPlayerManager
 
         OnPlayerDisconnected?.Invoke(player);
 
-        Players.TryRemove(steamID, out _);
+        Players.Remove(player);
         await PlayerDataManager.SaveDataAsync(player);
 
         player.Moderation.CancelUnmute();

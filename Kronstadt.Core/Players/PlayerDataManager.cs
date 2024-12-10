@@ -16,7 +16,7 @@ internal static class PlayerDataManager
 
     private static void OnSave()
     {
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             _ = SaveDataAsync(player);
         }
@@ -43,8 +43,7 @@ internal static class PlayerDataManager
 
         string data = JsonConvert.SerializeObject(player.SaveData);
 
-        using StreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write));
+        using StreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write, FileShare.Read));
         await writer.WriteAsync(data);
-        await writer.FlushAsync();
     }
 }

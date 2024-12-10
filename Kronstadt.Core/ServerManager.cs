@@ -19,10 +19,16 @@ public static class ServerManager
 
     private static void DoSave()
     {
-        OnServerSave?.Invoke();
+        try
+        {
+            OnServerSave?.Invoke();
+        }
+        catch (Exception)
+        {
+        }
     }
 
-    public static void Shutdown()
+    private static void Shutdown()
     {
         DoSave();
         KronstadtPlayerManager.KickAll(TranslationList.ShutdownKick); 

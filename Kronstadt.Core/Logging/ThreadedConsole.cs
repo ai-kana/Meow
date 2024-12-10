@@ -79,8 +79,8 @@ internal class ThreadConsole : ICommandInputOutput
 
     private void OnCancelling(object sender, ConsoleCancelEventArgs e)
     {
+        ServerManager.QueueShutdown(0);
         e.Cancel = true;
-        ServerManager.Shutdown();
     }
 
     private void HandleInput() 
@@ -101,8 +101,14 @@ internal class ThreadConsole : ICommandInputOutput
     {
         while (true) 
         {
-            HandleInput();
-            Thread.Sleep(50);
+            try
+            {
+                HandleInput();
+                Thread.Sleep(50);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

@@ -14,10 +14,13 @@ internal class Vault
     public Vault(VaultItems items)
     {
         Name = items.Name;
+        List<VaultItem> final = new(items.Items.getItemCount());
         foreach (ItemJar jar in items.Items.items)
         {
-            Items.Add(new(jar));
+            final.Add(new(jar));
         }
+
+        Items = final;
     }
 
     public Vault()
@@ -27,5 +30,5 @@ internal class Vault
     [JsonProperty]
     public string Name {get; private set;} = "default";
     [JsonProperty]
-    public List<VaultItem> Items {get; private set;} = new();
+    public IEnumerable<VaultItem> Items {get; private set;} = [];
 }

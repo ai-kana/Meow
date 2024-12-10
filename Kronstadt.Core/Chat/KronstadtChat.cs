@@ -38,7 +38,7 @@ public class KronstadtChat
         string message = $"[{Formatter.RedColor.ColorText("L")}] {sender.Name}: {text}";
         _Logger.LogInformation($"[Local] {sender.LogName}: {text}");
 
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             if (Vector3.SqrMagnitude(player.Movement.Position - sender.Movement.Position) > _LocalChatDistance)
             {
@@ -53,7 +53,7 @@ public class KronstadtChat
     {
         string message = $"[{Formatter.RedColor.ColorText("G")}] {sender.Name}: {text}";
         _Logger.LogInformation($"[Group] {sender.LogName}: {text}");
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             if (!player.SteamPlayer.isMemberOfSameGroupAs(sender.SteamPlayer))
             {
@@ -68,7 +68,7 @@ public class KronstadtChat
     {
         string message = $"{GetChatTag(sender)}{sender.Name}: {text}";
         _Logger.LogInformation($"{sender.LogName}: {text}");
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             SendMessage(message, Color.white, sender.SteamPlayer, player.SteamPlayer, EChatMode.GROUP, null, true).Forget();
         }
@@ -92,7 +92,7 @@ public class KronstadtChat
     {
         isVisible = false;
 
-        KronstadtPlayer player = KronstadtPlayerManager.Players[steamPlayer.playerID.steamID];
+        KronstadtPlayerManager.TryGetPlayer(steamPlayer, out KronstadtPlayer player);
 
         if (text.StartsWith("/"))
         {
@@ -125,7 +125,7 @@ public class KronstadtChat
 
     private static IEnumerable<KronstadtPlayer> GetStaffChatMembers()
     {
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             if (player.Permissions.HasPermission("staffchat"))
             {
@@ -149,33 +149,39 @@ public class KronstadtChat
 
     public static void BroadcastMessage(KronstadtPlayer player, string message, params object[] args)
     {
+        _Logger.LogInformation(string.Format(message, args));
         Broadcast(player, Formatter.Format(message, args));
     }
 
     public static void BroadcastMessage(IEnumerable<KronstadtPlayer> players, string message, params object[] args)
     {
+        _Logger.LogInformation(string.Format(message, args));
         Broadcast(players, Formatter.Format(message, args));
     }
 
     public static void BroadcastMessage(string message, params object[] args)
     {
-        IEnumerable<KronstadtPlayer> players = KronstadtPlayerManager.Players.Values;
+        _Logger.LogInformation(string.Format(message, args));
+        IEnumerable<KronstadtPlayer> players = KronstadtPlayerManager.Players;
         Broadcast(players, Formatter.Format(message, args));
     }
 
     public static void BroadcastMessage(KronstadtPlayer player, Translation translation, params object[] args)
     {
+        _Logger.LogInformation(translation.Translate("English", args));
         Broadcast(player, translation, args);
     }
 
     public static void BroadcastMessage(IEnumerable<KronstadtPlayer> players, Translation translation, params object[] args)
     {
+        _Logger.LogInformation(translation.Translate("English", args));
         Broadcast(players, translation, args);
     }
 
     public static void BroadcastMessage(Translation translation, params object[] args)
     {
-        IEnumerable<KronstadtPlayer> players = KronstadtPlayerManager.Players.Values;
+        _Logger.LogInformation(translation.Translate("English", args));
+        IEnumerable<KronstadtPlayer> players = KronstadtPlayerManager.Players;
         Broadcast(players, translation, args);
     }
 
@@ -189,7 +195,6 @@ public class KronstadtChat
 
     private static void Broadcast(KronstadtPlayer player, Translation translation, params object[] args)
     {
-        _Logger.LogInformation(translation.Translate(player, args));
         string message = translation.Translate(player, args);
         SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true).Forget();
     }
@@ -204,7 +209,6 @@ public class KronstadtChat
 
     private static void Broadcast(KronstadtPlayer player, string message)
     {
-        _Logger.LogInformation(message);
         SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true).Forget();
     }
 

@@ -44,7 +44,7 @@ internal class BotManager
         PacketBuilder builder = new();
 
         builder.WriteByte((byte)KronstadtPlayerManager.Players.Count);
-        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players.Values)
+        foreach (KronstadtPlayer player in KronstadtPlayerManager.Players)
         {
             builder.WriteString(player.Name);
         }

@@ -1,7 +1,6 @@
 using System.Reflection;
 using Kronstadt.Core.Logging;
 using Kronstadt.Core.Players;
-using Microsoft.Extensions.Logging;
 using SDG.NetPak;
 using SDG.NetTransport;
 using SDG.Unturned;

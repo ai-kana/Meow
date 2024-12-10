@@ -9,6 +9,10 @@
         "UserID": "",
         "Password": ""
     },
+    "RelayInfo": {
+        "IP": "",
+        "Port": 27015
+    },
     "Bot": {
         "Enabled": true,
         "Host": "127.0.0.1",

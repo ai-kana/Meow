@@ -35,6 +35,7 @@ public class KronstadtPlayer : IPlayer, IFormattable
     public readonly KronstadtPlayerAdministration Administration;
     public readonly KronstadtPlayerRank Rank;
     public readonly KronstadtPlayerStats Stats;
+    public readonly KronstadtPlayerConnection Connection;
 
     public FishingSkill FishingSkill => SaveData.Fishing;
 
@@ -69,6 +70,12 @@ public class KronstadtPlayer : IPlayer, IFormattable
         Administration = new(this);
         Rank = new(this);
         Stats = new(this);
+        Connection = new(this);
+    }
+
+    public override int GetHashCode()
+    {
+        return SteamID.GetHashCode();
     }
 
     public string ToString(string format, IFormatProvider formatProvider)

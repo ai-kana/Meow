@@ -27,6 +27,7 @@ internal class VaultPlugin : Plugin
     public readonly static Dictionary<string, VaultData> VaultDatas = new();
     public readonly static Dictionary<CSteamID, IEnumerable<VaultItems>> Vaults = new();
     private readonly ILogger _Logger;
+    private string _DataDirectory = null!;
     public VaultPlugin()
     {
         _Logger = LoggerProvider.CreateLogger<VaultPlugin>();
@@ -34,6 +35,9 @@ internal class VaultPlugin : Plugin
 
     public override async UniTask LoadAsync()
     {
+        _DataDirectory = Path.Combine(WorkingDirectory, "Data");
+        Directory.CreateDirectory(_DataDirectory);
+
         string content;
         using (StreamReader reader = new(Path.Combine(WorkingDirectory, "Kronstadt.Vaults.Configuration.json")))
         {
@@ -57,27 +61,9 @@ internal class VaultPlugin : Plugin
         return UniTask.CompletedTask;
     }
     
-    private IEnumerable<Vault> GetVaults(KronstadtPlayer player)
+    private async UniTask AddVaults(KronstadtPlayer player, Rank rank)
     {
-        IEnumerable<Vault>? vaultsList = null;
-        if (player.SaveData.Data.TryGetValue("vaults", out object value))
-        {
-            if (value is IEnumerable<Vault> v)
-            {
-                vaultsList = v;
-            }
-            else
-            {
-                vaultsList = new List<Vault>();
-            }
-        }
-
-        return vaultsList ?? new List<Vault>();
-    }
-
-    private void AddVaults(KronstadtPlayer player, Rank rank)
-    {
-        Dictionary<string, Vault> vaults = GetVaults(player).ToDictionary(x => x.Name);
+        Dictionary<string, Vault> vaults = (await ReadPlayerVaultData(player)).ToDictionary(x => x.Name);
         byte max = (byte)rank;
         max++;
         for (int i = 0; i < max; i++)
@@ -85,12 +71,12 @@ internal class VaultPlugin : Plugin
             vaults.TryAdd(Ranks[i], new(Ranks[i]));
         }
 
-        player.SaveData.Data.AddOrUpdate("vaults", vaults.Select(x => x.Value));
+        await WritePlayerVaultData(player, vaults.Select(x => x.Value).ToList());
     }
 
-    private void BindVaults(KronstadtPlayer player)
+    private async UniTask BindVaults(KronstadtPlayer player)
     {
-        IEnumerable<Vault> vaults = GetVaults(player);
+        List<Vault> vaults = await ReadPlayerVaultData(player);
         List<VaultItems> items = new(vaults.Count());
         foreach (Vault vault in vaults)
         {
@@ -107,8 +93,8 @@ internal class VaultPlugin : Plugin
 
         try
         {
-            AddVaults(player, rank);
-            BindVaults(player);
+            await AddVaults(player, rank);
+            await BindVaults(player);
         }
         catch (Exception ex)
         {
@@ -131,6 +117,27 @@ internal class VaultPlugin : Plugin
             vaults.Add(new(vaultItem));
         }
 
-        player.SaveData.Data.AddOrUpdate("vaults", vaults);
+        WritePlayerVaultData(player, vaults).Forget();
+    }
+
+    private async UniTask WritePlayerVaultData(KronstadtPlayer player, List<Vault> vaults)
+    {
+        string content = JsonConvert.SerializeObject(vaults);
+        using StreamWriter writer = new(File.Open(Path.Combine(_DataDirectory, $"{player.SteamID}.json"), FileMode.Create, FileAccess.Write));
+        await writer.WriteAsync(content);
+    }
+
+    private async UniTask<List<Vault>> ReadPlayerVaultData(KronstadtPlayer player)
+    {
+        string path = Path.Combine(_DataDirectory, $"{player.SteamID}.json");
+        if (!File.Exists(path))
+        {
+            return new();
+        }
+
+        using StreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));
+        string data = await reader.ReadToEndAsync();
+
+        return JsonConvert.DeserializeObject<List<Vault>>(data) ?? throw new("Failed to read vault data");
     }
 }
