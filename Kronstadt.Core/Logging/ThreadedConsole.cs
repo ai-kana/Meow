@@ -35,7 +35,7 @@ internal class ThreadConsole : ICommandInputOutput
             }
         }
 
-        commandWindow.title = "Unturnov";
+        commandWindow.title = "Kronstadt";
         _Logger = LoggerProvider.CreateLogger("SDG.Unturned");
 
         CommandWindow.shouldLogChat = false;

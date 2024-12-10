@@ -4,9 +4,9 @@ using Kronstadt.Core.Translations;
 
 namespace Kronstadt.Core.Commands.Framework;
 
-public sealed class CommandContext
+public readonly struct CommandContext
 {
-    public IPlayer Caller {get; private set;}
+    public readonly IPlayer Caller;
     private readonly IEnumerator<string> _Enumerator; 
     private readonly IEnumerable<string> _Arguments; 
     private readonly Type _Type;

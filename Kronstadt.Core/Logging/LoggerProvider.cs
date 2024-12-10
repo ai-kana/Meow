@@ -1,11 +1,13 @@
+using Kronstadt.Core.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Kronstadt.Core.Logging;
 
-// Possibly a questionable design choice but I see this as a more functional way to use this concept
 public static class LoggerProvider
 {
     private static ILoggerProvider? _Provider;
+    public static LogLevel AllowedLevel {get; private set;}
 
     public static bool AddLogging(ILoggerProvider provider)
     {
@@ -31,6 +33,13 @@ public static class LoggerProvider
     static LoggerProvider()
     {
         ServerManager.OnPreShutdown += OnPreShutdown;
+        ConfigurationEvents.OnConfigurationReloaded += OnReloaded;
+    }
+
+    private static void OnReloaded()
+    {
+        string level = KronstadtHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
+        AllowedLevel = (LogLevel)Enum.Parse(typeof(LogLevel), level);
     }
 
     private static void OnPreShutdown()

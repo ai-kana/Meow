@@ -1,40 +1,18 @@
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Kronstadt.Core.Configuration;
 using Kronstadt.Core.Formatting;
 
 namespace Kronstadt.Core.Logging;
 
-internal sealed class KronstadtLogger : ILogger
+internal readonly struct KronstadtLogger : ILogger
 {
-    private string _Name;
-    private LoggerQueue _Queue;
-    private LogLevel AllowedLevel;
+    private readonly string _Name;
+    private readonly LoggerQueue _Queue;
 
     internal KronstadtLogger(string name, LoggerQueue queue) 
     {
         _Name = name;
         _Queue = queue;
-
-        SetLogLevel();
-        ConfigurationEvents.OnConfigurationReloaded += OnConfigurationReloaded;
-    }
-
-    ~KronstadtLogger()
-    {
-        ConfigurationEvents.OnConfigurationReloaded -= OnConfigurationReloaded;
-    }
-
-    private void SetLogLevel()
-    {
-        string level = KronstadtHost.Configuration.GetValue<string>("LoggingLevel") ?? "None";
-        AllowedLevel = (LogLevel)Enum.Parse(typeof(LogLevel), level);
-    }
-
-    private void OnConfigurationReloaded()
-    {
-        SetLogLevel();
     }
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
@@ -44,7 +22,7 @@ internal sealed class KronstadtLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel >= AllowedLevel;
+        return logLevel >= LoggerProvider.AllowedLevel;
     }
 
     private string GetLevelTag(LogLevel level) => level switch 
