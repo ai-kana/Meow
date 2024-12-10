@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("position", "pos")]
-[CommandSyntax("<[player?]>")]
+[CommandSyntax("[<Params: player?>]")]
 internal class PositionCommand : Command
 {
     public PositionCommand(CommandContext context) : base(context)

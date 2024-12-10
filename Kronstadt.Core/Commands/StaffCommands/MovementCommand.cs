@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("movement", "move")]
-[CommandSyntax("<[speed,s | jump,j | gravity,g]> <[value] | reset, r>")]
+[CommandSyntax("[<Switches: speed, jump, gravity>]")]
 internal class MovementCommand : Command
 {
     public MovementCommand(CommandContext context) : base(context)
@@ -18,12 +18,13 @@ internal class MovementCommand : Command
         Context.AssertPermission("movement");
         Context.AssertOnDuty();
         
-        throw Context.Reply("<[speed,s | jump,j | gravity,g]> <[value] | reset, r>");
+        throw Context.Reply("[<Switches: speed, jump, gravity>]");
     }
 }
 
 [CommandParent(typeof(MovementCommand))]
 [CommandData("speed", "s")]
+[CommandSyntax("[<Params: multiplier, reset>]")]
 internal class MovementSpeedCommand : Command
 {
     public MovementSpeedCommand(CommandContext context) : base(context)
@@ -57,6 +58,7 @@ internal class MovementSpeedCommand : Command
 
 [CommandParent(typeof(MovementCommand))]
 [CommandData("jump", "j")]
+[CommandSyntax("[<Params: multiplier, reset>]")]
 internal class MovementJumpCommand : Command
 {
     public MovementJumpCommand(CommandContext context) : base(context)
@@ -90,6 +92,7 @@ internal class MovementJumpCommand : Command
 
 [CommandParent(typeof(MovementCommand))]
 [CommandData("gravity", "g")]
+[CommandSyntax("[<Params: multiplier, reset>]")]
 internal class MovementGravityCommand : Command
 {
     public MovementGravityCommand(CommandContext context) : base(context)

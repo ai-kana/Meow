@@ -8,7 +8,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("clear")]
-[CommandSyntax("<[ground,g | inventory,i]>")]
+[CommandSyntax("[<Switches: ground, inventory>]")]
 internal class ClearCommand : Command
 {
     public ClearCommand(CommandContext context) : base(context)
@@ -20,12 +20,13 @@ internal class ClearCommand : Command
         Context.AssertPermission("clear");
         Context.AssertOnDuty();
         
-        throw Context.Reply("<[ground,g | inventory,i]>");
+        throw Context.Reply("[<Switches: ground, inventory>]");
     }
 }
 
 [CommandParent(typeof(ClearCommand))]
 [CommandData("ground", "g")]
+[CommandSyntax("[<Params: radius> <Switches: all>")]
 internal class ClearGroundCommand : Command
 {
     public ClearGroundCommand(CommandContext context) : base(context)
@@ -66,7 +67,7 @@ internal class ClearGroundAllCommand : Command
 
 [CommandParent(typeof(ClearCommand))]
 [CommandData("inventory", "i")]
-[CommandSyntax("<[player?]>")]
+[CommandSyntax("[?<Params: player>]")]
 internal class ClearInventoryCommand : Command
 {
     public ClearInventoryCommand(CommandContext context) : base(context)

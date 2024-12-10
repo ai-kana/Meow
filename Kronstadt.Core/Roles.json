@@ -20,11 +20,14 @@
         "ChatTag": "<color=#1B7925><b>Senior Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "warn.add",
+            "warn.list",
             "jump",
             "vanish",
             "broadcast",
             "pardon",
             "clear",
+            "clear.other",
             "duty",
             "sduty",
             "exit",
@@ -49,6 +52,8 @@
         "ChatTag": "<color=#42C54F><b>Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "warn.add",
+            "warn.list",
             "vanish",
             "duty",
             "god",
@@ -68,6 +73,8 @@
         "ChatTag": "<color=#86DD8E><b>Trial Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "warn.add",
+            "warn.list",
             "vanish",
             "duty",
             "god",

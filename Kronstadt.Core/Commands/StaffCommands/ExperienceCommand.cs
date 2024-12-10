@@ -6,12 +6,13 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("experience", "exp", "xp")]
-[CommandSyntax("<[add,a | remove,r | set,s | reset | check,c]>")]
+[CommandSyntax("[<Switches: add, remove, set, reset, check>]")]
 internal class ExperienceCommand : Command
 {
     public ExperienceCommand (CommandContext context) : base(context)
     {
     }
+
     public static bool IsXpValid(uint xp)
     {
         return xp is > 0 and < uint.MaxValue;
@@ -21,13 +22,13 @@ internal class ExperienceCommand : Command
     {
         Context.AssertPermission("experience");
         Context.AssertOnDuty();
-        throw Context.Reply("<add | remove | set | check>");
+        throw Context.Reply("[<Switches: add, remove, set, reset, check>]");
     }
 }
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("add", "a")]
-[CommandSyntax("<[player]> <[Amount]>")]
+[CommandSyntax("[<Params: player>] [<Params: amount>]")]
 internal class ExperienceAddCommand : Command 
 {
     public ExperienceAddCommand(CommandContext context) : base(context)
@@ -57,7 +58,7 @@ internal class ExperienceAddCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("remove", "r")]
-[CommandSyntax("<[player]> <[Amount]>")]
+[CommandSyntax("[<Params: player>] [<Params: amount>]")]
 internal class ExperienceRemoveCommand : Command
 {
     public ExperienceRemoveCommand(CommandContext context) : base(context)
@@ -87,6 +88,7 @@ internal class ExperienceRemoveCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("reset")]
+[CommandSyntax("[<Params: player>]")]
 internal class ExperienceResetCommand : Command
 {
     public ExperienceResetCommand(CommandContext context) : base(context)
@@ -109,7 +111,7 @@ internal class ExperienceResetCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("set", "s")]
-[CommandSyntax("<[player]> <[Amount]>")]
+[CommandSyntax("[<Params: player>] [<Params: amount>]")]
 internal class ExperienceSetCommand : Command
 {
     public ExperienceSetCommand(CommandContext context) : base(context)
@@ -139,7 +141,7 @@ internal class ExperienceSetCommand : Command
 
 [CommandParent(typeof(ExperienceCommand))]
 [CommandData("check", "c")]
-[CommandSyntax("<[player]>")]
+[CommandSyntax("[<Params: player>]")]
 internal class ExperienceCheckCommand : Command
 {
     public ExperienceCheckCommand(CommandContext context) : base(context)

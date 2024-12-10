@@ -9,7 +9,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("give", "item", "i")]
-[CommandSyntax("<[id | name] [amount?]>")]
+[CommandSyntax("[<Params: id, name>] [?<Params: amount>]")]
 internal class GiveCommand : Command
 {
     public GiveCommand(CommandContext context) : base(context)

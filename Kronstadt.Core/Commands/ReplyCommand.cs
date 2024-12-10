@@ -7,7 +7,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("reply", "r")]
-[CommandSyntax("<[message]>")]
+[CommandSyntax("[<Params: message...>]")]
 internal class ReplyCommand : Command
 {
     public ReplyCommand(CommandContext context) : base(context)

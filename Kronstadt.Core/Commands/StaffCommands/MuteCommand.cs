@@ -10,6 +10,7 @@ using Steamworks;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("mute")]
+[CommandSyntax("[<Params: player>] [<Params: time>] [<Params: reason...>]")]
 internal class MuteCommand : Command
 {
     public MuteCommand(CommandContext context) : base(context)

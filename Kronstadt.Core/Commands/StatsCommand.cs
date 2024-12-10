@@ -9,6 +9,7 @@ using Steamworks;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("stats")]
+[CommandSyntax("[<Params: player?> <Switches: life, session>]")]
 internal class StatsCommand : Command
 {
     public StatsCommand(CommandContext context) : base(context)
@@ -47,6 +48,7 @@ internal class StatsCommand : Command
 
 [CommandParent(typeof(StatsCommand))]
 [CommandData("session", "s")]
+[CommandSyntax("[<Params: player?>]")]
 internal class StatsSessionCommand : Command
 {
     public StatsSessionCommand(CommandContext context) : base(context)
@@ -76,6 +78,7 @@ internal class StatsSessionCommand : Command
 
 [CommandParent(typeof(StatsCommand))]
 [CommandData("life", "l")]
+[CommandSyntax("[<Params: player?>]")]
 internal class StatsLifeCommand : Command
 {
     public StatsLifeCommand(CommandContext context) : base(context)

@@ -7,7 +7,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("kick")]
-[CommandSyntax("<player> <reason?>")]
+[CommandSyntax("[<Params: player>] [<Params: reason...>]")]
 internal class KickCommand : Command
 {
     public KickCommand(CommandContext context) : base(context)

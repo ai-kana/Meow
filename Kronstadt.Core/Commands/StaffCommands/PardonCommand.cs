@@ -5,6 +5,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("pardon")]
+[CommandSyntax("[<Params: banid>]")]
 internal class PardonCommand : Command
 {
     public PardonCommand(CommandContext context) : base(context)

@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("heal")]
-[CommandSyntax("<[player?]>")]
+[CommandSyntax("[<Params: player>]")]
 internal class HealCommand : Command
 {
     public HealCommand(CommandContext context) : base(context)

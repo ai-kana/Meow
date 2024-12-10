@@ -8,6 +8,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("language", "lang")]
+[CommandSyntax("[<Params: language> <Switches: list>]")]
 internal class LanguageCommand : Command
 {
     public LanguageCommand(CommandContext context) : base(context)

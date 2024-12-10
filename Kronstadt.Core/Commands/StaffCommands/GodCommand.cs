@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("god")]
-[CommandSyntax("<[off | on] [player?]>")]
+[CommandSyntax("[?<Params: player>]")]
 internal class GodCommand : Command
 {
     public GodCommand(CommandContext context) : base(context)

@@ -10,7 +10,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("teleport", "tp")]
-[CommandSyntax("<[xyz | player,p | location,loc,l | waypoint,wp | here,h]>")]
+[CommandSyntax("[<Params: xyz, player, location> <Switches: here, waypoint>] [?<Params: player, location>]")]
 internal class TeleportCommand : Command
 {
     public TeleportCommand(CommandContext context) : base(context)

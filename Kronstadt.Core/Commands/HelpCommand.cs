@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("help")]
-[CommandSyntax("<[command] | commands>")]
+[CommandSyntax("[<Params: command> <Switch: commands>]")]
 internal class HelpCommand : Command
 {
     public HelpCommand(CommandContext context) : base(context)
@@ -48,13 +48,15 @@ internal class HelpCommandsCommand : Command
     {
     }
 
+    private static readonly Translation CommandHelp = new("CommandHelp", 
+    """
+    Parameters are wrapped in square brackets '[]'.
+    Question marks '?' mean that the parameter is optional.
+    Three dots '...' means it will take any continuing text as one argument
+    """);
+
     public override UniTask ExecuteAsync()
     {
-        throw Context.Reply(
-                "When using /help <command> it will reply with the possible options. Options are wrapped in <> " 
-                + "An argument wrapped in [] is a value that you need to supply. "
-                + "A ? symbol means the argument is optional. "
-                + "A | symbol means there is different options between them. "
-                + "A , is an alias of an option");
+        throw Context.Reply(CommandHelp);
     }
 }

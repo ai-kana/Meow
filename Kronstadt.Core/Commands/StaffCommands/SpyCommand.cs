@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("spy")]
-[CommandSyntax("<[player]>")]
+[CommandSyntax("[<Params: player>]")]
 internal class SpyCommand : Command
 {
     public SpyCommand(CommandContext context) : base(context)

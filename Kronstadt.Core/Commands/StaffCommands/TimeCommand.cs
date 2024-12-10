@@ -7,7 +7,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("time", "t")]
-[CommandSyntax("<[get | set]>")]
+[CommandSyntax("[<Switches: get, set>]")]
 internal class TimeCommand : Command
 {
     public TimeCommand(CommandContext context) : base(context)
@@ -51,7 +51,7 @@ internal class TimeGetCommand : Command
 
 [CommandParent(typeof(TimeCommand))]
 [CommandData("set")]
-[CommandSyntax("<[time]>")]
+[CommandSyntax("[<Params: time>]")]
 internal class TimeSetCommand : Command
 {
     public TimeSetCommand(CommandContext context) : base(context)

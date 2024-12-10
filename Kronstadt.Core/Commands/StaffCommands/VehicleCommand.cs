@@ -9,7 +9,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("vehicle", "v")]
-[CommandSyntax("<[id | name | guid>")]
+[CommandSyntax("[<Params: id, name, guid>]")]
 internal class VehicleCommand : Command
 {
     public VehicleCommand(CommandContext context) : base(context)
@@ -47,6 +47,7 @@ internal class VehicleCommand : Command
 
         return vehicleAsset != null;
     }
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("vehicle");

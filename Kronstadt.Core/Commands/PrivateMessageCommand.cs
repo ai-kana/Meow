@@ -7,7 +7,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("pm", "dm", "msg")]
-[CommandSyntax("<[player] [message]>")]
+[CommandSyntax("[<Params: player>] [<Params: message>]")]
 internal class PrivateMessageCommand : Command
 {
     public PrivateMessageCommand(CommandContext context) : base(context)

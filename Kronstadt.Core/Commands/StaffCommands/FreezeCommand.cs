@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("freeze")]
-[CommandSyntax("<[player]>")]
+[CommandSyntax("[<Params: player>]")]
 internal class FreezeCommand : Command
 {
     public FreezeCommand(CommandContext context) : base(context)

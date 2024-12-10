@@ -18,7 +18,7 @@ internal class CommandTypeData
         _Logger = LoggerProvider.CreateLogger<CommandTypeData>();
         try
         {
-        _SubCommands = BuildSubCommandTree();
+            _SubCommands = BuildSubCommandTree();
         }
         catch (Exception exception)
         {

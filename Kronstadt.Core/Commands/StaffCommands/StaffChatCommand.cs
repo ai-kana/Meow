@@ -6,6 +6,7 @@ using Kronstadt.Core.Players;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("staffchat", "sc")]
+[CommandSyntax("[<Params: message...>]")]
 internal class StaffChatCommand : Command
 {
     public StaffChatCommand(CommandContext context) : base(context)

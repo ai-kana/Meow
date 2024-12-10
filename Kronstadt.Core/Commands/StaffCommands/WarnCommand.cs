@@ -7,7 +7,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("warn")]
-[CommandSyntax("<[add,a | remove,r | list,l]>")]
+[CommandSyntax("[<Switches: add, remove, list>]")]
 internal class WarnCommand : Command
 {
     public WarnCommand(CommandContext context) : base(context)
@@ -25,7 +25,7 @@ internal class WarnCommand : Command
 
 [CommandParent(typeof(WarnCommand))]
 [CommandData("add", "a")]
-[CommandSyntax("<player> <reason>")]
+[CommandSyntax("[<Params: player>] [<Params: reason...>]")]
 internal class WarnAddCommand : Command
 {
     public WarnAddCommand(CommandContext context) : base(context)
@@ -51,7 +51,7 @@ internal class WarnAddCommand : Command
 
 [CommandParent(typeof(WarnCommand))]
 [CommandData("remove", "r")]
-[CommandSyntax("<player> <id>")]
+[CommandSyntax("[<Params: player>]")]
 internal class WarnRemoveCommand : Command
 {
     public WarnRemoveCommand(CommandContext context) : base(context)
@@ -74,7 +74,7 @@ internal class WarnRemoveCommand : Command
 
 [CommandParent(typeof(WarnCommand))]
 [CommandData("list", "l")]
-[CommandSyntax("<player>")]
+[CommandSyntax("[<Params: player>]")]
 internal class WarnListCommand : Command
 {
     public WarnListCommand(CommandContext context) : base(context)

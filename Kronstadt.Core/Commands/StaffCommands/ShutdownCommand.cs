@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("shutdown", "q")]
-[CommandSyntax("<[delay] | cancel>?")]
+[CommandSyntax("[<Params: delay> <Switch: cancel>]")]
 internal class ShutdownCommand : Command
 {
     public ShutdownCommand(CommandContext context) : base(context)

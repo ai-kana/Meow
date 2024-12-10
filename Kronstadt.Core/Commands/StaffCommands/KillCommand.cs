@@ -6,7 +6,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("kill")]
-[CommandSyntax("<[player]>")]
+[CommandSyntax("[<Params: player>]")]
 internal class KillCommand : Command
 {
     public KillCommand(CommandContext context) : base(context)

@@ -7,7 +7,7 @@ using Command = Kronstadt.Core.Commands.Framework.Command;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("flag")]
-[CommandSyntax("<[get | set | unset]>")]
+[CommandSyntax("[<Switches: get, set, unset>]")]
 internal class FlagCommand : Command
 {
     public FlagCommand(CommandContext context) : base(context)
@@ -24,7 +24,7 @@ internal class FlagCommand : Command
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("get")]
-[CommandSyntax("<[player] [flag]>")]
+[CommandSyntax("[<Params: player>] [<Params: flag>]")]
 internal class FlagGetCommand : Command
 {
     public FlagGetCommand(CommandContext context) : base(context)
@@ -58,7 +58,7 @@ internal class FlagGetCommand : Command
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("set")]
-[CommandSyntax("<[player] [flag] [value]>")]
+[CommandSyntax("[<Params: player>] [<Params: flag>] [<Params: value>]")]
 internal class FlagSetCommand : Command
 {
     public FlagSetCommand(CommandContext context) : base(context)
@@ -84,7 +84,7 @@ internal class FlagSetCommand : Command
 
 [CommandParent(typeof(FlagCommand))]
 [CommandData("unset")]
-[CommandSyntax("<[player] [flag]>")]
+[CommandSyntax("[<Params: player>] [<Params: flag>]")]
 internal class FlagUnsetCommand : Command
 {
     public FlagUnsetCommand(CommandContext context) : base(context)

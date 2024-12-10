@@ -8,7 +8,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("role")]
-[CommandSyntax("<add, a | remove, r | list>")]
+[CommandSyntax("[<Switches: add, remove, list>]")]
 internal class RoleCommand : Command
 {
     public RoleCommand(CommandContext context) : base(context)
@@ -24,7 +24,7 @@ internal class RoleCommand : Command
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("add", "a")]
-[CommandSyntax("<player> <role>")]
+[CommandSyntax("[<Params: player>] [<Params: role>]")]
 internal class RoleAddCommand : Command
 {
     public RoleAddCommand(CommandContext context) : base(context)
@@ -47,7 +47,7 @@ internal class RoleAddCommand : Command
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("remove", "r")]
-[CommandSyntax("<player> <role>")]
+[CommandSyntax("[<Params: player>] [<Params: role>]")]
 internal class RoleRemoveCommand : Command
 {
     public RoleRemoveCommand(CommandContext context) : base(context)
@@ -75,7 +75,7 @@ internal class RoleRemoveCommand : Command
 
 [CommandParent(typeof(RoleCommand))]
 [CommandData("list")]
-[CommandSyntax("<player?>")]
+[CommandSyntax("[<Params: player>]")]
 internal class RoleListCommand : Command {
     public RoleListCommand(CommandContext context) : base(context)
     {

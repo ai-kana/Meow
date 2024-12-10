@@ -7,7 +7,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("offenses")]
-[CommandSyntax("<[player] [bans,b | warns,w | mutes,m?]>")]
+[CommandSyntax("[<Params: player>] [?<Params: bans, warns, mutes>]")]
 internal class OffensesCommand : Command
 {
     public OffensesCommand(CommandContext context) : base(context)

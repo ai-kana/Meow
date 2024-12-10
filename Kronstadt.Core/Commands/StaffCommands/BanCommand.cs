@@ -10,6 +10,7 @@ using Steamworks;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("ban")]
+[CommandSyntax("[<Params: player>] [<Params: time>] [<Params: reason...>]")]
 internal class BanCommand : Command
 {
     public BanCommand(CommandContext context) : base(context)

@@ -8,6 +8,7 @@ using Kronstadt.Core.Zones;
 namespace Kronstadt.Core.Commands;
 
 [CommandData("zone")]
+[CommandSyntax("[<Params: Radius>] [<Params: Flags...>]")]
 internal class ZoneCommand : Command
 {
     public ZoneCommand(CommandContext context) : base(context)

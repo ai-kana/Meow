@@ -7,7 +7,7 @@ using Kronstadt.Core.Translations;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("duty", "d")]
-[CommandSyntax("<silent, s | check, c>")]
+[CommandSyntax("[<Switches: silent, check>]")]
 internal class DutyCommand : Command
 {
     public DutyCommand(CommandContext context) : base(context)

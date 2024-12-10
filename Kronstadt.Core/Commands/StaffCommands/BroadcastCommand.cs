@@ -5,7 +5,7 @@ using Kronstadt.Core.Commands.Framework;
 namespace Kronstadt.Core.Commands.StaffCommands;
 
 [CommandData("broadcast", "say")]
-[CommandSyntax("<[message]>")]
+[CommandSyntax("[<Params: message...>]")]
 internal class BroadcastCommand : Command
 {
     public BroadcastCommand(CommandContext context) : base(context)
