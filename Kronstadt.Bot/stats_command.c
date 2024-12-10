@@ -195,27 +195,27 @@ command_stats(struct discord* client, const struct discord_interaction* event) {
     char buf[64];
     bzero(buf, 64);
 
-    snprintf(buf, 64, "%d", stats.fish_caught);
-    discord_embed_add_field(&embed, "Fish caught", buf, false);
-
-    snprintf(buf, 64, "%d", stats.items_found);
-    discord_embed_add_field(&embed, "Items found", buf, false);
-
     snprintf(buf, 64, "%d", stats.player_kills);
-    discord_embed_add_field(&embed, "Kills", buf, false);
+    discord_embed_add_field(&embed, "Kills", buf, true);
 
     snprintf(buf, 64, "%d", stats.player_deaths);
-    discord_embed_add_field(&embed, "Deaths", buf, false);
+    discord_embed_add_field(&embed, "Deaths", buf, true);
 
     const float kd = (float)stats.player_kills / (float)(stats.player_deaths == 0 ? 1 : stats.player_deaths);
     snprintf(buf, 64, "%.2f", kd);
-    discord_embed_add_field(&embed, "K/D", buf, false);
+    discord_embed_add_field(&embed, "K/D", buf, true);
+
+    snprintf(buf, 64, "%d", stats.fish_caught);
+    discord_embed_add_field(&embed, "Fish caught", buf, true);
 
     const float seconds_hour = 3600;
     const float play_time_hours = (float)stats.play_time / seconds_hour;
 
     snprintf(buf, 64, "%.2f hours", play_time_hours);
     discord_embed_add_field(&embed, "Playtime", buf, false);
+
+    snprintf(buf, 64, "%d", stats.items_found);
+    discord_embed_add_field(&embed, "Items found", buf, true);
 
     struct discord_interaction_response response = {
         .type = DISCORD_INTERACTION_CHANNEL_MESSAGE_WITH_SOURCE,

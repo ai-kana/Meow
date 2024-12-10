@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Kronstadt.Core.Zones;
 using SDG.Unturned;
 using UnityEngine;
@@ -14,58 +15,25 @@ public class KronstadtPlayerMovement
 
     public bool IsFrozen => _PlayerMovement.pluginSpeedMultiplier == 0;
 
-    private HashSet<Zone> _ActiveZones = new();
-    
     public KronstadtPlayerMovement(KronstadtPlayer owner)
     {
         Owner = owner;
-
-        ZoneManager.OnZoneEntered += OnZoneEntered;
-        ZoneManager.OnZoneExited += OnZoneExited;
-    }
-
-    ~KronstadtPlayerMovement()
-    {
-        ZoneManager.OnZoneEntered -= OnZoneEntered;
-        ZoneManager.OnZoneExited -= OnZoneExited;
-    }
-
-    private void OnZoneEntered(KronstadtPlayer player, Zone zone)
-    {
-        if (player != Owner)
-        {
-            return;
-        }
-
-        _ActiveZones.Add(zone);
-    }
-
-    private void OnZoneExited(KronstadtPlayer player, Zone zone)
-    {
-        if (player != Owner)
-        {
-            return;
-        }
-
-        _ActiveZones.Remove(zone);
     }
 
     public bool HasZoneFlag(string flag)
     {
-        foreach (Zone zone in _ActiveZones)
-        {
-            if (zone.Flags.Contains(flag))
-            {
-                return true;
-            }
-        }
+        return ZoneManager.HasFlag(Owner, flag);
+    }
 
-        return false;
+    private async UniTask DoTeleport(Vector3 location, Quaternion rotation)
+    {
+        await UniTask.Yield();
+        Owner.Player.teleportToLocationUnsafe(location + new Vector3(0f, 0.5f, 0f), rotation.eulerAngles.y);
     }
 
     public void Teleport(Vector3 location, Quaternion rotation)
     {
-        Owner.Player.teleportToLocationUnsafe(location + new Vector3(0f, 0.5f, 0f), rotation.eulerAngles.y);
+        DoTeleport(location, rotation).Forget();
     }
 
     public void Teleport(Vector3 location)

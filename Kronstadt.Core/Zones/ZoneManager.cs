@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Kronstadt.Core.Logging;
 using Kronstadt.Core.Players;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -12,9 +11,6 @@ public delegate void ZoneExited(KronstadtPlayer player, Zone zone);
 
 public class ZoneManager
 {
-    public static ZoneEntered? OnZoneEntered;
-    public static ZoneExited? OnZoneExited;
-
     private static readonly ILogger _Logger;
     static ZoneManager()
     {
@@ -40,7 +36,7 @@ public class ZoneManager
         await UniTask.Yield();
         foreach (Zone zone in zones)
         {
-            LoadZone(zone);
+            AddZone(zone);
         }
 
         ServerManager.OnServerSave += OnServerSave;
@@ -54,23 +50,27 @@ public class ZoneManager
         writer.Write(content);
     }
 
-    private static void LoadZone(Zone zone)
-    {
-        GameObject zoneObject = new();
-        ZoneComponent component = zoneObject.AddComponent<ZoneComponent>();
-        component.Init(zone);
-
-        SphereCollider collider = zoneObject.AddComponent<SphereCollider>();
-        collider.radius = zone.Radius;
-        collider.isTrigger = true;
-
-        zoneObject.transform.SetPositionAndRotation(zone.Center.ToVector3(), Quaternion.Euler(0, 0, 0));
-        _Zones.Add(zone);
-        _Logger.LogDebug($"Added zone {zone.Center.ToVector3()}, radius {zone.Radius}");
-    }
-
     public static void AddZone(Zone zone)
     {
-        LoadZone(zone);
+        _Zones.Add(zone);
+    }
+
+    public static bool HasFlag(KronstadtPlayer player, string flag)
+    {
+        foreach (Zone zone in _Zones)
+        {
+            float distance = Vector3.Distance(zone.Center.ToVector3(), player.Movement.Position);
+            if (distance > zone.Radius)
+            {
+                continue;
+            }
+
+            if (zone.Flags.Contains(flag))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,10 +1,3 @@
-using System.Reflection;
-using System.Runtime.InteropServices;
-using Cysharp.Threading.Tasks;
-using HarmonyLib;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using SDG.Unturned;
 using Kronstadt.Core.Commands.Framework; 
 using Kronstadt.Core.Logging; 
 using Kronstadt.Core.Roles;
@@ -15,8 +8,20 @@ using Kronstadt.Core.Bot;
 using Kronstadt.Core.Ranks;
 using Kronstadt.Core.Plugins;
 using Kronstadt.Core.Stats;
-using UnityEngine.LowLevel;
 using Kronstadt.Core.Zones;
+
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+using Cysharp.Threading.Tasks;
+
+using HarmonyLib;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+using SDG.Unturned;
+using UnityEngine.LowLevel;
 
 namespace Kronstadt.Core;
 
@@ -89,9 +94,9 @@ public sealed class KronstadtHost
         await RankManager.CreateTables();
         await StatsManager.CreateTables();
 
-        _ = BotManager.Start();
-
         await ZoneManager.LoadZonesAsync();
+
+        _ = BotManager.Start();
 
         await PluginManager.LoadPluginsAsync();
 

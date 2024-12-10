@@ -86,18 +86,16 @@ public class KronstadtPlayerManager
         {
             player.Moderation.Kick(reason);
         }
-    
-        while (Players.Count != 0);
     }
 
     public static void KickAll(Translation translation, params object[] args)
     {
-        foreach (KronstadtPlayer player in GetPlayerListCopy())
+        KronstadtPlayer[] players = new KronstadtPlayer[Players.Count];
+        Players.CopyTo(players);
+        foreach (KronstadtPlayer player in players)
         {
             player.Moderation.Kick(translation, args);
         }
-    
-        while (Players.Count != 0);
     }
 
     private static bool TryFindPlayer(CSteamID steamId, out KronstadtPlayer player)

@@ -20,6 +20,7 @@
         "ChatTag": "<color=#1B7925><b>Senior Moderator</b></color>",
         "DutyOnly": true,
         "Permissions": [
+            "jump",
             "vanish",
             "broadcast",
             "pardon",

@@ -10,7 +10,7 @@ namespace Kronstadt.Core;
 public delegate void PreShutdown();
 public delegate void ServerSave();
 
-public static class ServerManager
+public class ServerManager
 {
     public static PreShutdown? OnPreShutdown;
     public static ServerSave? OnServerSave;
@@ -28,11 +28,24 @@ public static class ServerManager
         }
     }
 
-    private static void Shutdown()
+    private static async UniTask Shutdown()
     {
         DoSave();
         KronstadtPlayerManager.KickAll(TranslationList.ShutdownKick); 
-        OnPreShutdown?.Invoke();
+        try
+        {
+            OnPreShutdown?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            // Logger doesn't exist here
+            Console.WriteLine("Failed to save");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex);
+            Console.ResetColor();
+        }
+
+        await UniTask.Yield();
         Provider.shutdown(0);
     }
 
@@ -82,6 +95,6 @@ public static class ServerManager
         }
 
         await UniTask.Yield();
-        Shutdown();
+        await Shutdown();
     }
 }
