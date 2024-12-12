@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
 using Meow.Core.Translations;
+using Microsoft.Extensions.Configuration;
 
 namespace Meow.Unturnov.Commands;
 
@@ -18,7 +19,8 @@ internal class DoorCommand : Command
         Context.AssertPlayer(out MeowPlayer caller);
         Context.AssertCooldown();
 
-        caller.Inventory.GiveItem(1238);
+        ushort doorId = UnturnovPlugin.Configuration.GetValue<ushort>("DoorId");
+        caller.Inventory.GiveItem(doorId);
 
         Context.AddCooldown((long)new TimeSpan(12, 0, 0).TotalSeconds);
         throw Context.Reply(GaveDoor);
