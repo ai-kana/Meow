@@ -1,18 +1,18 @@
 [discord-shield]: https://img.shields.io/discord/502421788693757965?color=5865F2&logo=discord&logoColor=white
-[discord-invite]: https://discord.gg/QBjuRAkarC
+[discord-invite]: https://discord.gg/quxja4axN3
 
 [ ![discord-shield][] ][discord-invite]
 
-# Kronstadt
-Plugins and discord bot for Kronstadt
+# OG Unturnov
+Plugins and discord bot for OG Unturnov
 
-## Kronstadt.Core
+## Meow.Core
 Framework, custom module, C#
 
-## Kronstadt.Unturnov
+## Meow.Unturnov
 Plugins for Unturnov, C#
 
-## Unturnov.Bot
+## Meow.Bot
 Discord bot, concord, C
 
 [Concord](https://github.com/Cogmasters/concord)

@@ -399,10 +399,9 @@ FodyWeavers.xsd
 *.sln.iml
 .idea
 
-Kronstadt.Bot/config.json
-Kronstadt.Bot/concord/
-Kronstadt.Core/Makefile
-Kronstadt.Unturnov/Makefile
-Kronstadt.Module/Makefile
-Kronstadt.WebServer
-Kronstadt.Website
+Meow.Bot/config.json
+Meow.Bot/concord/
+Meow.Core/Makefile
+Meow.Unturnov/Makefile
+Meow.Module/Makefile
+Makefile

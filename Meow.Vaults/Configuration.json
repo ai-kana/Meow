@@ -1,0 +1,27 @@
+[
+    {
+        "Name": "default",
+        "Height": 2,
+        "Width": 3
+    },
+    {
+        "Name": "vip",
+        "Height": 8,
+        "Width": 5 
+    },
+    {
+        "Name": "vipplus",
+        "Height": 8,
+        "Width": 10
+    },
+    {
+        "Name": "mvp",
+        "Height": 8,
+        "Width": 15
+    },
+    {
+        "Name": "mvpplus",
+        "Height": 8,
+        "Width": 20
+    }
+]
