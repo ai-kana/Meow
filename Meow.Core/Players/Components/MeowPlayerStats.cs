@@ -1,6 +1,9 @@
 using Cysharp.Threading.Tasks;
+using Meow.Core.Chat;
 using Meow.Core.Stats;
+using Meow.Core.Translations;
 using SDG.Unturned;
+using UnityEngine;
 
 namespace Meow.Core.Players.Components;
 
@@ -86,6 +89,7 @@ public class MeowPlayerStats
     {
         LifeSession.Kills++;
         ServerSession.Kills++;
+        HandleKillStreak();
     }
 
     public void AddDeath()
@@ -105,6 +109,27 @@ public class MeowPlayerStats
     {
         LifeSession.ItemsLooted++;
         ServerSession.ItemsLooted++;
+    }
+
+    private static readonly Translation KillStreak = new("KillStreak", "{0} is on a {1} kill streak");
+
+    private uint KillStreakCount = 0;
+    private float LastKillTime = 0;
+    private void HandleKillStreak()
+    {
+        float timeDifference = Time.time - LastKillTime;
+        if (timeDifference > 3f)
+        {
+            KillStreakCount = 0;
+        }
+
+        KillStreakCount++;
+        LastKillTime = Time.time;
+
+        if (KillStreakCount > 1)
+        {
+            MeowChat.BroadcastMessage(KillStreak, Owner.Name, KillStreakCount);
+        }
     }
 
     public async UniTask CommitStatsAsync()

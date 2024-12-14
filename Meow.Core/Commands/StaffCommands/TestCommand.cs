@@ -15,6 +15,7 @@ internal class TestCommand : Command
     {
         Context.AssertPermission("all");
         Context.AssertPlayer(out MeowPlayer caller);
+        caller.Stats.AddKill();
         throw new();
     }
 }

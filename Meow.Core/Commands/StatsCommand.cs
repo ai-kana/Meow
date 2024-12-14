@@ -41,8 +41,12 @@ internal class StatsCommand : Command
             throw Context.Reply(FailedToGetStats, name);
         }
 
-        float kd = stats.Kills / (stats.Deaths == 0 ? 1 : stats.Deaths);
-        throw Context.Reply(PlayerStats, name, stats.Fish, stats.Kills, stats.Deaths, kd);
+        uint fish = stats.Fish + player?.Stats.ServerSession.Fish ?? 0;
+        uint kills = stats.Kills + player?.Stats.ServerSession.Kills ?? 0;
+        uint deaths = stats.Deaths + player?.Stats.ServerSession.Deaths ?? 0;
+
+        float kd = kills / (deaths == 0 ? 1 : deaths);
+        throw Context.Reply(PlayerStats, name, fish, kills, deaths, kd);
     }
 }
 
