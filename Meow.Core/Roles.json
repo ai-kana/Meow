@@ -89,4 +89,28 @@
             "ban"
         ]
     },
+    {
+        "Id": "mvpplus",
+        "ChatTag": "<color=#700BC9><b>MVP+</b></color>",
+        "DutyOnly": false,
+        "Permissions": []
+    },
+    {
+        "Id": "mvp",
+        "ChatTag": "<color=#E738D6><b>MVP</b></color>",
+        "DutyOnly": false,
+        "Permissions": []
+    },
+    {
+        "Id": "vipplus",
+        "ChatTag": "<color=#38AEE7><b>VIP+</b></color>",
+        "DutyOnly": false,
+        "Permissions": []
+    },
+    {
+        "Id": "vip",
+        "ChatTag": "<color=#3843E7><b>VIP</b></color>",
+        "DutyOnly": false,
+        "Permissions": []
+    }
 ]

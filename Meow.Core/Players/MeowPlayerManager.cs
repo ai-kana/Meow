@@ -10,6 +10,7 @@ using Meow.Core.Logging;
 using Meow.Core.Offenses;
 using Meow.Core.Translations;
 using System.Net;
+using Meow.Core.Ranks;
 
 namespace Meow.Core.Players;
 
@@ -229,10 +230,31 @@ public class MeowPlayerManager
             }
         }
 
+        Rank rank = await player.Rank.GetRankAsync();
+        sbyte rankByte = (sbyte)(rank - 1);
+
+        foreach (string role in RanksRoles)
+        {
+            player.Roles.RemoveRole(role);
+        }
+
+        if (rankByte > -1)
+        {
+            player.Roles.AddRole(RanksRoles[rankByte]);
+        }
+
         MeowChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
         OnPlayerConnected?.Invoke(player);
     }
+
+    private readonly static string[] RanksRoles = 
+    [
+        "vip",
+        "vipplus",
+        "mvp",
+        "mvpplus",
+    ];
 
     private static async void OnServerConnected(CSteamID steamID)
     {

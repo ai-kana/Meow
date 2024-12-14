@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
-using Meow.Core.Ranks;
 
 namespace Meow.Core.Commands.StaffCommands;
 
@@ -12,14 +11,10 @@ internal class TestCommand : Command
     {
     }
 
-    public override async UniTask ExecuteAsync()
+    public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("all");
         Context.AssertPlayer(out MeowPlayer caller);
-        
-        Context.Reply($"Rank: {(await caller.Rank.GetRankAsync()).ToString()}");
-        await caller.Rank.SetRankAsync(Rank.ProPlus);
-
-        Context.Reply($"Rank: {(await caller.Rank.GetRankAsync()).ToString()}");
+        throw new();
     }
 }

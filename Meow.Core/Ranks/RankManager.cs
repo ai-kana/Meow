@@ -12,8 +12,6 @@ public enum Rank : byte
     VipPlus,
     Mvp,
     MvpPlus,
-    Pro,
-    ProPlus
 }
 
 public static class RankManager
