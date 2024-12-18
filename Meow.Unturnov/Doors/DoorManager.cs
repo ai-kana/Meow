@@ -15,8 +15,6 @@ internal static class DoorManager
         BarricadeDrop.OnSalvageRequested_Global += OnSalvageRequested;
     }
 
-    public const string DoorPositionKey = "DoorPosition";
-
     private static void OnSalvageRequested(BarricadeDrop barricade, SteamPlayer instigatorClient, ref bool shouldAllow)
     {
         if (barricade.asset.build != EBuild.GATE)
@@ -52,7 +50,7 @@ internal static class DoorManager
             return;
         }
 
-        if (player.SaveData.Data.ContainsKey(DoorPositionKey))
+        if (UnturnovPlugin.DoorPositions.TryGetValue(player.SteamID, out Vector3 pos) && pos != Vector3.zero)
         {
             player.SendMessage(DoorAlreadyPlaced);
             shouldAllow = false;

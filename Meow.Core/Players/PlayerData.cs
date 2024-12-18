@@ -44,7 +44,4 @@ public class PlayerData
 
     [JsonProperty]
     public FishingSkill Fishing {get; private set;} = new();
-
-    [JsonProperty]
-    public Dictionary<string, object> Data {get; private set;} = new();
 }
