@@ -112,8 +112,7 @@ static void create_channel(struct discord *client, const struct discord_interact
     struct discord_overwrites overwrites = {0};
     discord_overwrite_append(&overwrites, event->member->user->id, MEMBER, 1024, 0);
     discord_overwrite_append(&overwrites, event->guild_id, ROLE, 0, 1024);
-    // Staff team role id
-    discord_overwrite_append(&overwrites, 1207557381668732979, ROLE, 1024, 0);
+    discord_overwrite_append(&overwrites, STAFF_ROLE_ID, ROLE, 1024, 0);
 
     struct discord_create_guild_channel channel = {
         .name = name,

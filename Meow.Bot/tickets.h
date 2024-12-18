@@ -10,7 +10,8 @@
 
 #define ID_CLOSE_BUTTON "button_close"
 
-#define TICKET_CATEGORY 1316321471777345618
+#define TICKET_CATEGORY 1316321471777345618ul
+#define STAFF_ROLE_ID 1316318697845166160ul
 
 void close_button_pressed(struct discord *client, const struct discord_interaction *event);
 
