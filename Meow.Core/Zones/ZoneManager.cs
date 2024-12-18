@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
+using Meow.Core.Json;
 using Meow.Core.Logging;
 using Meow.Core.Players;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Meow.Core.Zones;
@@ -27,9 +27,8 @@ public class ZoneManager
             return;
         }
 
-        using StreamReader reader = new(File.Open(ZonesFile, FileMode.Open, FileAccess.Read));
-        string content = await reader.ReadToEndAsync();
-        List<Zone> zones = JsonConvert.DeserializeObject<List<Zone>>(content) ?? throw new("Failed to load zones");
+        using JsonStreamReader reader = new(File.Open(ZonesFile, FileMode.Open, FileAccess.Read));
+        List<Zone> zones = await reader.ReadObject<List<Zone>>() ?? throw new("Failed to load zones");
 
         _Zones.Capacity = zones.Count;
 
@@ -44,10 +43,8 @@ public class ZoneManager
 
     private static void OnServerSave()
     {
-        string content = JsonConvert.SerializeObject(_Zones);
-
-        using StreamWriter writer = new(File.Open(ZonesFile, FileMode.Create, FileAccess.Write));
-        writer.Write(content);
+        using JsonStreamWriter writer = new(File.Open(ZonesFile, FileMode.Create, FileAccess.Write));
+        writer.WriteObject(_Zones).Forget();
     }
 
     public static void AddZone(Zone zone)

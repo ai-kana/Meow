@@ -39,7 +39,7 @@ public class StatsManager
 
     private static void OnConnected(MeowPlayer player)
     {
-        _ = CreatePlayerEntry(player);
+        _ = CreatePlayerEntry(player.SteamID);
     }
 
     private static void OnDisconnected(MeowPlayer player)
@@ -60,13 +60,13 @@ public class StatsManager
     $"""
     INSERT IGNORE INTO {StatsTable} ({SteamId}) VALUES (@SteamId)
     """;
-    public static async UniTask CreatePlayerEntry(MeowPlayer player)
+    public static async UniTask CreatePlayerEntry(CSteamID player)
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
 
         await using MySqlCommand command = new(CreatePlayerEntryCommand, connection);
-        command.Parameters.Add("@SteamId", MySqlDbType.UInt64).Value = player.SteamID.m_SteamID;
+        command.Parameters.Add("@SteamId", MySqlDbType.UInt64).Value = player;
 
         await command.ExecuteNonQueryAsync();
     }
@@ -82,7 +82,7 @@ public class StatsManager
         {PlayTime}={PlayTime} + @PlayTime
     WHERE {SteamId}=@SteamId
     """;
-    public static async UniTask CommitSession(MeowPlayer owner, Session session)
+    public static async UniTask CommitSession(CSteamID owner, Session session)
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();
@@ -90,7 +90,7 @@ public class StatsManager
         await using MySqlCommand command = new(CommitSessionCommand, connection);
 
         ulong realTime = (ulong)(DateTimeOffset.Now.ToUnixTimeSeconds() - session.StartTime);
-        command.Parameters.Add("@SteamId", MySqlDbType.UInt64).Value = owner.SteamID.m_SteamID;
+        command.Parameters.Add("@SteamId", MySqlDbType.UInt64).Value = owner;
         command.Parameters.Add("@FishCaught", MySqlDbType.UInt32).Value = session.Fish;
         command.Parameters.Add("@PlayerDeaths", MySqlDbType.UInt32).Value = session.Deaths; 
         command.Parameters.Add("@PlayerKills", MySqlDbType.UInt32).Value = session.Kills;

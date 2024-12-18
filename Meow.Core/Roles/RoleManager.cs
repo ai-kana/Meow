@@ -1,6 +1,6 @@
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
+using Meow.Core.Json;
 
 namespace Meow.Core.Roles;
 
@@ -29,10 +29,8 @@ public class RoleManager
             await CreateFile();
         }
 
-        using StreamReader stream = new(File.Open(path, FileMode.Open, FileAccess.Read));
-        string text = await stream.ReadToEndAsync();
-
-        Roles = JsonConvert.DeserializeObject<HashSet<Role>>(text) ?? new();
+        using JsonStreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));
+        Roles = await reader.ReadObject<HashSet<Role>>() ?? new();
     }
 
     public static HashSet<Role> GetRoles(HashSet<string> ids)

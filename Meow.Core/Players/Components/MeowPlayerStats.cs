@@ -134,7 +134,7 @@ public class MeowPlayerStats
 
     public async UniTask CommitStatsAsync()
     {
-        await StatsManager.CommitSession(Owner, ServerSession);
+        await StatsManager.CommitSession(Owner.SteamID, ServerSession);
     }
 
     public async UniTask<PlayerStats?> GetStatsAsync()

@@ -2,7 +2,7 @@ using SDG.Framework.Modules;
 
 namespace Meow.Core;
 
-public sealed class UnturnovModule : IModuleNexus
+public sealed class MeowModule : IModuleNexus
 {
     private MeowHost? _Host;
 
