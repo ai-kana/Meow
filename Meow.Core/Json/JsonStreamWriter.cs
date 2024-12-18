@@ -3,7 +3,8 @@ using Newtonsoft.Json;
 
 namespace Meow.Core.Json;
 
-public readonly struct JsonStreamWriter : IDisposable {
+public readonly struct JsonStreamWriter : IDisposable 
+{
     private readonly StreamWriter _Writer;
     public JsonStreamWriter(Stream stream)
     {

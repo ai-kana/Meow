@@ -2,7 +2,8 @@ using Cysharp.Threading.Tasks;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
 using Meow.Core.Translations;
-using Meow.Unturnov.Doors;
+using Meow.Unturnov;
+using UnityEngine;
 
 namespace Meow.Core.Commands;
 
@@ -21,17 +22,17 @@ public class DoorTpCommand : Command
         Context.AssertPlayer(out MeowPlayer caller);
         Context.AssertZoneFlag("doortp");
         
-        if (!caller.SaveData.Data.ContainsKey(DoorManager.DoorPositionKey))
+        if (!UnturnovPlugin.DoorPositions.TryGetValue(caller.SteamID, out Vector3 position))
         {
             throw Context.Reply(NoDoorFound);
         }
 
-        if (caller.SaveData.Data[DoorManager.DoorPositionKey] is not Position position)
+        if (position == Vector3.zero)
         {
             throw Context.Reply(NoDoorFound);
         }
 
-        caller.Movement.Teleport(position.ToVector3());
+        caller.Movement.Teleport(position);
         Context.AddCooldown(5);
 
         throw Context.Reply(TeleportedToDoor);
