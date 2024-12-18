@@ -14,7 +14,7 @@ internal class LobbyCommand : Command
     {
     }
 
-    private static readonly Translation LobbyTeleport = new("LobbyTeleport", "Teleported you to lobby");
+    private static readonly Translation LobbyTeleport = new("LobbyTeleport");
 
     public override UniTask ExecuteAsync()
     {

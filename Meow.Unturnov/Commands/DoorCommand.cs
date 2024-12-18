@@ -13,7 +13,8 @@ internal class DoorCommand : Command
     {
     }
 
-    private static readonly Translation GaveDoor = new("GaveDoor", "Gave you a new door");
+    private static readonly Translation GaveDoor = new("GaveDoor");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPlayer(out MeowPlayer caller);

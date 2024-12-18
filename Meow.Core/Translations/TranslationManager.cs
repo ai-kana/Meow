@@ -1,20 +1,17 @@
 using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Meow.Core.Extensions;
-using Meow.Core.Logging;
+using Meow.Core.Json;
 
 namespace Meow.Core.Translations;
 
 internal class TranslationManager
 {
-    private static readonly ILogger _Logger;
     private const string TranslationsDirectory = "Translations";
     public readonly static HashSet<TranslationData> TranslationData = new();
 
     static TranslationManager()
     {
-        _Logger = LoggerProvider.CreateLogger<TranslationManager>();
         ServerManager.OnServerSave += OnSave;
         Directory.CreateDirectory(TranslationsDirectory);
     }
@@ -30,24 +27,13 @@ internal class TranslationManager
         }
     }
 
-    private static async UniTask<TranslationData?> LoadFile(string path)
-    {
-        using StreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));
-        string content = await reader.ReadToEndAsync();
-        return JsonConvert.DeserializeObject<TranslationData>(content);
-    }
-
     public static async UniTask LoadTranslations()
     {
         IEnumerable<string> dirs = Directory.GetFiles(TranslationsDirectory, "*.json");
         foreach (string path in dirs)
         {
-            TranslationData? data = await LoadFile(path);
-            if (data == null)
-            {
-                continue;
-            }
-
+            using JsonStreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));
+            TranslationData data = await reader.ReadObject<TranslationData>() ?? throw new("Failed to load translation");
             if (data.LanguageTitle == null)
             {
                 continue;
@@ -55,7 +41,6 @@ internal class TranslationManager
 
             data.Path = path;
             TranslationData.Add(data);
-            _Logger.LogInformation($"Loaded translation for {data.LanguageTitle}");
         }
     }
 

@@ -14,6 +14,16 @@ internal class OffensesCommand : Command
     {
     }
 
+    public static readonly Translation NoOffenses = new("NoOffenses");
+    public static readonly Translation Offense = new("Offense");
+    public static readonly Translation OffenseList = new("OffenseList");
+    public static readonly Translation OffenseType = new("OffenseType");
+
+    public static readonly Translation Bans = new("Bans");
+    public static readonly Translation Mutes = new("Mutes");
+    public static readonly Translation Warns = new("Warns");
+    
+
     public override async UniTask ExecuteAsync()
     {
         Context.AssertPermission("offenses");
@@ -29,13 +39,13 @@ internal class OffensesCommand : Command
             
             if (offenses.Count == 0)
             {
-                throw Context.Reply(TranslationList.NoOffenses, target.Name);
+                throw Context.Reply(NoOffenses, target.Name);
             }
             
-            Context.Reply(TranslationList.OffenseList, target.Name);
+            Context.Reply(OffenseList, target.Name);
             foreach (Offense offense in offenses)
             {
-                Context.Reply(TranslationList.Offense, offense.Id, offense.Reason);
+                Context.Reply(Offense, offense.Id, offense.Reason);
             }
 
             throw Context.Exit;
@@ -50,17 +60,23 @@ internal class OffensesCommand : Command
 
         switch (type)
         {
-            case "warn": case "w": case "warns": 
+            case "w": 
+            case "warn": 
+            case "warns": 
                 enumerableOffenses = await OffenseManager.GetWarnOffenses(target.SteamID);
-                offenseType = TranslationList.Warns;
+                offenseType = Warns;
                 break;
-            case "ban": case "b": case "bans":
+            case "b": 
+            case "ban": 
+            case "bans":
                 enumerableOffenses = await OffenseManager.GetBanOffenses(target.SteamID);
-                offenseType = TranslationList.Bans;
+                offenseType = Bans;
                 break;
-            case "mute": case "m": case "mutes":
+            case "m": 
+            case "mute": 
+            case "mutes":
                 enumerableOffenses = await OffenseManager.GetMuteOffenses(target.SteamID);
-                offenseType = TranslationList.Mutes;
+                offenseType = Mutes;
                 break;
             default:
                 throw Context.Reply("<[player] [bans,b | warns,w | mutes,m]>");
@@ -70,13 +86,13 @@ internal class OffensesCommand : Command
         
         if(offensesList.Count == 0)
         {
-            throw Context.Reply(TranslationList.NoOffenses, target.Name);
+            throw Context.Reply(NoOffenses, target.Name);
         }
         
-        Context.Reply(TranslationList.OffenseType, new TranslationPackage(offenseType), target.Name);
+        Context.Reply(OffenseType, new TranslationPackage(offenseType), target.Name);
         
         offensesList.ForEach(offense => 
-            Context.Reply(TranslationList.Offense, offense.Id, offense.Reason)
+            Context.Reply(Offense, offense.Id, offense.Reason)
         );
 
         throw Context.Exit;

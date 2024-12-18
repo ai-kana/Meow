@@ -9,6 +9,12 @@ public static class LoggerProvider
     private static ILoggerProvider? _Provider;
     public static LogLevel AllowedLevel {get; private set;}
 
+    static LoggerProvider()
+    {
+        ServerManager.OnPreShutdown += OnPreShutdown;
+        ConfigurationEvents.OnConfigurationReloaded += OnReloaded;
+    }
+
     public static bool AddLogging(ILoggerProvider provider)
     {
         if (_Provider != null)
@@ -28,12 +34,6 @@ public static class LoggerProvider
     public static ILogger CreateLogger(string name)
     {
         return _Provider?.CreateLogger(name) ?? throw new();
-    }
-
-    static LoggerProvider()
-    {
-        ServerManager.OnPreShutdown += OnPreShutdown;
-        ConfigurationEvents.OnConfigurationReloaded += OnReloaded;
     }
 
     private static void OnReloaded()

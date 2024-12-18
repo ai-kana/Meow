@@ -17,8 +17,8 @@ internal class MuteCommand : Command
     {
     }
 
-    private static readonly Translation PlayerMuteTemp = new("PlayerMuteTemp", "{0} has been muted for {1} for {2}");
-    private static readonly Translation PlayerMutePerm = new("PlayerMutePerm", "{0} has been muted for {1} permanently");
+    private static readonly Translation PlayerMuteTemp = new("PlayerMuteTemp");
+    private static readonly Translation PlayerMutePerm = new("PlayerMutePerm");
 
     public override async UniTask ExecuteAsync()
     {

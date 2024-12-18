@@ -16,6 +16,10 @@ internal class GiveCommand : Command
     {
     }
 
+    private static readonly Translation ItemSelfAmount = new("ItemSelfAmount");
+    private static readonly Translation ItemSelf = new("ItemSelf");
+    private static readonly Translation ItemNotFound = new("ItemNotFound");
+
     public bool GetItemAsset(string input, out ItemAsset? itemAsset)
     {
         input = input.Trim();
@@ -56,7 +60,7 @@ internal class GiveCommand : Command
 
         if (!GetItemAsset(Context.Current, out ItemAsset? itemAsset))
         {
-            throw Context.Reply(TranslationList.ItemNotFound);
+            throw Context.Reply(ItemNotFound);
         }
         
         if (Context.HasExactArguments(2))
@@ -69,10 +73,10 @@ internal class GiveCommand : Command
             }
                 
             self.Inventory.GiveItems(itemAsset!.id, count);
-            throw Context.Reply(TranslationList.ItemSelfAmount, count, itemAsset.FriendlyName, itemAsset.id);
+            throw Context.Reply(ItemSelfAmount, count, itemAsset.FriendlyName, itemAsset.id);
         }
             
         self.Inventory.GiveItem(itemAsset!.id);
-        throw Context.Reply(TranslationList.ItemSelf, itemAsset.FriendlyName, itemAsset.id);
+        throw Context.Reply(ItemSelf, itemAsset.FriendlyName, itemAsset.id);
     }
 }

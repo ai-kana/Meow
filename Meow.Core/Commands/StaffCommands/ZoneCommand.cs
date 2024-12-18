@@ -15,8 +15,9 @@ internal class ZoneCommand : Command
     {
     }
 
-    private static readonly Translation ZoneOneFlag = new("ZoneOneFlag", "Zones must have at least one flag");
-    private static readonly Translation ZoneCreated = new("ZoneCreated", "Created zone with radius {0} and flags {1}");
+    private static readonly Translation ZoneOneFlag = new("ZoneOneFlag");
+    private static readonly Translation ZoneCreated = new("ZoneCreated");
+
     public override async UniTask ExecuteAsync()
     {
         Context.AssertPlayer(out MeowPlayer caller);

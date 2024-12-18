@@ -3,16 +3,17 @@ using Meow.Core.Formatting;
 
 namespace Meow.Core.Translations;
 
-public class Translation
+public readonly struct Translation
 {
-    private readonly string _DefaultValue;
     private readonly string _Key;
 
-    public Translation(string key, string defaultValue)
+    public Translation(string key)
     {
-        _DefaultValue = defaultValue;
         _Key = key;
-        TranslationManager.AddTranslation(_Key, _DefaultValue);
+        if (!TranslationManager.TryGetTranslation("English", _Key, out _))
+        {
+            throw new KeyNotFoundException($"Failed to find key: {_Key}");
+        }
     }
 
     private string[] GetTranslatedArguments(string language, object[] args)
@@ -48,14 +49,9 @@ public class Translation
     {
         string[] fixedArgs = GetTranslatedArguments(language, args);
 
-        if (language == "English")
-        {
-            return Formatter.Format(_DefaultValue, fixedArgs);
-        }
-
         if (!TranslationManager.TryGetTranslation(language, _Key, out string value))
         {
-            return Formatter.Format(_DefaultValue, fixedArgs);
+            throw new();
         }
 
         return Formatter.Format(value, fixedArgs);
@@ -65,16 +61,16 @@ public class Translation
     {
         string[] fixedArgs = GetTranslatedArguments(language, args);
 
-        if (language == "English")
-        {
-            return Formatter.FormatNoColor(_DefaultValue, fixedArgs);
-        }
-
         if (!TranslationManager.TryGetTranslation(language, _Key, out string value))
         {
-            return Formatter.FormatNoColor(_DefaultValue, fixedArgs);
+            throw new();
         }
 
         return Formatter.FormatNoColor(value, fixedArgs);
+    }
+
+    public TranslationPackage AsPackage(params object[] args)
+    {
+        return new(this, args);
     }
 }

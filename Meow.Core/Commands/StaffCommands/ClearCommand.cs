@@ -33,6 +33,8 @@ internal class ClearGroundCommand : Command
     {
     }
 
+    private static readonly Translation ClearedGroundDistance = new("ClearedGroundDistance");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPlayer(out MeowPlayer self);
@@ -42,7 +44,7 @@ internal class ClearGroundCommand : Command
         float radius = Context.Parse<float>();
 
         ItemManager.ServerClearItemsInSphere(self.Movement.Position, radius);
-        throw Context.Reply(TranslationList.ClearedGroundDistance, radius);
+        throw Context.Reply(ClearedGroundDistance, radius);
     }
 }
 
@@ -54,6 +56,8 @@ internal class ClearGroundAllCommand : Command
     {
     }
 
+    private static readonly Translation ClearedGround = new("ClearedGround");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPlayer(out MeowPlayer self);
@@ -61,7 +65,7 @@ internal class ClearGroundAllCommand : Command
         Context.AssertOnDuty();
 
         ItemManager.askClearAllItems();
-        throw Context.Reply(TranslationList.ClearedGround);
+        throw Context.Reply(ClearedGround);
     }
 }
 
@@ -74,6 +78,11 @@ internal class ClearInventoryCommand : Command
     {
     }
 
+    private static readonly Translation ClearedInventoryOther = new("ClearedInventoryOther");
+    private static readonly Translation ClearedInventorySelf = new("ClearedInventorySelf");
+    private static readonly Translation FailedToClearInventorySelf = new("FailedToClearInventorySelf");
+    private static readonly Translation FailedToClearInventoryOther = new("FailedToClearInventoryOther");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("clear");
@@ -84,16 +93,16 @@ internal class ClearInventoryCommand : Command
             Context.AssertPermission("clear.other");
             
             if(target.Inventory.ClearInventory() && target.Clothing.ClearClothes())
-                throw Context.Reply(TranslationList.ClearedInventoryOther, target.Name);
+                throw Context.Reply(ClearedInventoryOther, target.Name);
 
-            throw Context.Reply(TranslationList.FailedToClearInventoryOther, target.Name);
+            throw Context.Reply(FailedToClearInventoryOther, target.Name);
         }
         
         Context.AssertPlayer(out MeowPlayer self);
         
         if(self.Inventory.ClearInventory() && self.Clothing.ClearClothes())
-            throw Context.Reply(TranslationList.ClearedInventorySelf);
+            throw Context.Reply(ClearedInventorySelf);
         
-        throw Context.Reply(TranslationList.FailedToClearInventorySelf);
+        throw Context.Reply(FailedToClearInventorySelf);
     }
 }

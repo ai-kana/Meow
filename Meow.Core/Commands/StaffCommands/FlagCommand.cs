@@ -18,7 +18,7 @@ internal class FlagCommand : Command
     {
         Context.AssertPermission("flag");
         Context.AssertOnDuty();
-        throw Context.Reply("<[get | set | unset]>");
+        throw Context.Reply("[<Switches: get, set, unset>]");
     }
 }
 
@@ -30,6 +30,9 @@ internal class FlagGetCommand : Command
     public FlagGetCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation FlagDoesNotExist = new("FlagDoesNotExist");
+    private static readonly Translation FlagGet = new("FlagGet");
 
     public override UniTask ExecuteAsync()
     {
@@ -48,11 +51,11 @@ internal class FlagGetCommand : Command
 
         if (!player.Quests.FlagExists(flag))
         {
-            throw Context.Reply(TranslationList.FlagDoesNotExist, player.Name, flag);
+            throw Context.Reply(FlagDoesNotExist, player.Name, flag);
         }
         
         player.Quests.TryGetFlag(flag, out short value);
-        throw Context.Reply(TranslationList.FlagGet, flag, player.Name, value);
+        throw Context.Reply(FlagGet, flag, player.Name, value);
     }
 }
 
@@ -65,6 +68,8 @@ internal class FlagSetCommand : Command
     {
     }
     
+    private static readonly Translation FlagSet = new("FlagSet");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("flag");
@@ -78,7 +83,7 @@ internal class FlagSetCommand : Command
         short value = Context.Parse<short>();
 
         player.Quests.SetFlag(flag, value);
-        throw Context.Reply(TranslationList.FlagSet, flag, player.Name, value);
+        throw Context.Reply(FlagSet, flag, player.Name, value);
     }
 }
 
@@ -90,6 +95,9 @@ internal class FlagUnsetCommand : Command
     public FlagUnsetCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation FlagUnset = new("FlagUnset");
+    private static readonly Translation FlagDoesNotExist = new("FlagDoesNotExist");
 
     public override UniTask ExecuteAsync()
     {
@@ -103,10 +111,10 @@ internal class FlagUnsetCommand : Command
 
         if (!player.Quests.FlagExists(flag))
         {
-            throw Context.Reply(TranslationList.FlagDoesNotExist, player.Name, flag);
+            throw Context.Reply(FlagDoesNotExist, player.Name, flag);
         }
         
         player.Quests.RemoveFlag(flag);
-        throw Context.Reply(TranslationList.FlagUnset, flag, player.Name);
+        throw Context.Reply(FlagUnset, flag, player.Name);
     }
 }

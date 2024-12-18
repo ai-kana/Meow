@@ -14,6 +14,8 @@ internal class PrivateMessageCommand : Command
     {
     }
 
+    private static readonly Translation PrivateMessageSelf = new("PrivateMessageSelf");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertArguments(2);
@@ -25,7 +27,7 @@ internal class PrivateMessageCommand : Command
         
         if (target.SteamID == self.SteamID)
         {
-            throw Context.Reply(TranslationList.PrivateMessageSelf);
+            throw Context.Reply(PrivateMessageSelf);
         }
         
         target.LastPrivateMessage = self.SteamID;

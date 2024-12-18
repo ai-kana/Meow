@@ -12,6 +12,9 @@ internal class PositionCommand : Command
     public PositionCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation PositionSelf = new("PositionSelf");
+    private static readonly Translation PositionTarget = new("PositionTarget");
     
     public override UniTask ExecuteAsync()
     {
@@ -28,7 +31,7 @@ internal class PositionCommand : Command
             y = self.Movement.Position.y.ToString("F1");
             z = self.Movement.Position.z.ToString("F1");
             
-            throw Context.Reply(TranslationList.PositionSelf, x, y, z);
+            throw Context.Reply(PositionSelf, x, y, z);
         }
         
         Context.AssertArguments(1);
@@ -38,6 +41,6 @@ internal class PositionCommand : Command
         y = target.Movement.Position.y.ToString("F1");
         z = target.Movement.Position.z.ToString("F1");
         
-        throw Context.Reply(TranslationList.PositionTarget, target.Name, x, y, z);
+        throw Context.Reply(PositionTarget, target.Name, x, y, z);
     }
 }

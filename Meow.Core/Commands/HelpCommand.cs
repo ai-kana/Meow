@@ -13,7 +13,7 @@ internal class HelpCommand : Command
     {
     }
 
-    private readonly Translation HelpFormat = new("HelpFormat", "{0}: {1}");
+    private readonly Translation HelpFormat = new("HelpFormat");
 
     public override UniTask ExecuteAsync()
     {
@@ -48,12 +48,7 @@ internal class HelpCommandsCommand : Command
     {
     }
 
-    private static readonly Translation CommandHelp = new("CommandHelp", 
-    """
-    Parameters are wrapped in square brackets '[]'.
-    Question marks '?' mean that the parameter is optional.
-    Three dots '...' means it will take any continuing text as one argument
-    """);
+    private static readonly Translation CommandHelp = new("CommandHelp");
 
     public override UniTask ExecuteAsync()
     {

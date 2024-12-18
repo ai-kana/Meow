@@ -11,8 +11,9 @@ internal class SpyCommand : Command
 {
     public SpyCommand(CommandContext context) : base(context)
     {
-        
     }
+
+    private static readonly Translation SpyingOn = new("SpyingOn");
 
     public override UniTask ExecuteAsync()
     {
@@ -24,6 +25,6 @@ internal class SpyCommand : Command
         MeowPlayer target = Context.Parse<MeowPlayer>();
         
         target.Moderation.Spy(self);
-        throw Context.Reply(TranslationList.SpyingOn, target.Name);
+        throw Context.Reply(SpyingOn, target.Name);
     }
 }

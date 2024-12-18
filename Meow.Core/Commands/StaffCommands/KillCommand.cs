@@ -11,8 +11,9 @@ internal class KillCommand : Command
 {
     public KillCommand(CommandContext context) : base(context)
     {
-        
     }
+
+    private static readonly Translation Killed = new("Killed");
 
     public override UniTask ExecuteAsync()
     {
@@ -23,6 +24,6 @@ internal class KillCommand : Command
         MeowPlayer target = Context.Parse<MeowPlayer>();
         
         target.Life.Kill();
-        throw Context.Reply(TranslationList.Killed, target.Name);
+        throw Context.Reply(Killed, target.Name);
     }
 }

@@ -71,8 +71,9 @@ internal class FishingManager
         return "fishing " + instance.player.equipment.asset?.FriendlyName + " reward";
     }
 
-    private static readonly Translation FishCaught = new("FishCaught", "You caught a {0}! +{1} experience");
-    private static readonly Translation LevelUp = new("LevelUp", "You are now fishing level {0}");
+    private static readonly Translation FishCaught = new("FishCaught");
+    private static readonly Translation LevelUp = new("LevelUp");
+
     private static void SendFishingReward(MeowPlayer player)
     {
         FishingSkill skill = player.FishingSkill;

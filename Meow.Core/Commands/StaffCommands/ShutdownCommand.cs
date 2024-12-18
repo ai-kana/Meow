@@ -37,6 +37,9 @@ internal class ShutdownCancelCommand : Command
     {
     }
 
+    private static readonly Translation ShutdownCancelled = new("ShutdownCancelled");
+    private static readonly Translation ShutdownNotActive = new("ShutdownNotActive");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("shutdown");
@@ -44,10 +47,10 @@ internal class ShutdownCancelCommand : Command
 
         if (!ServerManager.CancelShutdown())
         {
-            throw Context.Reply(TranslationList.ShutdownNotActive);
+            throw Context.Reply(ShutdownNotActive);
         }
 
-        MeowChat.BroadcastMessage(TranslationList.ShutdownCancelled);
+        MeowChat.BroadcastMessage(ShutdownCancelled);
         throw Context.Exit;
     }
 }

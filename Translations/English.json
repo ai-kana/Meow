@@ -1,0 +1,210 @@
+{
+    "LanguageTitle": "English",
+    "Translations": {
+        "GreaterThanZero": "Amount Must Be Greater Than Zero",
+        "LessThanX": "Amount must be less than {0}",
+        "GreaterThanX": "Amount must be greater than {0}",
+        "BadNumber": "Invalid Number",
+        "On": "on",
+        "Off": "off",
+        "OneArgument": "{0}",
+        "TwoArguments": "{0} {1}",
+        "ThreeArguments": "{0} {1} {2}",
+        "FourArguments": "{0} {1} {2} {3}",
+        "InvalidTime": "Invalid Time",
+    
+        "ClearedInventoryOther": "Cleared {0}'s inventory",
+        "ClearedInventorySelf": "Cleared your inventory",
+        "FailedToClearInventorySelf": "Failed to clear inventory",
+        "FailedToClearInventoryOther": "Failed to clear {0}'s inventory",
+        "ClearedGroundDistance": "Cleared items within {0} meters",
+        "ClearedGround": "Cleared ground",
+    
+        "DutyStateGlobal": "{0} is now {1} duty",
+        "DutyStateSilent": "You are now {0} duty",
+        "DutyStateCheck": "You are {0} duty",
+    
+        "RemovedExperience": "Removed {0} experience from {1}",
+        "SetExperience": "Set {0}'s experience to {1}",
+        "AddedExperience": "Added {0} experience to {1}",
+        "CheckedExperience": "{0} has {1} experience",
+        "ResetExperience": "Reset {0}'s experience",
+    
+        "FlagDoesNotExist": "Player {0} does not have flag {1}",
+        "FlagSet": "Set flag {0} for {1} to {2}",
+        "FlagGet": "Flag {0} for {1} is {2}",
+        "FlagUnset": "Unset flag {0} for {1}",
+    
+        "PlayerAlreadyFrozen": "Player {0} is already frozen",
+        "PlayerFrozen": "Successfully froze {0}",
+    
+        "ItemNotFound": "Item not found",
+        "GaveItem": "You gave {0} {1} ({2})",
+        "GaveItemAmount": "You gave {0} {1}x {2} ({3})",
+    
+        "GodModeSelf": "God mode has been turned {0}",
+        "GodModeOther": "{0}'s god mode is now {1}",
+    
+        "HealedOther": "Successfully healed {0}",
+        "HealedSelf": "Successfully healed yourself",
+    
+        "ItemSelfAmount": "You have received {0}x {1} ({2})",
+        "ItemSelf": "You have received {0} ({1})",
+    
+        "Kicked": "Kicked {0}",
+        "KickedReason": "Kicked {0} for {1}",
+    
+        "Killed": "Killed {0}",
+    
+        "SetSpeedOther": "Set {0}'s movement speed to {1}",
+        "SetSpeedSelf": "Set your movement speed to {0}",
+        "SetGravityOther": "Set {0}'s gravity to {1}",
+        "SetGravitySelf": "Set your gravity to {0}",
+        "SetJumpOther": "Set {0}'s jump height to {1}",
+        "SetJumpSelf": "Set your jump height to {0}",
+    
+        "PositionSelf": "You are at: {0}, {1}, {2}",
+        "PositionTarget": "{0} is at: {1}, {2}, {3}",
+    
+        "PrivateMessageSelf": "You can't send a private message to yourself.",
+    
+        "NoOneToReplyTo": "You have no one to reply to",
+        "PlayerNotOnline": "The player you are trying to reply to is not online",
+    
+        "TookReputation": "Took {0} reputation from {1}",
+        "SetReputation": "Set {0}'s reputation to {1}",
+        "AddedReputation": "Added {0} reputation to {1}",
+        "CheckedReputation": "{0} has {1} reputation",
+        "ResetReputation": "Reset {0}'s reputation",
+    
+        "AddedRole": "Added {0} to {1}",
+        "RemovedRole": "Removed {0} from {1}",
+        "DoesNotHaveRole": "{0} does not have {1}",
+        "RoleList": "Roles: {0}",
+        "RoleHasRole": "{0} has {1}",
+    
+        "Shutdown": "Server is shutting down in {0}",
+        "ShutdownKick": "The server has shutdown",
+        "ShutdownCancelled": "Server shutdown cancelled",
+        "ShutdownNotActive": "Server is not shutting down",
+    
+        "SpyingOn": "Spying on {0}",
+    
+        "TeleportedToOther": "Teleported you to {0}",
+        "TeleportedOtherToOther": "Teleported {0} to {1}",
+        "TeleportingToXYZ": "Teleporting you to: {0} | {1} | {2}",
+        "TeleportingOtherToXYZ": "Teleporting {0} to: {1} | {2} | {3}",
+        "TeleportingToWaypoint": "Teleporting you to waypoint",
+        "NoWaypoint": "No waypoint set",
+        "TeleportingPlayerHere": "Teleporting {0} to you",
+    
+        "CurrentTime": "Current time is {0} ({1})",
+        "TimeSet": "Time set to {0}",
+        "TimeSetDayOrNight": "Time set to {0}",
+        "Day": "Day",
+        "Night": "Night",
+    
+        "PlayerAlreadyUnfrozen": "Player {0} is not frozen",
+        "PlayerUnfrozen": "Successfully unfroze {0}",
+    
+        "VehicleNotFound": "Vehicle not found",
+        "SpawningVehicle": "Spawning {0}",
+    
+        "WarnedReason": "Warned {0} for {1}",
+        "PardonedWarn": "Pardoned warning #{0}",
+        "HasNoWarns": "{0} has no warnings.",
+        "WarningListed": "Warning #{0} issued on {1} for {2}",
+    
+        "Banned": "Banned {0}",
+        "BannedTime": "Banned {0} for {1}",
+        "BannedTimeReason": "Banned {0} for {1} for {2}",
+        "BannedReason": "Banned {0} for {1}",
+    
+        "NoOffenses": "{0} has no offenses.",
+        "Offense": "Offense #{0} issued for {1}",
+        "OffenseList": "Offenses for {0}",
+        "OffenseType": "Listing {0} for {1}",
+
+        "Bans": "Bans",
+        "Mutes": "Mutes",
+        "Warns": "Warns",
+    
+        "PlayerConnected": "{0} has joined the server",
+        "PlayerDisconnected": "{0} has left the server",
+
+        "NoCommandFound": "There is no command called {0}",
+
+        "AssertArguments": "This command requires {0} arguments",
+        "AssertPermission": "You do not have permission to execute this command",
+        "AssertPlayer": "This command can only be executed by players",
+        "AssertCooldown": "You cannot use this command for {0}",
+
+        "Second": "{0} second",
+        "Seconds": "{0} seconds",
+        "Minute": "{0} minute",
+        "Minutes": "{0} minutes",
+        "Hour": "{0} hour",
+        "Hours": "{0} hours",
+        "Day": "{0} day",
+        "Days": "{0} days",
+
+        "BanPermanent": "You are permanently banned for '{0}' appeal at {1}",
+        "BanTemporary": "You are banned for '{0}' for another {1} appeal at {2}",
+
+        "MutePermanent": "You are permanently muted for '{0}' appeal at {1}",
+        "MuteTemporary": "You are muted for '{0}' for another {1} appeal at {2}",
+        "Unmuted": "Your mute has expired",
+
+        "AssertDuty": "You must be on duty to use this command",
+        "AssertZone": "You cannot use that command here",
+
+        "JumpNotFound": "You are not looking at anything",
+
+        "PlayerMuteTemp": "{0} has been muted for {1} for {2}",
+        "PlayerMutePerm": "{0} has been muted for {1} permanently",
+
+        "PardonFailed": "Failed to pardon offense",
+        "Pardoned": "Pardoned offense #{0}",
+
+        "RelogOther": "Forced {0} to relog",
+
+        "Vanished": "You are now vanished",
+        "Unvanished": "You are now unvanished",
+
+        "FailedToFind": "Failed to find barricade",
+
+        "ZoneOneFlag": "Zones must have at least one flag",
+        "ZoneCreated": "Created zone with radius {0} and flags {1}",
+
+        "HelpFormat": "{0}: {1}",
+
+        "LanguageNotFound": "{0} is not a supported language",
+        "LanguageSet": "Set your language to {0}",
+        "LanguageList": "List of available languages: {0}",
+
+        "LinkCodeMessage": "Do /link {0} in our discord",
+
+        "FailedToGetStats": "Failed to get {0}'s stats",
+        "PlayerStats": "{0}'s stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}",
+        "PlayerStats": "{0}'s life stats: {1} fish caught {2} kills",
+        "PlayerSessionStats": "{0}'s session stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}",
+
+        "CommandHelp": "Parameters are wrapped in square brackets '[]'. Question marks '?' mean that the parameter is optional. Three dots '...' means it will take any continuing text as one argument ",
+
+        "FishCaught": "You caught a {0}! +{1} experience",
+        "LevelUp": "You are now fishing level {0}",
+
+        "PlayerSessionStats": "{0}'s session stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}",
+        "KillStreak": "{0} is on a {1} kill streak",
+
+        "GaveDoor": "Gave you a new door",
+
+        "TeleportedToDoor": "You have been teleport to your door",
+        "NoDoorFound": "You do not have a door",
+
+        "LobbyTeleport": "Teleported you to lobby",
+        "DoorAlreadyPlaced": "You already have a door placed",
+        "VaultNotFound": "Cannot find vault named {0}",
+        "VaultList": "You have access to vaults {0}"
+    }
+}

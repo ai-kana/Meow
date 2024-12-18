@@ -14,7 +14,7 @@ internal class VaultCommand : Command
     {
     }
 
-    private static readonly Translation VaultNotFound = new("VaultNotFound", "Cannot find vault named {0}");
+    private static readonly Translation VaultNotFound = new("VaultNotFound");
 
     public override async UniTask ExecuteAsync()
     {
@@ -57,7 +57,7 @@ internal class VaultListCommand : Command
     {
     }
 
-    private static readonly Translation VaultList = new("VaultList", "You have access to vaults {0}");
+    private static readonly Translation VaultList = new("VaultList");
     public override UniTask ExecuteAsync()
     {
         Context.AssertPlayer(out MeowPlayer caller);

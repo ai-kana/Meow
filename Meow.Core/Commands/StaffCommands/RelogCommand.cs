@@ -14,7 +14,7 @@ internal class RelogCommand : Command
     {
     }
 
-    private static readonly Translation RelogOther = new("RelogOther", "Forced {0} to relog");
+    private static readonly Translation RelogOther = new("RelogOther");
 
     public override UniTask ExecuteAsync()
     {

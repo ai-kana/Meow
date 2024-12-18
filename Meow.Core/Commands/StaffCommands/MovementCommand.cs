@@ -31,6 +31,8 @@ internal class MovementSpeedCommand : Command
     {
     }
 
+    private static readonly Translation SetSpeedOther = new("SetSpeedOther");
+    private static readonly Translation SetSpeedSelf = new("SetSpeedSelf");
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("movement");
@@ -51,8 +53,8 @@ internal class MovementSpeedCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetSpeed(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply(TranslationList.SetSpeedOther, target.Name, multiplier)
-            : Context.Reply(TranslationList.SetSpeedSelf, multiplier);
+            Context.Reply(SetSpeedOther, target.Name, multiplier)
+            : Context.Reply(SetSpeedSelf, multiplier);
     }
 }
 
@@ -65,6 +67,9 @@ internal class MovementJumpCommand : Command
     {
     }
 
+    private static readonly Translation SetJumpOther = new("SetJumpOther");
+    private static readonly Translation SetJumpSelf = new("SetJumpSelf");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("movement");
@@ -85,8 +90,8 @@ internal class MovementJumpCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetJump(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply(TranslationList.SetJumpOther, target.Name, multiplier)
-            : Context.Reply(TranslationList.SetJumpSelf, multiplier);
+            Context.Reply(SetJumpOther, target.Name, multiplier)
+            : Context.Reply(SetJumpSelf, multiplier);
     }
 }
 
@@ -98,6 +103,9 @@ internal class MovementGravityCommand : Command
     public MovementGravityCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation SetGravityOther = new("SetGravityOther");
+    private static readonly Translation SetGravitySelf = new("SetGravitySelf");
 
     public override UniTask ExecuteAsync()
     {
@@ -119,7 +127,7 @@ internal class MovementGravityCommand : Command
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
         target.Movement.SetGravity(multiplier);
         throw Context.HasArguments(2) ?
-            Context.Reply(TranslationList.SetGravityOther, target.Name, multiplier)
-            : Context.Reply(TranslationList.SetGravitySelf, multiplier);
+            Context.Reply(SetGravityOther, target.Name, multiplier)
+            : Context.Reply(SetGravitySelf, multiplier);
     }
 }

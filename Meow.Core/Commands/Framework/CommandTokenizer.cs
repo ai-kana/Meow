@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Meow.Core.Commands.Framework;
 
 internal class CommandTokenizer
@@ -9,52 +11,55 @@ internal class CommandTokenizer
         Text = text;
     }
 
-    private string ParseQuote(CharEnumerator enumerator)
+    private string ParseQuote(IEnumerator<char> enumerator, StringBuilder builder)
     {
-        string buffer = string.Empty;
         while (enumerator.MoveNext())
         {
             char c = enumerator.Current;
             if (c == '"')
             {
-                return buffer;
+                return builder.ToString();
             }
 
-            buffer += c;
+            builder.Append(c);
         }
 
-        return buffer;
+        string ret = builder.ToString();
+        builder.Clear();
+        return ret;
     }
 
     private IEnumerable<string> Tokenize()
     {
-        string text = Text.TrimStart().TrimStart('/');
+        StringBuilder builder = new(32);
+        IEnumerator<char> enumerator = Text.TrimStart().TrimStart('/').GetEnumerator();
 
-        string buffer = string.Empty;
-
-        CharEnumerator enumerator = text.GetEnumerator();
         while (enumerator.MoveNext())
         {
             char c = enumerator.Current;
-            if (c == '"')
+            switch (c)
             {
-                yield return buffer;
-                buffer = string.Empty;
-                yield return ParseQuote(enumerator);
-                continue;
+                case '"':
+                    yield return BuildString();
+                    yield return ParseQuote(enumerator, builder);
+                    continue;
+                case ' ':
+                    yield return BuildString();
+                    continue;
             }
 
-            if (c == ' ')
-            {
-                yield return buffer;
-                buffer = string.Empty;
-                continue;
-            }
-
-            buffer += c;
+            builder.Append(c);
         }
 
-        yield return buffer;
+        yield return BuildString();
+        yield break;
+
+        string BuildString()
+        {
+            string ret = builder.ToString();
+            builder.Clear();
+            return ret;
+        }
     }
 
     private IEnumerable<string> Sanitize(IEnumerable<string> tokens)

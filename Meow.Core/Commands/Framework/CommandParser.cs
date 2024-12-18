@@ -154,7 +154,7 @@ public class CommandParser
         }
     }
 
-    private class BoolParser : ArgumentParser<bool>
+    private unsafe class BoolParser : ArgumentParser<bool>
     {
         private string[] TrueStrings = 
         {

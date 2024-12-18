@@ -13,6 +13,9 @@ internal class FreezeCommand : Command
     {
     }
 
+    private static readonly Translation PlayerAlreadyFrozen = new("PlayerAlreadyFrozen");
+    private static readonly Translation PlayerFrozen = new("PlayerFrozen");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("freeze");
@@ -22,9 +25,9 @@ internal class FreezeCommand : Command
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
         if(player.Movement.IsFrozen)
-            throw Context.Reply(TranslationList.PlayerAlreadyFrozen, player.Name);
+            throw Context.Reply(PlayerAlreadyFrozen, player.Name);
         
         player.Movement.Freeze();
-        throw Context.Reply(TranslationList.PlayerFrozen, player.Name);
+        throw Context.Reply(PlayerFrozen, player.Name);
     }
 }

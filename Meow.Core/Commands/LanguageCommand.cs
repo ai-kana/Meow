@@ -15,8 +15,8 @@ internal class LanguageCommand : Command
     {
     }
 
-    private static readonly Translation LanguageNotFound = new("LanguageNotFound", "{0} is not a supported language");
-    private static readonly Translation LanguageSet = new("LanguageSet", "Set your language to {0}");
+    private static readonly Translation LanguageNotFound = new("LanguageNotFound");
+    private static readonly Translation LanguageSet = new("LanguageSet");
 
     public override UniTask ExecuteAsync()
     {
@@ -46,7 +46,7 @@ internal class LanguageListCommand : Command
     {
     }
 
-    private static readonly Translation LanguageList = new("LanguageList", "List of available languages: {0}");
+    private static readonly Translation LanguageList = new("LanguageList");
 
     public override UniTask ExecuteAsync()
     {

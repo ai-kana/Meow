@@ -18,7 +18,7 @@ internal class TimeCommand : Command
     {
         Context.AssertOnDuty();
         Context.AssertPermission("time");
-        throw Context.Reply("<[get | set]>");
+        throw Context.Reply("[<Switches: get, set>]");
     }
 }
 
@@ -29,6 +29,8 @@ internal class TimeGetCommand : Command
     public TimeGetCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation CurrentTime = new("CurrentTime");
 
     public override UniTask ExecuteAsync()
     {
@@ -45,7 +47,7 @@ internal class TimeGetCommand : Command
         
         string time = $"{hour:00}:{minutes:00}";
 
-        throw Context.Reply(TranslationList.CurrentTime, time, LightingManager.time);
+        throw Context.Reply(CurrentTime, time, LightingManager.time);
     }
 }
 
@@ -58,6 +60,8 @@ internal class TimeSetCommand : Command
     {
     }
 
+    private static readonly Translation TimeSet = new("TimeSet");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("time");
@@ -67,7 +71,7 @@ internal class TimeSetCommand : Command
         uint time = Context.Parse<uint>();
         
         LightingManager.time = time;
-        throw Context.Reply(TranslationList.TimeSet, time);       
+        throw Context.Reply(TimeSet, time);       
     }
 }
 
@@ -79,13 +83,15 @@ internal class TimeDayCommand : Command
     {
     }
 
+    public static readonly Translation TimeSetDayOrNight = new("TimeSetDayOrNight");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("time");
         Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * LevelLighting.transition);
-        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.Day));
+        throw Context.Reply(TimeSetDayOrNight, new TranslationPackage(TranslationList.Day));
     }
 }
 
@@ -103,6 +109,6 @@ internal class TimeNightCommand : Command
         Context.AssertOnDuty();
 
         LightingManager.time = (uint)(LightingManager.cycle * (LevelLighting.bias + LevelLighting.transition));
-        throw Context.Reply(TranslationList.TimeSetDayOrNight, new TranslationPackage(TranslationList.NightWord));
+        throw Context.Reply(TimeDayCommand.TimeSetDayOrNight, new TranslationPackage(TranslationList.NightWord));
     }
 }

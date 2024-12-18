@@ -12,7 +12,7 @@ internal class LinkCommand : Command
     {
     }
 
-    private readonly static Translation LinkCodeMessage = new("LinkCodeMessage", "Do /link {0} in our discord");
+    private readonly static Translation LinkCodeMessage = new("LinkCodeMessage");
 
     public override async UniTask ExecuteAsync()
     {

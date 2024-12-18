@@ -14,6 +14,9 @@ internal class ReplyCommand : Command
     {
     }
 
+    private static readonly Translation NoOneToReplyTo = new("NoOneToReplyTo");
+    private static readonly Translation PlayerNotOnline = new("PlayerNotOnline");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertArguments(1);
@@ -24,12 +27,12 @@ internal class ReplyCommand : Command
         
         if (self.LastPrivateMessage == null) 
         {
-            throw Context.Reply(TranslationList.NoOneToReplyTo);
+            throw Context.Reply(NoOneToReplyTo);
         }
 
         if (!MeowPlayerManager.TryGetPlayer(self.LastPrivateMessage.Value, out MeowPlayer target))
         {
-            throw Context.Reply(TranslationList.PlayerNotOnline);
+            throw Context.Reply(PlayerNotOnline);
         }
         
         target.LastPrivateMessage = self.SteamID;

@@ -32,6 +32,10 @@ internal class TeleportCommand : Command
         return false;
     }
 
+    private static readonly Translation TeleportedToOther = new("TeleportedToOther");
+    private static readonly Translation TeleportedOtherToOther = new("TeleportedOtherToOther");
+    private static readonly Translation TeleportingToXYZ = new("TeleportingToXYZ");
+    private static readonly Translation TeleportingOtherToXYZ = new("TeleportingOtherToXYZ");
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("teleport");
@@ -45,12 +49,12 @@ internal class TeleportCommand : Command
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
                 self.Movement.Teleport(node!.inspectablePosition);
-                throw Context.Reply(TranslationList.TeleportedToOther, node.locationName);
+                throw Context.Reply(TeleportedToOther, node.locationName);
             }
             
             MeowPlayer player = Context.Parse<MeowPlayer>();
             self.Movement.Teleport(player);
-            throw Context.Reply(TranslationList.TeleportedToOther, player.Name);
+            throw Context.Reply(TeleportedToOther, player.Name);
         }
 
         if (Context.HasExactArguments(2))
@@ -61,13 +65,13 @@ internal class TeleportCommand : Command
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
                 player.Movement.Teleport(node!.inspectablePosition);
-                throw Context.Reply(TranslationList.TeleportedOtherToOther, player.Name, node.locationName);
+                throw Context.Reply(TeleportedOtherToOther, player.Name, node.locationName);
             }
             
             MeowPlayer target = Context.Parse<MeowPlayer>();
 
             target.Movement.Teleport(player);
-            throw Context.Reply(TranslationList.TeleportedOtherToOther, player.Name, target.Name);
+            throw Context.Reply(TeleportedOtherToOther, player.Name, target.Name);
         }
 
         if (Context.HasExactArguments(3))
@@ -76,7 +80,7 @@ internal class TeleportCommand : Command
 
             Vector3 position = Context.Parse<Vector3>();
             caller.Movement.Teleport(position);
-            throw Context.Reply(TranslationList.TeleportingToXYZ, position.x, position.y, position.z);
+            throw Context.Reply(TeleportingToXYZ, position.x, position.y, position.z);
         }
 
         {
@@ -84,7 +88,7 @@ internal class TeleportCommand : Command
             Context.MoveNext();
             Vector3 position = Context.Parse<Vector3>();
             player.Movement.Teleport(position);
-            throw Context.Reply(TranslationList.TeleportingOtherToXYZ, player.Name, position.x, position.y, position.z);
+            throw Context.Reply(TeleportingOtherToXYZ, player.Name, position.x, position.y, position.z);
         }
     }
 }
@@ -97,6 +101,9 @@ internal class TeleportWaypointCommand : Command
     {
     }
 
+    private static readonly Translation TeleportingToWaypoint = new("TeleportingToWaypoint");
+    private static readonly Translation NoWaypoint = new("NoWaypoint");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("teleport");
@@ -105,11 +112,11 @@ internal class TeleportWaypointCommand : Command
         
         if (!self.Quests.TryGetMarkerPosition(out Vector3 position))
         {
-            throw Context.Reply(TranslationList.NoWaypoint);
+            throw Context.Reply(NoWaypoint);
         }
         
         self.Movement.Teleport(position);
-        throw Context.Reply(TranslationList.TeleportingToWaypoint);
+        throw Context.Reply(TeleportingToWaypoint);
     }
 }
 
@@ -122,6 +129,8 @@ internal class TeleportHereCommand : Command
     {
     }
 
+    private static readonly Translation TeleportingPlayerHere = new("TeleportingPlayerHere");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("teleport");
@@ -132,6 +141,6 @@ internal class TeleportHereCommand : Command
         MeowPlayer toTp = Context.Parse<MeowPlayer>();
         
         toTp.Movement.Teleport(self);
-        throw Context.Reply(TranslationList.TeleportingPlayerHere, toTp.Name);
+        throw Context.Reply(TeleportingPlayerHere, toTp.Name);
     }
 }

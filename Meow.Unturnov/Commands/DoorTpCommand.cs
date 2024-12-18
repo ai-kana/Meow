@@ -14,8 +14,8 @@ public class DoorTpCommand : Command
     {
     }
 
-    private static readonly Translation TeleportedToDoor = new("TeleportedToDoor", "You have been teleport to your door");
-    private static readonly Translation NoDoorFound = new("NoDoorFound", "You do not have a door");
+    private static readonly Translation TeleportedToDoor = new("TeleportedToDoor");
+    private static readonly Translation NoDoorFound = new("NoDoorFound");
 
     public override UniTask ExecuteAsync()
     {

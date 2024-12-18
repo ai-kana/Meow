@@ -16,8 +16,8 @@ internal class StatsCommand : Command
     {
     }
 
-    public static readonly Translation FailedToGetStats = new("FailedToGetStats", "Failed to get {0}'s stats");
-    private static readonly Translation PlayerStats = new("PlayerStats", "{0}'s stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}");
+    public static readonly Translation FailedToGetStats = new("FailedToGetStats");
+    private static readonly Translation PlayerStats = new("PlayerStats");
 
     public override async UniTask ExecuteAsync()
     {
@@ -59,7 +59,7 @@ internal class StatsSessionCommand : Command
     {
     }
 
-    private static readonly Translation PlayerSessionStats = new("PlayerSessionStats", "{0}'s session stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}");
+    private static readonly Translation PlayerSessionStats = new("PlayerSessionStats");
 
     public override UniTask ExecuteAsync()
     {
@@ -89,7 +89,7 @@ internal class StatsLifeCommand : Command
     {
     }
 
-    private static readonly Translation PlayerLifeStats = new("PlayerStats", "{0}'s life stats: {1} fish caught {2} kills");
+    private static readonly Translation PlayerLifeStats = new("PlayerStats");
 
     public override UniTask ExecuteAsync()
     {

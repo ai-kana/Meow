@@ -31,6 +31,8 @@ internal class RoleAddCommand : Command
     {
     }
 
+    private static readonly Translation AddedRole = new("AddedRole");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
@@ -41,7 +43,7 @@ internal class RoleAddCommand : Command
         Role role = Context.Parse<Role>();
 
         player.Roles.AddRole(role.Id);
-        throw Context.Reply(TranslationList.AddedRole, player.Name, role.Id);
+        throw Context.Reply(AddedRole, player.Name, role.Id);
     }
 }
 
@@ -53,6 +55,8 @@ internal class RoleRemoveCommand : Command
     public RoleRemoveCommand(CommandContext context) : base(context)
     {
     }
+    private static readonly Translation RemovedRole = new("RemovedRole");
+    private static readonly Translation DoesNotHaveRole = new("DoesNotHaveRole");
 
     public override UniTask ExecuteAsync()
     {
@@ -65,11 +69,11 @@ internal class RoleRemoveCommand : Command
 
         if (!player.Roles.HasRole(role.Id))
         {
-            throw Context.Reply(TranslationList.DoesNotHaveRole, player.Name, role.Id);
+            throw Context.Reply(DoesNotHaveRole, player.Name, role.Id);
         }
 
         player.Roles.AddRole(role.Id);
-        throw Context.Reply(TranslationList.RemovedRole, player.Name, role.Id);
+        throw Context.Reply(RemovedRole, player.Name, role.Id);
     }
 }
 
@@ -81,18 +85,21 @@ internal class RoleListCommand : Command {
     {
     }
 
+    private static readonly Translation RoleList = new("RoleList");
+    private static readonly Translation RoleHasRole = new("RoleHasRole");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("role");
 
         if (Context.HasExactArguments(0))
         {
-            throw Context.Reply(TranslationList.RoleList, Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
+            throw Context.Reply(RoleList, Formatter.FormatList(RoleManager.Roles.Select(x => x.Id), ", "));
         }
 
         MeowPlayer player = Context.Parse<MeowPlayer>();
 
         HashSet<Role> roles = RoleManager.GetRoles(player.Roles.Roles);
-        throw Context.Reply(TranslationList.RoleHasRole, player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
+        throw Context.Reply(RoleHasRole, player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
     }
 }

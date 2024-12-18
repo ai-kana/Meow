@@ -111,7 +111,7 @@ public class MeowPlayerStats
         ServerSession.ItemsLooted++;
     }
 
-    private static readonly Translation KillStreak = new("KillStreak", "{0} is on a {1} kill streak");
+    private static readonly Translation KillStreak = new("KillStreak");
 
     private uint KillStreakCount = 0;
     private float LastKillTime = 0;

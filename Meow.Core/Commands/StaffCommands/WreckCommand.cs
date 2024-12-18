@@ -15,7 +15,7 @@ internal class WreckCommand : Command
     {
     }
 
-    private static readonly Translation FailedToFind = new("FailedToFind", "Failed to find barricade");
+    private static readonly Translation FailedToFind = new("FailedToFind");
 
     private async UniTask<bool> TryDestroy(Vector3 origin, Vector3 dir)
     {

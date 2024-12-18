@@ -17,8 +17,8 @@ internal class BanCommand : Command
     {
     }
 
-    private static readonly Translation PlayerBannedTemp = new("PlayerBannedTemp", "{0} has been banned for {1} for {2}");
-    private static readonly Translation PlayerBannedPerm = new("PlayerBannedPerm", "{0} has been banned for {1} permanently");
+    private static readonly Translation PlayerBannedTemp = new("PlayerBannedTemp");
+    private static readonly Translation PlayerBannedPerm = new("PlayerBannedPerm");
 
     public override async UniTask ExecuteAsync()
     {

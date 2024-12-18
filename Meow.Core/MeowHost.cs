@@ -58,6 +58,9 @@ public sealed class MeowHost
         Directory.SetCurrentDirectory(AppContext.BaseDirectory + "/Meow");
         Configuration = await CreateConfigurationAsync();
 
+        // Must load first or else it all breaks :)
+        await TranslationManager.LoadTranslations();
+
         LoggerProvider.AddLogging(new MeowLoggerProvider($"./Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<MeowHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
@@ -74,8 +77,6 @@ public sealed class MeowHost
         }
 
         MeowPlayerManager.Load();
-
-        await TranslationManager.LoadTranslations();
 
         _Harmony = new("Meow.Core");
         _Harmony.PatchAll();

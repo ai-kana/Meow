@@ -16,6 +16,9 @@ internal class VehicleCommand : Command
     {
     }
 
+    private static readonly Translation VehicleNotFound = new("VehicleNotFound");
+    private static readonly Translation SpawningVehicle = new("SpawningVehicle");
+
     public bool GetVehicleAsset(string input, out VehicleAsset? vehicleAsset)
     {
         input = input.Trim();
@@ -57,10 +60,10 @@ internal class VehicleCommand : Command
 
         if (!GetVehicleAsset(Context.Current, out VehicleAsset? vehicleAsset))
         {
-            throw Context.Reply(TranslationList.VehicleNotFound);
+            throw Context.Reply(VehicleNotFound);
         }
             
         VehicleTool.SpawnVehicleForPlayer(self.Player, vehicleAsset!);
-        throw Context.Reply(TranslationList.SpawningVehicle, vehicleAsset!.FriendlyName);
+        throw Context.Reply(SpawningVehicle, vehicleAsset!.FriendlyName);
     }
 }

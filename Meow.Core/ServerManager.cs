@@ -69,7 +69,7 @@ public class ServerManager
     private static async UniTask DoShutdown(uint delay, CancellationToken token)
     {
         bool first = false;
-        MeowChat.BroadcastMessage(TranslationList.Shutdown, Formatter.FormatTime(delay));
+        MeowChat.BroadcastMessage(TranslationList.ShutdownMessage, Formatter.FormatTime(delay));
         for (; delay > 0; delay--)
         {
             if (first)
@@ -80,7 +80,7 @@ public class ServerManager
                     case 30:
                     case 10:
                     case < 5:
-                        MeowChat.BroadcastMessage(TranslationList.Shutdown, Formatter.FormatTime(delay));
+                        MeowChat.BroadcastMessage(TranslationList.ShutdownMessage, Formatter.FormatTime(delay));
                         break;
                 }
             }

@@ -28,7 +28,7 @@ internal class JumpCommand : Command
         return true;
     }
 
-    private static readonly Translation JumpNotFound = new("JumpNotFound", "You are not looking at anything");
+    private static readonly Translation JumpNotFound = new("JumpNotFound");
 
     public override async UniTask ExecuteAsync()
     {

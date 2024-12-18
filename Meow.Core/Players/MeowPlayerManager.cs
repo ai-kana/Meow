@@ -178,6 +178,12 @@ public class MeowPlayerManager
         player.sendRelayToServer(ip, port, Provider.serverPassword, false);
     }
 
+    private static readonly Translation MutePermanent = new("MutePermanent");
+    private static readonly Translation MuteTemporary = new("MuteTemporary");
+
+    private static readonly Translation BanPermanent = new("BanPermanent");
+    private static readonly Translation BanTemporary = new("BanTemporary");
+
     private static async UniTask OnConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
@@ -198,7 +204,7 @@ public class MeowPlayerManager
         Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
         if (permBan != null)
         {
-            player.Moderation.Kick(TranslationList.BanPermanent, permBan.Reason, discord);
+            player.Moderation.Kick(BanPermanent, permBan.Reason, discord);
             return;
         }
         else
@@ -207,7 +213,7 @@ public class MeowPlayerManager
                 .OrderByDescending(x => x.Remaining).FirstOrDefault();
             if (nonPermBan != null)
             {
-                player.Moderation.Kick(TranslationList.BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
+                player.Moderation.Kick(BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
                 return;
             }
         }
@@ -215,7 +221,7 @@ public class MeowPlayerManager
         Offense? permMute = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Mute && x.IsPermanent);
         if (permMute != null)
         {
-            player.SendMessage(TranslationList.MutePermanent, permMute.Reason, discord);
+            player.SendMessage(MutePermanent, permMute.Reason, discord);
             player.Moderation.IsMuted = true;
         }
         else
@@ -224,7 +230,7 @@ public class MeowPlayerManager
                 .OrderByDescending(x => x.Remaining).FirstOrDefault();
             if (tempMute != null)
             {
-                player.SendMessage(TranslationList.MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
+                player.SendMessage(MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
                 player.Moderation.IsMuted = true;
                 player.Moderation.EnqueueUnmute(tempMute.Remaining);
             }
@@ -243,7 +249,7 @@ public class MeowPlayerManager
             player.Roles.AddRole(RanksRoles[rankByte]);
         }
 
-        MeowChat.BroadcastMessage(TranslationList.PlayerConnected, player.Name);
+        MeowChat.BroadcastMessage(PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
         OnPlayerConnected?.Invoke(player);
     }
@@ -255,6 +261,9 @@ public class MeowPlayerManager
         "mvp",
         "mvpplus",
     ];
+
+    public static readonly Translation PlayerConnected = new("PlayerConnected");
+    public static readonly Translation PlayerDisconnected = new("PlayerDisconnected");
 
     private static async void OnServerConnected(CSteamID steamID)
     {
@@ -289,7 +298,7 @@ public class MeowPlayerManager
 
         player.Moderation.CancelUnmute();
 
-        MeowChat.BroadcastMessage(TranslationList.PlayerDisconnected, player.Name);
+        MeowChat.BroadcastMessage(PlayerDisconnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has left the server");
     }
 }

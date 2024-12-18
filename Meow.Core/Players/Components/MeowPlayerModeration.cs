@@ -1,4 +1,3 @@
-using System.Collections;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SDG.Unturned;
@@ -35,6 +34,7 @@ public class MeowPlayerModeration
         Owner.Player.sendScreenshot(caller.SteamID, null);
     }
 
+    public static readonly Translation Unmuted = new("Unmuted");
     private static async UniTask WaitForUnmute(CSteamID id, long time, CancellationToken token)
     {
         await UniTask.Delay((int)(time * 1000), cancellationToken: token);
@@ -46,7 +46,7 @@ public class MeowPlayerModeration
         if (MeowPlayerManager.TryGetPlayer(id, out MeowPlayer player))
         {
             player.Moderation.IsMuted = false;
-            player.SendMessage(TranslationList.Unmuted);
+            player.SendMessage(Unmuted);
         }
     }
 
@@ -97,10 +97,16 @@ public class MeowPlayerModeration
         await OffenseManager.AddOffense(Offense.Create(OffenseType.Ban, Owner.SteamID, issuer, reason, duration));
     }
 
+    private static readonly Translation MutePermanent = new("MutePermanent");
+    private static readonly Translation MuteTemporary = new("MuteTemporary");
+
+    private static readonly Translation BanPermanent = new("BanPermanent");
+    private static readonly Translation BanTemporary = new("BanTemporary");
+
     public void Mute(CSteamID issuerId)
     {
         string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.MutePermanent, "No reason provided", discordInvite);
+        Kick(MutePermanent, "No reason provided", discordInvite);
         _ = AddMute(issuerId, 0, "No reason provided");
     }
 
@@ -119,28 +125,28 @@ public class MeowPlayerModeration
     public void Ban(CSteamID issuerId)
     {
         string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanPermanent, "No reason provided", discordInvite);
+        Kick(BanPermanent, "No reason provided", discordInvite);
         _ = AddBan(issuerId, 0, "No reason provided");
     }
     
     public void Ban(CSteamID issuerId, long duration)
     {
         string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanTemporary, "No reason provided", duration, discordInvite);
+        Kick(BanTemporary, "No reason provided", duration, discordInvite);
         _ = AddBan(issuerId, duration, "No reason provided");
     }
     
     public void Ban(CSteamID issuerId, string reason)
     {
         string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanPermanent, reason, discordInvite);
+        Kick(BanPermanent, reason, discordInvite);
         _ = AddBan(issuerId, long.MaxValue, reason);
     }
     
     public void Ban(CSteamID issuerId, long duration, string reason)
     {
         string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
-        Kick(TranslationList.BanTemporary, reason, duration, discordInvite);
+        Kick(BanTemporary, reason, duration, discordInvite);
         _ = AddBan(issuerId, duration, reason);
     }
 

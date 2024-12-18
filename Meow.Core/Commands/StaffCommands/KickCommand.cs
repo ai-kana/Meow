@@ -14,6 +14,9 @@ internal class KickCommand : Command
     {
     }
 
+    private static readonly Translation Kicked = new("Kicked");
+    private static readonly Translation KickedReason = new("KickedReason");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("kick");
@@ -25,13 +28,13 @@ internal class KickCommand : Command
         if (Context.HasExactArguments(1))
         {
             target.Moderation.Kick();
-            throw Context.Reply(TranslationList.Kicked, target.Name);
+            throw Context.Reply(Kicked, target.Name);
         }
         
         Context.MoveNext();
         string reason = Context.Form();
         
         target.Moderation.Kick(reason);
-        throw Context.Reply(TranslationList.KickedReason, target.Name, reason);
+        throw Context.Reply(KickedReason, target.Name, reason);
     }
 }

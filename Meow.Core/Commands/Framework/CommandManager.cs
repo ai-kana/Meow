@@ -96,6 +96,7 @@ internal class CommandManager
         return commandType;
     }
 
+    public static readonly Translation NoCommandFound = new("NoCommandFound");
     public static async void ExecuteCommand(string commandText, IPlayer caller)
     {
         CommandTokenizer parser = new(commandText);
@@ -104,7 +105,7 @@ internal class CommandManager
         Type? type = GetCommandType(arguments, out int depth);
         if (type == null)
         {
-            caller.SendMessage(TranslationList.NoCommandFound, arguments.First());
+            caller.SendMessage(NoCommandFound, arguments.First());
             return;
         }
         arguments = arguments.Skip(1 + depth);

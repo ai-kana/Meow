@@ -14,13 +14,15 @@ internal class DutyCommand : Command
     {
     }
     
+    private static readonly Translation DutyStateGlobal = new("DutyStateGlobal");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("duty");
         Context.AssertPlayer(out MeowPlayer caller);
 
         bool state = caller.Administration.ToggleDuty();
-        MeowChat.BroadcastMessage(TranslationList.DutyStateGlobal, caller.Name, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        MeowChat.BroadcastMessage(DutyStateGlobal, caller.Name, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
         throw Context.Exit;
     }
 }
@@ -33,13 +35,15 @@ internal class DutySlientCommand : Command
     {
     }
 
+    private static readonly Translation DutyStateSilent = new("DutyStateSilent");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("sduty");
         Context.AssertPlayer(out MeowPlayer caller);
 
         bool state = caller.Administration.ToggleDuty();
-        throw Context.Reply(TranslationList.DutyStateSilent, state ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        throw Context.Reply(DutyStateSilent, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }
 
@@ -51,11 +55,13 @@ internal class DutyCheckCommand : Command
     {
     }
 
+    private static readonly Translation DutyStateCheck = new("DutyStateCheck");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("duty");
         Context.AssertPlayer(out MeowPlayer caller);
 
-        throw Context.Reply(TranslationList.DutyStateCheck, caller.Administration.OnDuty ? new TranslationPackage(TranslationList.On) : new TranslationPackage(TranslationList.Off));
+        throw Context.Reply(DutyStateCheck, caller.Administration.OnDuty ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }

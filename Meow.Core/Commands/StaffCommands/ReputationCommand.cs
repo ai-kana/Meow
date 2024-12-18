@@ -18,7 +18,7 @@ internal class ReputationCommand : Command
         Context.AssertPermission("reputation");
         Context.AssertOnDuty();
         
-        throw Context.Reply("<[get,g | set,s | reset,r | add,a | take,t]>");
+        throw Context.Reply("[<Switches: get, set, reset, add, take>]");
     }
 }
 
@@ -31,6 +31,8 @@ internal class ReputationGetCommand : Command
     {
     }
 
+    private static readonly Translation CheckedReputation = new("CheckedReputation");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("reputation");
@@ -38,7 +40,7 @@ internal class ReputationGetCommand : Command
         
         MeowPlayer target = Context.Parse<MeowPlayer>();
 
-        throw Context.Reply(TranslationList.CheckedReputation, target.Name, target.Quests.Reputation);
+        throw Context.Reply(CheckedReputation, target.Name, target.Quests.Reputation);
     }
 }
 
@@ -51,6 +53,8 @@ internal class ReputationSetCommand : Command
     {
     }
 
+    private static readonly Translation SetReputation = new("SetReputation");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("reputation");
@@ -62,7 +66,7 @@ internal class ReputationSetCommand : Command
 
         target.Quests.SetReputation(reputation);
         
-        throw Context.Reply(TranslationList.SetReputation, target.Name, reputation);
+        throw Context.Reply(SetReputation, target.Name, reputation);
     }
 }
 
@@ -75,6 +79,8 @@ internal class ReputationResetCommand : Command
     {
     }
 
+    private static readonly Translation ResetReputation = new("ResetReputation");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("reputation");
@@ -84,7 +90,7 @@ internal class ReputationResetCommand : Command
 
         target.Quests.SetReputation(0);
         
-        throw Context.Reply(TranslationList.ResetReputation, target.Name);
+        throw Context.Reply(ResetReputation, target.Name);
     }
 }
 
@@ -97,6 +103,8 @@ internal class ReputationAddCommand : Command
     {
     }
 
+    private static readonly Translation AddedReputation = new("AddedReputation");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("reputation");
@@ -108,7 +116,7 @@ internal class ReputationAddCommand : Command
 
         target.Quests.GiveReputation(reputation);
         
-        throw Context.Reply(TranslationList.AddedReputation, reputation, target.Name);
+        throw Context.Reply(AddedReputation, reputation, target.Name);
     }
 }
 
@@ -121,6 +129,8 @@ internal class ReputationTakeCommand : Command
     {
     }
 
+    private static readonly Translation TookReputation = new("TookReputation");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("reputation");
@@ -132,6 +142,6 @@ internal class ReputationTakeCommand : Command
 
         target.Quests.RemoveReputation(reputation);
         
-        throw Context.Reply(TranslationList.TookReputation, reputation, target.Name);
+        throw Context.Reply(TookReputation, reputation, target.Name);
     }
 }

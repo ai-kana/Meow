@@ -12,8 +12,8 @@ internal class PardonCommand : Command
     {
     }
 
-    private static readonly Translation PardonFailed = new("PardonFailed", "Failed to pardon offense");
-    private static readonly Translation Pardoned = new("Pardoned", "Pardoned offense #{0}");
+    private static readonly Translation PardonFailed = new("PardonFailed");
+    private static readonly Translation Pardoned = new("Pardoned");
 
     public override async UniTask ExecuteAsync()
     {

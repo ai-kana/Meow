@@ -35,6 +35,8 @@ internal class ExperienceAddCommand : Command
     {
     }
 
+    private static readonly Translation AddedExperience = new("AddedExperience");
+    
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
@@ -52,7 +54,7 @@ internal class ExperienceAddCommand : Command
         
         player.Skills.GiveExperience(amount);
         
-        throw Context.Reply(TranslationList.AddedExperience, amount, player.Name);
+        throw Context.Reply(AddedExperience, amount, player.Name);
     }
 }
 
@@ -64,6 +66,8 @@ internal class ExperienceRemoveCommand : Command
     public ExperienceRemoveCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation RemovedExperience = new("RemovedExperience");
 
     public override UniTask ExecuteAsync()
     {
@@ -82,7 +86,7 @@ internal class ExperienceRemoveCommand : Command
         
         player.Skills.RemoveExperience(amount);
         
-        throw Context.Reply(TranslationList.RemovedExperience, amount, player.Name);
+        throw Context.Reply(RemovedExperience, amount, player.Name);
     }
 }
 
@@ -95,6 +99,8 @@ internal class ExperienceResetCommand : Command
     {
     }
 
+    private static readonly Translation ResetExperience = new("ResetExperience");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
@@ -105,7 +111,7 @@ internal class ExperienceResetCommand : Command
         
         player.Skills.SetExperience(0);
         
-        throw Context.Reply(TranslationList.ResetExperience, player.Name);
+        throw Context.Reply(ResetExperience, player.Name);
     }
 }
 
@@ -117,6 +123,8 @@ internal class ExperienceSetCommand : Command
     public ExperienceSetCommand(CommandContext context) : base(context)
     {
     }
+
+    private static readonly Translation SetExperience = new("SetExperience");
 
     public override UniTask ExecuteAsync()
     {
@@ -135,7 +143,7 @@ internal class ExperienceSetCommand : Command
         
         player.Skills.SetExperience(amount);
         
-        throw Context.Reply(TranslationList.SetExperience, player.Name, amount);
+        throw Context.Reply(SetExperience, player.Name, amount);
     }
 }
 
@@ -148,6 +156,8 @@ internal class ExperienceCheckCommand : Command
     {
     }
 
+    private static readonly Translation CheckedExperience = new("CheckedExperience");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("experience");
@@ -156,6 +166,6 @@ internal class ExperienceCheckCommand : Command
 
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
-        throw Context.Reply(TranslationList.CheckedExperience, player.Name, player.Skills.Experience);
+        throw Context.Reply(CheckedExperience, player.Name, player.Skills.Experience);
     }
 }

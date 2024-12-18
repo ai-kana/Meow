@@ -31,6 +31,9 @@ internal class WarnAddCommand : Command
     public WarnAddCommand(CommandContext context) : base(context)
     {
     }
+    // Warn
+    public static readonly Translation WarnedReason = new("WarnedReason");
+    
     
     public override UniTask ExecuteAsync()
     {
@@ -45,7 +48,7 @@ internal class WarnAddCommand : Command
         
         _ = target.Moderation.AddWarn(self.SteamID, reason);
         
-        throw Context.Reply(TranslationList.WarnedReason, target.Name, reason);
+        throw Context.Reply(WarnedReason, target.Name, reason);
     }
 }
 
@@ -57,6 +60,7 @@ internal class WarnRemoveCommand : Command
     public WarnRemoveCommand(CommandContext context) : base(context)
     {
     }
+    public static readonly Translation PardonedWarn = new("PardonedWarn");
     
     public override UniTask ExecuteAsync()
     {
@@ -68,7 +72,7 @@ internal class WarnRemoveCommand : Command
 
         _ = OffenseManager.PardonOffense(id);
         
-        throw Context.Reply(TranslationList.PardonedWarn, id);
+        throw Context.Reply(PardonedWarn, id);
     }
 }
 
@@ -81,6 +85,9 @@ internal class WarnListCommand : Command
     {
     }
     
+    public static readonly Translation HasNoWarns = new("HasNoWarns");
+    public static readonly Translation WarningListed = new("WarningListed");
+
     public override async UniTask ExecuteAsync()
     {
         Context.AssertPermission("warn.list");
@@ -94,14 +101,14 @@ internal class WarnListCommand : Command
         
         if (!warnsList.Any())
         {
-            throw Context.Reply(TranslationList.HasNoWarns, target.Name);
+            throw Context.Reply(HasNoWarns, target.Name);
         }
 
         List<Offense> lastFiveWarns = warnsList.OrderByDescending(w => w.Issued).Take(5).ToList();
         
         foreach (Offense lastFiveWarn in lastFiveWarns)
         {
-            Context.Reply(TranslationList.WarningListed, lastFiveWarn.Id, lastFiveWarn.Issued, lastFiveWarn.Reason);
+            Context.Reply(WarningListed, lastFiveWarn.Id, lastFiveWarn.Issued, lastFiveWarn.Reason);
         }
 
         throw Context.Exit;

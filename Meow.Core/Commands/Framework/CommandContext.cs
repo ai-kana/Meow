@@ -50,14 +50,16 @@ public readonly struct CommandContext
         return count == _Arguments.Count();
     }
 
+    public static readonly Translation AssertArgumentsFailed = new("AssertArguments");
     public void AssertArguments(int count)
     {
         if (count > _Arguments.Count())
         {
-            throw Reply(TranslationList.AssertArguments, count);
+            throw Reply(AssertArgumentsFailed, count);
         }
     }
 
+    public static readonly Translation AssertPermissionFailed = new("AssertPermission");
     public void AssertPermission(string permission)
     {
         if (Caller is not MeowPlayer player)
@@ -67,15 +69,16 @@ public readonly struct CommandContext
 
         if (!player.Permissions.HasPermission(permission))
         {
-            throw Reply(TranslationList.AssertPermission);
+            throw Reply(AssertPermissionFailed);
         }
     }
 
+    public static readonly Translation AssertPlayerFailed = new("AssertPlayer");
     public void AssertPlayer()
     {
         if (Caller is not MeowPlayer)
         {
-            throw Reply(TranslationList.AssertPlayer);
+            throw Reply(AssertPlayerFailed);
         }
     }
 
@@ -83,12 +86,13 @@ public readonly struct CommandContext
     {
         if (Caller is not MeowPlayer player)
         {
-            throw Reply(TranslationList.AssertPlayer);
+            throw Reply(AssertPlayerFailed);
         }
 
         caller = player;
     }
 
+    public static readonly Translation AssertCooldownFailed = new("AssertCooldown");
     public void AssertCooldown()
     {
         if (Caller is not MeowPlayer player)
@@ -102,10 +106,10 @@ public readonly struct CommandContext
             return;
         }
 
-        throw Reply(TranslationList.AssertCooldown, Formatter.FormatTime(time));
+        throw Reply(AssertCooldownFailed, Formatter.FormatTime(time));
     }
 
-    private static readonly Translation AssertDuty = new("AssertDuty", "You must be on duty to use this command");
+    private static readonly Translation AssertDuty = new("AssertDuty");
     public void AssertOnDuty()
     {
         if (Caller is not MeowPlayer player)
@@ -119,7 +123,7 @@ public readonly struct CommandContext
         }
     }
 
-    private static readonly Translation AssertZone = new("AssertZone", "You cannot use that command here");
+    private static readonly Translation AssertZone = new("AssertZone");
     public void AssertZoneFlag(string flag)
     {
         if (Caller is not MeowPlayer player)

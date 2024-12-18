@@ -12,8 +12,8 @@ internal class VanishCommand : Command
     {
     }
 
-    private static readonly Translation Vanished = new("Vanished", "You are now vanished");
-    private static readonly Translation Unvanished = new("Unvanished", "You are now unvanished");
+    private static readonly Translation Vanished = new("Vanished");
+    private static readonly Translation Unvanished = new("Unvanished");
 
     public override UniTask ExecuteAsync()
     {

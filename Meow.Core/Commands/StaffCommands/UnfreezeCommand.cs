@@ -13,6 +13,9 @@ internal class UnfreezeCommand : Command
     {
     }
 
+    private static readonly Translation PlayerNotFrozen = new("PlayerAlreadyUnfrozen");
+    private static readonly Translation PlayerUnfrozen = new("PlayerUnfrozen");
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertPermission("unfreeze");
@@ -22,9 +25,9 @@ internal class UnfreezeCommand : Command
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
         if(!player.Movement.IsFrozen)
-            throw Context.Reply(TranslationList.PlayerNotFrozen, player.Name);
+            throw Context.Reply(PlayerNotFrozen, player.Name);
         
         player.Movement.Unfreeze();
-        throw Context.Reply(TranslationList.PlayerUnfrozen, player.Name);
+        throw Context.Reply(PlayerUnfrozen, player.Name);
     }
 }
