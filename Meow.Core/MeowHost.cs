@@ -9,7 +9,6 @@ using Meow.Core.Ranks;
 using Meow.Core.Plugins;
 using Meow.Core.Stats;
 using Meow.Core.Zones;
-using System.Runtime.InteropServices;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using UnityEngine.LowLevel;
 using SDG.Unturned;
 using HarmonyLib;
+using Meow.Core.Manifest;
 
 namespace Meow.Core;
 
@@ -27,28 +27,19 @@ public sealed class MeowHost
 
     public static IConfiguration Configuration {get; private set;} = null!;
 
-    private async UniTask CreateFileAsync()
-    {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        const string path = "Meow.Core.Configuration.json";
-        using StreamReader reader = new(assembly.GetManifestResourceStream(path));
-
-        string content = await reader.ReadToEndAsync();
-
-        using StreamWriter writer = new("Configuration.json");
-        await writer.WriteAsync(content);
-    }
-
     private async UniTask<IConfiguration> CreateConfigurationAsync()
     {
+        const string manifestPath = "Meow.Core.Configuration.json";
+        const string configPath = "Configuration.json";
+
         if (!File.Exists("Configuration.json"))
         {
-            await CreateFileAsync();
+            await ManifestHelper.CopyToFile(manifestPath, configPath);
         }
 
         ConfigurationBuilder configurationBuilder = new();
         configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
-        configurationBuilder.AddJsonFile("Configuration.json");
+        configurationBuilder.AddJsonFile(configPath);
         return configurationBuilder.Build();
     }
 
@@ -58,28 +49,20 @@ public sealed class MeowHost
         Directory.SetCurrentDirectory(AppContext.BaseDirectory + "/Meow");
         Configuration = await CreateConfigurationAsync();
 
-        // Must load first or else it all breaks :)
         await TranslationManager.LoadTranslations();
 
         LoggerProvider.AddLogging(new MeowLoggerProvider($"./Logs/Log.log"));
         _Logger = LoggerProvider.CreateLogger<MeowHost>()!;
         _Logger.LogInformation("Starting Unturnov...");
 
-        PlayerLoopSystem system = PlayerLoop.GetCurrentPlayerLoop();
-        PlayerLoopHelper.Initialize(ref system);
-
-        // Windows no liekly console
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            ThreadConsole console = new();
-            Dedicator.commandWindow?.removeDefaultIOHandler();
-            Dedicator.commandWindow?.addIOHandler(console);
-        }
-
-        MeowPlayerManager.Load();
+        ThreadConsole console = new();
+        Dedicator.commandWindow?.removeDefaultIOHandler();
+        Dedicator.commandWindow?.addIOHandler(console);
 
         _Harmony = new("Meow.Core");
         _Harmony.PatchAll();
+
+        MeowPlayerManager.Load();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();

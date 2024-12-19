@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using SDG.Framework.Modules;
+using UnityEngine.LowLevel;
 
 namespace Meow.Core;
 
@@ -8,6 +10,9 @@ public sealed class MeowModule : IModuleNexus
 
     public async void initialize()
     {
+        PlayerLoopSystem system = PlayerLoop.GetCurrentPlayerLoop();
+        PlayerLoopHelper.Initialize(ref system);
+
         try
         {
             _Host = new();

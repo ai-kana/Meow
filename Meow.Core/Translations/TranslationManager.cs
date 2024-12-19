@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
 using Meow.Core.Extensions;
 using Meow.Core.Json;
 
@@ -12,19 +11,7 @@ internal class TranslationManager
 
     static TranslationManager()
     {
-        ServerManager.OnServerSave += OnSave;
         Directory.CreateDirectory(TranslationsDirectory);
-    }
-
-    private static void OnSave()
-    {
-        // Needs to be blocking to ensure it saved
-        foreach (TranslationData data in TranslationData)
-        {
-            using StreamWriter writer = new(File.Open(data.Path, FileMode.Create, FileAccess.Write));
-            string content = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
-            writer.Write(content);
-        }
     }
 
     public static async UniTask LoadTranslations()

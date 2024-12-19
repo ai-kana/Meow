@@ -102,10 +102,10 @@ public class MeowChat
 
         if (player.Moderation.IsMuted && mode != EChatMode.GROUP)
         {
-            return;
+
         }
 
-        string message = text.Replace("<", "< ");
+        string message = text.Replace("<", "< ").Replace("< 3", "<3");
 
         switch (mode)
         {

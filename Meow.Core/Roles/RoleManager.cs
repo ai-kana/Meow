@@ -1,6 +1,6 @@
-using System.Reflection;
 using Cysharp.Threading.Tasks;
 using Meow.Core.Json;
+using Meow.Core.Manifest;
 
 namespace Meow.Core.Roles;
 
@@ -8,25 +8,14 @@ public class RoleManager
 {
     public static HashSet<Role> Roles {get; private set;} = new(0);
 
-    private static async UniTask CreateFile()
-    {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        const string path = "Meow.Core.Roles.json";
-        using StreamReader reader = new(assembly.GetManifestResourceStream(path));
-
-        string content = await reader.ReadToEndAsync();
-
-        using StreamWriter writer = new(File.Create("Roles.json"));
-        await writer.WriteAsync(content);
-    }
-
     public static async UniTask RegisterRoles()
     {
-        string path = "Roles.json";
+        const string path = "Roles.json";
 
         if (!File.Exists(path))
         {
-            await CreateFile();
+            const string manifestPath = "Meow.Core.Roles.json";
+            await ManifestHelper.CopyToFile(manifestPath, path);
         }
 
         using JsonStreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));

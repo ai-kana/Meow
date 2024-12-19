@@ -6,7 +6,6 @@ public class LootTable
 
     public LootTable() 
     {
-
     }
 
     public LootTable(IEnumerable<LootItem> items, uint playerLevel)

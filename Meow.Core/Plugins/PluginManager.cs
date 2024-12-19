@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Logging;
+using Meow.Core.Manifest;
 
 namespace Meow.Core.Plugins;
 
@@ -54,12 +55,7 @@ internal class PluginManager
                 continue;
             }
 
-            _Logger.LogDebug($"Writing manifest resource {resourse}");
-            using StreamReader reader = new(assembly.GetManifestResourceStream(resourse));
-            string text = await reader.ReadToEndAsync();
-
-            using StreamWriter writer = new(path);
-            await writer.WriteAsync(text);
+            await ManifestHelper.CopyToFile(resourse, path);
         }
     }
 

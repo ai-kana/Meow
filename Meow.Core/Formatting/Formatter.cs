@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using UnityEngine;
 using Meow.Core.Configuration;
 using Meow.Core.Translations;
+using System.Text;
 
 namespace Meow.Core.Formatting;
 
@@ -89,22 +90,29 @@ public static class Formatter
 
     public static string RemoveRichText(string text)
     {
-        while (true)
+        StringBuilder builder = new(text.Length);
+
+        bool inBrace = false;
+        for (int i = 0; i < text.Length; i++)
         {
-            int index = text.IndexOf('<');
-            if (index == -1)
+            char c = text[i];
+
+            switch (c)
             {
-                break;
-            }
-            int count = text.IndexOf('>', index);
-            if (count == -1)
-            {
-                break;
+                case '<':
+                    inBrace = true;
+                    break;
+                case '>':
+                    inBrace = false;
+                    break;
             }
 
-            text = text.Remove(index, count - index + 1);
+            if (!inBrace)
+            {
+                builder.Append(c);
+            }
         }
 
-        return text;
+        return builder.ToString();
     }
 }
