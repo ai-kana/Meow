@@ -16,16 +16,22 @@ public class NetMessages
     {
         _Logger = LoggerProvider.CreateLogger<NetMessages>();
 
-        _NetMessagesType = typeof(Provider).Assembly.GetType("NetMessages") 
+        _NetMessagesType = 
+            typeof(Provider).Assembly.GetType("NetMessages") 
             ?? typeof(Provider).Assembly.GetTypes().First(x => x.Name == "NetMessages")
-            ?? throw new("Failed to get type");
+            ?? throw new("Failed to get net messages type");
 
-        _SendMessageMethod = _NetMessagesType.GetMethod("SendMessageToClient", BindingFlags.Static | BindingFlags.Public) 
+        _SendMessageMethod = 
+            _NetMessagesType.GetMethod("SendMessageToClient", BindingFlags.Static | BindingFlags.Public) 
             ?? throw new("Failed to find Method");
 
-        _ClientWriteHandler = _NetMessagesType.GetNestedType("ClientWriteHandler", BindingFlags.Public);
+        _ClientWriteHandler = 
+            _NetMessagesType.GetNestedType("ClientWriteHandler", BindingFlags.Public)
+            ?? throw new("Failed to get client write handler type");
 
-        _NetPakWriter = _NetMessagesType.GetField("writer", BindingFlags.Static | BindingFlags.NonPublic);
+        _NetPakWriter = 
+            _NetMessagesType.GetField("writer", BindingFlags.Static | BindingFlags.NonPublic)
+            ?? throw new("Failed to get netpak writer");
     }
 
     private static readonly FieldInfo _NetPakWriter;

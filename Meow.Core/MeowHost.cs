@@ -13,7 +13,6 @@ using System.Reflection;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using UnityEngine.LowLevel;
 using SDG.Unturned;
 using HarmonyLib;
 using Meow.Core.Manifest;
@@ -59,7 +58,7 @@ public sealed class MeowHost
         Dedicator.commandWindow?.removeDefaultIOHandler();
         Dedicator.commandWindow?.addIOHandler(console);
 
-        _Harmony = new("Meow.Core");
+        _Harmony = new(typeof(MeowHost).Namespace);
         _Harmony.PatchAll();
 
         MeowPlayerManager.Load();

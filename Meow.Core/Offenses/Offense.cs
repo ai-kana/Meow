@@ -25,7 +25,8 @@ public class Offense
     public long Issued {get; set;} 
     public long Duration {get; set;} 
     public bool Pardoned {get; set;}
-    public string Reason {get; set;} = "No reason provided";
+    private const string DefaultReason = "No reason provided";
+    public string Reason {get; set;} = DefaultReason;
 
     public bool IsActive => IsPermanent ? true : (Duration + Issued) > DateTimeOffset.Now.ToUnixTimeSeconds();
     public long Remaining => !IsActive ? 0 : (Duration + Issued) - DateTimeOffset.Now.ToUnixTimeSeconds();

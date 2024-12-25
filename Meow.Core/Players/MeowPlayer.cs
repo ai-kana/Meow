@@ -9,13 +9,18 @@ using SDG.NetTransport;
 
 namespace Meow.Core.Players;
 
-public class MeowPlayer : IPlayer, IFormattable
+public class MeowPlayer : 
+    IPlayer, 
+    IFormattable
 {
     public SteamPlayer SteamPlayer {get; private set;}
     public Player Player => SteamPlayer.player;
-    
-    public string Name {get;}
-    public string LogName {get;}
+
+    private readonly string _LogName;
+    public string LogName => _LogName;
+
+    public string Name => SteamPlayer.playerID.characterName;
+
     public CSteamID SteamID => SteamPlayer.playerID.steamID;
 
     public PlayerData SaveData {get; private set;}
@@ -39,7 +44,7 @@ public class MeowPlayer : IPlayer, IFormattable
 
     public FishingSkill FishingSkill => SaveData.Fishing;
 
-    public CSteamID? LastPrivateMessage {get; set;} = null;
+    public CSteamID LastPrivateMessage {get; set;} 
 
     public string Language => SaveData.Language;
 
@@ -52,10 +57,10 @@ public class MeowPlayer : IPlayer, IFormattable
     {
         SaveData = data;
         SteamPlayer = player;
-        Name = SteamPlayer.playerID.characterName;
-        LogName = $"{Name} ({SteamID})";
+        _LogName = $"{Name} ({SteamID})";
 
         SteamPlayer.player.interact.sendSalvageTimeOverride(2f);
+        LastPrivateMessage = CSteamID.Nil;
 
         Movement = new(this);
         Roles = new(this);

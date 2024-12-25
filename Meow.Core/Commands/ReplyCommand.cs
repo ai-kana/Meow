@@ -3,6 +3,7 @@ using Meow.Core.Chat;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
 using Meow.Core.Translations;
+using Steamworks;
 
 namespace Meow.Core.Commands;
 
@@ -25,12 +26,12 @@ internal class ReplyCommand : Command
 
         Context.AssertPlayer(out MeowPlayer self);
         
-        if (self.LastPrivateMessage == null) 
+        if (self.LastPrivateMessage == CSteamID.Nil) 
         {
             throw Context.Reply(NoOneToReplyTo);
         }
 
-        if (!MeowPlayerManager.TryGetPlayer(self.LastPrivateMessage.Value, out MeowPlayer target))
+        if (!MeowPlayerManager.TryGetPlayer(self.LastPrivateMessage, out MeowPlayer target))
         {
             throw Context.Reply(PlayerNotOnline);
         }
