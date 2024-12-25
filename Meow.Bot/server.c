@@ -166,7 +166,8 @@ static void send_commands(int fd) {
     write(fd, packet, length + 4);
 }
 
-static int listen_for_server(int fd) {
+static int 
+listen_for_server(int fd) {
     if (listen(fd, 1) != 0) {
         perror("Failed to get connection");
         return -1;
@@ -184,8 +185,11 @@ static int listen_for_server(int fd) {
         return -1;
     }
 
-    int size;
+    int size = 0;
     while (read(client_fd, &size, 4) != 0) {
+        if (size == 0) {
+            break;
+        }
         unsigned char packet[size];
         if (read(client_fd, packet, size) == 0) return client_fd;
 
@@ -198,7 +202,8 @@ static int listen_for_server(int fd) {
     return client_fd;
 }
 
-static void* thread_start(void* param) {
+static void* 
+thread_start(void* param) {
     struct sockaddr_in server;
     bzero(&server, sizeof(struct sockaddr_in));
 
