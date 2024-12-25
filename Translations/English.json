@@ -205,6 +205,8 @@
         "LobbyTeleport": "Teleported you to lobby",
         "DoorAlreadyPlaced": "You already have a door placed",
         "VaultNotFound": "Cannot find vault named {0}",
-        "VaultList": "You have access to vaults {0}"
+        "VaultList": "You have access to vaults {0}",
+
+        "KickMessage": "You have been kicked for '{0}'"
     }
 }

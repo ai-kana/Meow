@@ -57,6 +57,16 @@ public readonly struct Translation
         return Formatter.Format(value, fixedArgs);
     }
 
+    public string TranslateNoColor(params object[] args)
+    {
+        return TranslateNoColor("English", args);
+    }
+
+    public string TranslateNoColor(IPlayer player, params object[] args)
+    {
+        return TranslateNoColor(player.Language, args);
+    }
+
     public string TranslateNoColor(string language, params object[] args)
     {
         string[] fixedArgs = GetTranslatedArguments(language, args);

@@ -4,6 +4,7 @@ using SDG.Unturned;
 using Steamworks;
 using Meow.Core.Offenses;
 using Meow.Core.Translations;
+using System.Reflection;
 
 namespace Meow.Core.Players.Components;
 
@@ -150,12 +151,6 @@ public class MeowPlayerModeration
         _ = AddBan(issuerId, duration, reason);
     }
 
-    private async UniTask DoKick(string reason)
-    {
-        await UniTask.Yield();
-        Provider.kick(Owner.SteamID, reason);
-    }
-
     public void Kick()
     {
         DoKick("No reason provided").Forget();
@@ -168,7 +163,31 @@ public class MeowPlayerModeration
 
     public void Kick(Translation translation, params object[] args)
     {
-        Provider.kick(Owner.SteamID, translation.TranslateNoColor(Owner.Language, args));
+        DoKick(translation.TranslateNoColor(Owner.Language, args)).Forget();
     }
 
+    private static readonly Translation KickMessage = new("KickMessage");
+    private async UniTask DoKick(string reason)
+    {
+        await UniTask.Yield();
+        Provider.reject(Owner.SteamID, ESteamRejection.PLUGIN, KickMessage.TranslateNoColor(Owner, reason));
+        CleanupPlayer();
+    }
+
+    private static readonly MethodInfo ValidateIndex = typeof(Provider).GetMethod("validateDisconnectedMaintainedIndex", BindingFlags.Static | BindingFlags.NonPublic);
+    private static readonly MethodInfo RemoveClient = typeof(Provider).GetMethod("RemoveClient", BindingFlags.Static | BindingFlags.NonPublic);
+    private static readonly MethodInfo ReplicateRemoveClient = typeof(Provider).GetMethod("ReplicateRemoveClient", BindingFlags.Static | BindingFlags.NonPublic);
+    private void CleanupPlayer()
+    {
+        byte index = (byte)Provider.clients.IndexOf(Owner.SteamPlayer);
+
+        try
+        {
+            Provider.onServerDisconnected?.Invoke(Owner.SteamID);
+        }
+        catch {}
+        ValidateIndex.Invoke(null, [Owner.SteamID, index]);
+        RemoveClient.Invoke(null, [Owner.SteamPlayer]);
+        ReplicateRemoveClient.Invoke(null, [Owner.SteamPlayer]);
+    }
 }
