@@ -72,7 +72,7 @@ internal class BotManager
             offset += sizeof(int);
             string text = Encoding.UTF8.GetString(packet, offset, length);
 
-            CommandManager.ExecuteCommand(text, new RconPlayer(id, text));
+            CommandManager.ExecuteCommand(text, new RconPlayer(id, text)).Forget();
         }
     }
 

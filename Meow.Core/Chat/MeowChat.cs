@@ -118,7 +118,7 @@ public class MeowChat
 
         if (text.StartsWith("/"))
         {
-            CommandManager.ExecuteCommand(text, player);
+            CommandManager.ExecuteCommand(text, player).Forget();
             return;
         }
 

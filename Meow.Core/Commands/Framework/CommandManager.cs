@@ -5,6 +5,7 @@ using SDG.Unturned;
 using Meow.Core.Logging;
 using Meow.Core.Players;
 using Meow.Core.Translations;
+using Cysharp.Threading.Tasks;
 
 namespace Meow.Core.Commands.Framework;
 
@@ -97,7 +98,7 @@ internal class CommandManager
     }
 
     public static readonly Translation NoCommandFound = new("NoCommandFound");
-    public static async void ExecuteCommand(string commandText, IPlayer caller)
+    public static async UniTask ExecuteCommand(string commandText, IPlayer caller)
     {
         CommandTokenizer parser = new(commandText);
         IEnumerable<string> arguments = parser.Parse();
@@ -134,6 +135,6 @@ internal class CommandManager
     private static void OnInput(string message, ref bool shouldExecuteCommand)
     {
         shouldExecuteCommand = false;
-        ExecuteCommand(message, new ConsolePlayer());
+        ExecuteCommand(message, new ConsolePlayer()).Forget();
     }
 }
