@@ -107,6 +107,14 @@ public class MeowChat
 
         string message = text.Replace("<", "< ").Replace("< 3", "<3");
 
+        foreach (string banned_word in MeowHost.Configuration.GetValue<string[]>("BannedWords")!)
+        {
+            if (message.Contains(banned_word))
+            {
+                return;
+            }
+        }
+
         switch (mode)
         {
             case EChatMode.SAY:

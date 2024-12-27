@@ -49,5 +49,11 @@
             "Level": 40,
             "Weight": 30
         }
+    ],
+    "BannedWords": [
+        "faggot",
+        "nigger",
+        "nigga",
+        "fag"
     ]
 }
