@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Logging;
 using Meow.Core.Manifest;
+using Meow.Core.Startup;
 
 namespace Meow.Core.Plugins;
 
@@ -78,6 +79,7 @@ internal class PluginManager
         try
         {
             await plugin.LoadAsync();
+            StartupManager.RunStartup(assembly);
             CommandManager.RegisterCommandTypes(assembly);
         }
         catch (Exception exception)

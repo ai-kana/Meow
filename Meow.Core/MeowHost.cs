@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using HarmonyLib;
 using Meow.Core.Manifest;
+using Meow.Core.Startup;
 
 namespace Meow.Core;
 
@@ -58,10 +59,10 @@ public sealed class MeowHost
         Dedicator.commandWindow?.removeDefaultIOHandler();
         Dedicator.commandWindow?.addIOHandler(console);
 
+        StartupManager.RunStartup(Assembly.GetExecutingAssembly());
+
         _Harmony = new(typeof(MeowHost).Namespace);
         _Harmony.PatchAll();
-
-        MeowPlayerManager.Load();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();
@@ -74,7 +75,7 @@ public sealed class MeowHost
 
         await ZoneManager.LoadZonesAsync();
 
-        _ = BotManager.Start();
+        BotManager.Start().Forget();
 
         await PluginManager.LoadPluginsAsync();
 

@@ -11,12 +11,14 @@ using Meow.Core.Offenses;
 using Meow.Core.Translations;
 using System.Net;
 using Meow.Core.Ranks;
+using Meow.Core.Startup;
 
 namespace Meow.Core.Players;
 
 public delegate void PlayerConnected(MeowPlayer player);
 public delegate void PlayerDisconnected(MeowPlayer player);
 
+[Startup]
 public class MeowPlayerManager
 {
     public static List<MeowPlayer> Players {get; private set;}
@@ -30,10 +32,7 @@ public class MeowPlayerManager
     {
         _Logger = LoggerProvider.CreateLogger<MeowPlayerManager>();
         Players = new();
-    }
 
-    internal static void Load()
-    {
         Provider.onServerConnected += OnServerConnected;
         Provider.onServerDisconnected += OnServerDisconnected;
 

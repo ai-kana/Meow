@@ -10,13 +10,18 @@ using Meow.Core.Commands.Framework;
 using Meow.Core.Roles;
 using Meow.Core.Translations;
 using Cysharp.Threading.Tasks;
+using Meow.Core.Extensions;
+using System.Runtime.CompilerServices;
+using Meow.Core.Startup;
 
 namespace Meow.Core.Chat;
 
+[Startup]
 public class MeowChat
 {
     private static readonly ILogger _Logger;
     private static float _LocalChatDistance;
+    private static string[] _BannedWords = null!;
 
     static MeowChat()
     {
@@ -31,6 +36,7 @@ public class MeowChat
     {
         float distance = MeowHost.Configuration.GetValue<float>("LocalChatDistance");
         _LocalChatDistance = distance * distance;
+        _BannedWords = MeowHost.Configuration.GetSection("BannedWords").Get<IEnumerable<string>>()?.ToArray() ?? throw new("Invalid banned words list");
     }
 
     private static void SendLocal(MeowPlayer sender, string text)
@@ -88,6 +94,22 @@ public class MeowChat
         return $"[{Formatter.FormatList(roles, " | ")}] ";
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool ContainsSlur(string message)
+    {
+        foreach (string bannedWord in _BannedWords)
+        {
+            if (message.Contains(bannedWord, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static readonly Translation ChatMuted = new("ChatMuted");
+    private static readonly Translation SaidBannedWord = new("SaidBannedWord");
     private static void OnChatted(SteamPlayer steamPlayer, EChatMode mode, ref Color chatted, ref bool isRich, string text, ref bool isVisible)
     {
         isVisible = false;
@@ -102,15 +124,17 @@ public class MeowChat
 
         if (player.Moderation.IsMuted && mode != EChatMode.GROUP)
         {
-
+            player.SendMessage(ChatMuted);
+            return;
         }
 
         string message = text.Replace("<", "< ").Replace("< 3", "<3");
 
-        foreach (string banned_word in MeowHost.Configuration.GetValue<string[]>("BannedWords")!)
+        if (ContainsSlur(message))
         {
-            if (message.Contains(banned_word))
+            if (!player.Permissions.HasPermission("chatbypass"))
             {
+                player.SendMessage(SaidBannedWord);
                 return;
             }
         }

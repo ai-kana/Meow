@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Logging;
 using Meow.Core.Players;
+using Cysharp.Threading.Tasks;
 
 namespace Meow.Core.Bot;
 
@@ -75,7 +76,7 @@ internal class BotManager
         }
     }
 
-    private static async Task HandleConnection(TcpClient client)
+    private static async UniTask HandleConnection(TcpClient client)
     {
         using Stream stream = client.GetStream();
         while (client.Connected)
@@ -91,11 +92,11 @@ internal class BotManager
             int x = await stream.ReadAsync(packet, 0, len);
             HandleCommands(packet);
 
-            await Task.Delay(10 * 1000);
+            await UniTask.Delay(10 * 1000);
         }
     }
 
-    private static async Task TryConnect(string host, int port)
+    private static async UniTask TryConnect(string host, int port)
     {
         using TcpClient client = new();
         await client.ConnectAsync(host, port);
@@ -103,7 +104,7 @@ internal class BotManager
         await HandleConnection(client);
     }
 
-    public static async Task Start()
+    public static async UniTask Start()
     {
         IConfigurationSection bot = MeowHost.Configuration.GetSection("Bot");
         bool enabled = bot.GetValue<bool>("Enabled");
@@ -126,7 +127,7 @@ internal class BotManager
                 //_Logger.LogError(exception.ToString());
             }
 
-            await Task.Delay(5000);
+            await UniTask.Delay(5000);
         }
     }
 }

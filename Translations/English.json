@@ -154,6 +154,7 @@
         "MutePermanent": "You are permanently muted for '{0}' appeal at {1}",
         "MuteTemporary": "You are muted for '{0}' for another {1} appeal at {2}",
         "Unmuted": "Your mute has expired",
+        "ChatMuted": "You are muted",
 
         "AssertDuty": "You must be on duty to use this command",
         "AssertZone": "You cannot use that command here",
@@ -207,6 +208,7 @@
         "VaultNotFound": "Cannot find vault named {0}",
         "VaultList": "You have access to vaults {0}",
 
-        "KickMessage": "You have been kicked for '{0}'"
+        "KickMessage": "You have been kicked for '{0}'",
+        "SaidBannedWord": "Do not say that :)"
     }
 }
