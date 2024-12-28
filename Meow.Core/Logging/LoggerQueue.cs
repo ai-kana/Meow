@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
-using System.Runtime.Remoting;
-using System.Text;
+using Cysharp.Threading.Tasks;
+using Meow.Core.Bot;
+using SDG.Unturned;
 
 namespace Meow.Core.Logging;
 
 internal sealed class LoggerQueue : IDisposable
 {
-    private ConcurrentQueue<LogMessage> _Queue = new();
     private bool _IsWriting = false;
     private StreamWriter _FileWriter;
     private TextWriter _ConsoleWriter;
@@ -18,28 +18,28 @@ internal sealed class LoggerQueue : IDisposable
             throw new ObjectDisposedException(nameof(LoggerQueue));
         }
 
-        _Queue.Enqueue(message);
-
-        if (!_IsWriting)
-        {
-            _ = WriteAsync();
-        }
+        WriteAsync(message).Forget();
     }
 
-    private async Task WriteAsync()
+    private SemaphoreSlim _Semaphore = new(1, 1);
+    private async UniTask WriteAsync(LogMessage message)
     {
         _IsWriting = true;
+        await _Semaphore.WaitAsync();
 
-        while (_Queue.TryDequeue(out LogMessage message))
+        await _FileWriter.WriteLineAsync(message.FileMessage);
+        await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
+        if (Level.isLoaded)
         {
-            await _FileWriter.WriteLineAsync(message.FileMessage);
-            await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
+            BotManager.LogQueue.Enqueue(message.ConsoleMessage);
         }
 
-        await _FileWriter.FlushAsync();
-        await _ConsoleWriter.FlushAsync();
-
-        _IsWriting = false;
+        _Semaphore.Release();
+        if (_Semaphore.CurrentCount == 0)
+        {
+            await _FileWriter.FlushAsync();
+            await _ConsoleWriter.FlushAsync();
+        }
     }
 
     private bool _IsDisposed = false;

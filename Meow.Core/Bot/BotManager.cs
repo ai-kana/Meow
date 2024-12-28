@@ -52,17 +52,10 @@ internal class BotManager
             builder.WriteString(reply.Text);
         }
 
-        if (Level.isLoaded)
+        builder.WriteByte((byte)LogQueue.Count);
+        while (LogQueue.TryDequeue(out string entry))
         {
-            builder.WriteByte((byte)LogQueue.Count);
-            while (LogQueue.TryDequeue(out string entry))
-            {
-                builder.WriteString(entry);
-            }
-        }
-        else
-        {
-            builder.WriteByte(0);
+            builder.WriteString(entry);
         }
 
         return builder.Build();
