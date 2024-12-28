@@ -198,26 +198,26 @@ public class MeowChat
         Broadcast(players, Formatter.Format(message, args));
     }
 
-    public static void BroadcastMessage(MeowPlayer player, Translation translation, params object[] args)
+    public static void BroadcastMessage(MeowPlayer player, ITranslatable translation, params object[] args)
     {
         _Logger.LogInformation(translation.Translate("English", args));
         Broadcast(player, translation, args);
     }
 
-    public static void BroadcastMessage(IEnumerable<MeowPlayer> players, Translation translation, params object[] args)
+    public static void BroadcastMessage(IEnumerable<MeowPlayer> players, ITranslatable translation, params object[] args)
     {
         _Logger.LogInformation(translation.Translate("English", args));
         Broadcast(players, translation, args);
     }
 
-    public static void BroadcastMessage(Translation translation, params object[] args)
+    public static void BroadcastMessage(ITranslatable translation, params object[] args)
     {
         _Logger.LogInformation(translation.Translate("English", args));
         IEnumerable<MeowPlayer> players = MeowPlayerManager.Players;
         Broadcast(players, translation, args);
     }
 
-    private static void Broadcast(IEnumerable<MeowPlayer> players, Translation translation, params object[] args)
+    private static void Broadcast(IEnumerable<MeowPlayer> players, ITranslatable translation, params object[] args)
     {
         foreach (MeowPlayer player in players)
         {
@@ -225,7 +225,7 @@ public class MeowChat
         }
     }
 
-    private static void Broadcast(MeowPlayer player, Translation translation, params object[] args)
+    private static void Broadcast(MeowPlayer player, ITranslatable translation, params object[] args)
     {
         string message = translation.Translate(player, args);
         SendMessage("<b>" + message, Color.white, null, player.SteamPlayer, EChatMode.GLOBAL, Formatter.ChatIconUrl, true).Forget();

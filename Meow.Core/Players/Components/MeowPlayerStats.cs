@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Chat;
+using Meow.Core.Fishing;
 using Meow.Core.Stats;
 using Meow.Core.Translations;
 using SDG.Unturned;
@@ -22,18 +23,37 @@ public class MeowPlayerStats
     public MeowPlayerStats(MeowPlayer owner)
     {
         Owner = owner;
-        Player.onPlayerStatIncremented += OnStatTicked;
-        owner.Life.OnPlayerDied += OnPlayerDied;
+        MeowPlayerManager.OnPlayerKilled += OnPlayerKilled;
+        FishingManager.OnFishCaught += OnFishCaught;
     }
 
     ~MeowPlayerStats()
     {
-        Player.onPlayerStatIncremented += OnStatTicked;
+        MeowPlayerManager.OnPlayerKilled -= OnPlayerKilled;
+        FishingManager.OnFishCaught -= OnFishCaught;
     }
 
-    private void OnPlayerDied()
+    private void OnFishCaught(MeowPlayer catcher)
     {
-        OnStatTicked(Owner.Player, EPlayerStat.DEATHS_PLAYERS);
+        if (catcher == Owner)
+        {
+            AddFish();
+        }
+    }
+
+    private void OnPlayerKilled(MeowPlayer victim, MeowPlayer killer)
+    {
+        if (victim == Owner)
+        {
+            AddDeath();
+            return;
+        }
+
+        if (killer == Owner)
+        {
+            AddKill();
+            return;
+        }
     }
 
     private void OnStatTicked(Player player, EPlayerStat stat)

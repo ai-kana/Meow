@@ -64,12 +64,16 @@ public class FishingSkill
     }
 }
 
+public delegate void FishCaught(MeowPlayer catcher);
+
 [HarmonyPatch]
-internal class FishingManager
+public class FishingManager
 {
     private static string OnGetRewardErrorContext(UseableFisher instance) {
         return "fishing " + instance.player.equipment.asset?.FriendlyName + " reward";
     }
+
+    public static event FishCaught? OnFishCaught;
 
     private static readonly Translation FishCaught = new("FishCaught");
     private static readonly Translation LevelUp = new("LevelUp");
@@ -162,7 +166,7 @@ internal class FishingManager
                 }
 
                 SendFishingReward(player);
-                __instance.player.sendStat(EPlayerStat.FOUND_FISHES);
+                OnFishCaught?.Invoke(player);
             }
             SendPlayReel.Invoke(__instance.GetNetId(), ENetReliability.Unreliable, __instance.channel.GatherRemoteClientConnectionsExcludingOwner());
             AlertTool.alert(__instance.transform.position, 8f);

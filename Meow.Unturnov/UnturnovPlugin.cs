@@ -2,8 +2,8 @@
 using Meow.Core.Json;
 using Meow.Core.Players;
 using Meow.Core.Plugins;
-using Meow.Unturnov.Doors;
 using Microsoft.Extensions.Configuration;
+using Meow.Core.Extensions;
 using Steamworks;
 using UnityEngine;
 
@@ -19,7 +19,6 @@ public class UnturnovPlugin : Plugin
     public string PlayerDataPath(MeowPlayer player) => Path.Combine(DataDirectory, $"{player.SteamID}.json");
     public override UniTask LoadAsync()
     {
-        DoorManager.Load();
         ConfigurationBuilder builder = new();
         builder.AddJsonFile(Path.Combine(WorkingDirectory, "Meow.Unturnov.Configuration.json"));
         Configuration = builder.Build();
@@ -49,7 +48,7 @@ public class UnturnovPlugin : Plugin
 
         using JsonStreamReader reader = new(File.Open(path, FileMode.Open, FileAccess.Read));
         Position position = await reader.ReadObject<Position>();
-        DoorPositions.Add(player.SteamID, position.ToVector3());
+        DoorPositions.AddOrUpdate(player.SteamID, position.ToVector3());
     }
 
     private async void OnPlayerDisconnected(MeowPlayer player)

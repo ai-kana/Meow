@@ -12,11 +12,14 @@ using Meow.Core.Translations;
 using System.Net;
 using Meow.Core.Ranks;
 using Meow.Core.Startup;
+using UnityEngine;
 
 namespace Meow.Core.Players;
 
 public delegate void PlayerConnected(MeowPlayer player);
 public delegate void PlayerDisconnected(MeowPlayer player);
+
+public delegate void PlayerKilled(MeowPlayer victim, MeowPlayer killer);
 
 [Startup]
 public class MeowPlayerManager
@@ -25,6 +28,8 @@ public class MeowPlayerManager
 
     public static event PlayerConnected? OnPlayerConnected;
     public static event PlayerDisconnected? OnPlayerDisconnected;
+
+    public static event PlayerKilled? OnPlayerKilled;
 
     private static readonly ILogger _Logger;
 
@@ -45,6 +50,119 @@ public class MeowPlayerManager
         PlayerLife.OnTellBroken_Global += GodModeHandler;
         PlayerLife.OnTellBleeding_Global += GodModeHandler;
         PlayerVoice.onRelayVoice += OnRelayVoice;
+        
+        PlayerLife.onPlayerDied += OnPlayerDied;
+    }
+
+    private static TranslationPackage GetFriendlyLimbName(ELimb limb)
+    {
+        switch (limb)
+        {
+            case ELimb.SKULL: return new(new("LimbSkull"));
+            case ELimb.SPINE: return new(new("LimbSpine"));
+
+            case ELimb.LEFT_ARM:
+            case ELimb.RIGHT_ARM:
+            case ELimb.LEFT_HAND:
+            case ELimb.RIGHT_HAND:
+                return new(new("LimbArm"));
+
+            case ELimb.LEFT_LEG:
+            case ELimb.RIGHT_LEG:
+            case ELimb.LEFT_FOOT:
+            case ELimb.RIGHT_FOOT:
+                return new(new("LimbLeftLeg"));
+
+            case ELimb.LEFT_FRONT:
+            case ELimb.RIGHT_FRONT:
+                return new(new("LimbFront"));
+
+            case ELimb.LEFT_BACK:
+            case ELimb.RIGHT_BACK:
+                return new(new("LimbBack"));
+            default:
+                return new(new("LimbNotFound"));
+        }
+    }
+
+    private static TranslationPackage GetDeathMessage(MeowPlayer victim, EDeathCause cause, ELimb limb, MeowPlayer? killer)
+    {
+        switch (cause)
+        {
+            case EDeathCause.GUN:
+                float distance = Vector3.Distance(victim.Movement.Position, killer!.Movement.Position);
+                TranslationPackage limbName = GetFriendlyLimbName(limb);
+                string gun = ((UseableGun)killer!.Player.equipment.useable).equippedGunAsset.FriendlyName;
+                return new(new("DeathGun"), victim.Name, killer.Name, gun, limbName, (int)distance);
+            case EDeathCause.SPIT:
+            case EDeathCause.BURNING:
+            case EDeathCause.BURNER:
+            case EDeathCause.ACID:
+                return new(new("DeathBurn"), victim.Name);
+            case EDeathCause.FOOD:
+                return new(new("DeathFood"), victim.Name);
+            case EDeathCause.WATER:
+                return new(new("DeathWater"), victim.Name);
+            case EDeathCause.KILL:
+                return new(new("DeathAdmin"), victim.Name);
+            case EDeathCause.ARENA: 
+                return new(new("DeathArena"), victim.Name);
+            case EDeathCause.BONES: 
+                return new(new("DeathFall"), victim.Name);
+            case EDeathCause.MELEE: 
+                string melee = ((UseableMelee)killer!.Player.equipment.useable).equippedMeleeAsset.FriendlyName;
+                return new(new("DeathMelee"), victim.Name, killer.Name, melee);
+            case EDeathCause.PUNCH:
+                return new(new("DeathPunch"), victim.Name, killer!.Name);
+            case EDeathCause.SHRED:
+                return new(new("DeathShred"), victim.Name);
+            case EDeathCause.SPARK:
+                return new(new("DeathSpark"), victim.Name);
+            case EDeathCause.ANIMAL:
+                return new(new("DeathAnimal"), victim.Name);
+            case EDeathCause.BREATH:
+                return new(new("DeathBreath"), victim.Name);
+            case EDeathCause.CHARGE:
+            case EDeathCause.SPLASH:
+            case EDeathCause.GRENADE:
+            case EDeathCause.MISSILE:
+            case EDeathCause.LANDMINE:
+                return new(new("DeathExplode"), victim.Name);
+            case EDeathCause.SENTRY:
+                return new(new("DeathSentry"), victim.Name);
+            case EDeathCause.INFECTION:
+            case EDeathCause.ZOMBIE:
+                return new(new("DeathZombie"), victim.Name);
+            case EDeathCause.BOULDER:
+                return new(new("DeathCrush"), victim.Name);
+            case EDeathCause.SUICIDE:
+                return new(new("DeathSuicide"), victim.Name);
+            case EDeathCause.ROADKILL:
+            case EDeathCause.VEHICLE:
+                return new(new("DeathVehicle"), victim.Name);
+            case EDeathCause.BLEEDING:
+                return new(new("DeathBleed"), victim.Name);
+            case EDeathCause.FREEZING:
+                return new(new("DeathBleed"), victim.Name);
+            default:
+                return new(new("DeathDefault"), victim.Name);
+        }
+    }
+
+    private static void OnPlayerDied(PlayerLife sender, EDeathCause cause, ELimb limb, CSteamID instigator)
+    {
+        if (!TryGetPlayer(sender.player, out MeowPlayer victim))
+        {
+            return;
+        }
+
+        if (TryGetPlayer(instigator, out MeowPlayer? killer))
+        {
+            OnPlayerKilled?.Invoke(victim, killer);
+        }
+
+        TranslationPackage package = GetDeathMessage(victim, cause, limb, killer);
+        MeowChat.BroadcastMessage(Players, package);
     }
 
     private static void OnRelayVoice(PlayerVoice speaker, bool wantsToUseWalkieTalkie, ref bool shouldAllow, ref bool shouldBroadcastOverRadio, ref PlayerVoice.RelayVoiceCullingHandler cullingHandler)

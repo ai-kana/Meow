@@ -3,7 +3,7 @@ using Meow.Core.Formatting;
 
 namespace Meow.Core.Translations;
 
-public readonly struct Translation
+public readonly struct Translation : ITranslatable
 {
     private readonly string _Key;
 

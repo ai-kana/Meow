@@ -8,7 +8,6 @@ public abstract class Plugin : IPlugin
     private string _WorkingDirectory = "";
 
     public abstract UniTask LoadAsync();
-
     public abstract UniTask UnloadAsync();
 
     void IPlugin.SetWorkingDirectory(string dir)

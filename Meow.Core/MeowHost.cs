@@ -1,7 +1,6 @@
 using Meow.Core.Commands.Framework; 
 using Meow.Core.Logging; 
 using Meow.Core.Roles;
-using Meow.Core.Players;
 using Meow.Core.Translations;
 using Meow.Core.Offenses;
 using Meow.Core.Bot;

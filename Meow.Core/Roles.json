@@ -112,5 +112,11 @@
         "ChatTag": "<color=#3843E7><b>VIP</b></color>",
         "DutyOnly": false,
         "Permissions": []
+    },
+    {
+        "Id": "youtuber",
+        "ChatTag": "<color=#FF0033><b>Youtuber</b></color>",
+        "DutyOnly": false,
+        "Permissions": []
     }
 ]

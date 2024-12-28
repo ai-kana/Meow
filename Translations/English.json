@@ -209,6 +209,36 @@
         "VaultList": "You have access to vaults {0}",
 
         "KickMessage": "You have been kicked for '{0}'",
-        "SaidBannedWord": "Do not say that :)"
+        "SaidBannedWord": "Do not say that :)",
+
+        "LimbSkull": "skull",
+        "LimbArm": "arm",
+        "LimbSpine": "spine",
+        "LimbFront": "front",
+        "LimbBack": "back",
+        "LimbNotFound": "D:",
+
+        "DeathGun": "{0} was shot by {1} with a {2} in the {3} from {4}m away",
+        "DeathAcid": "{0} was burnt to death",
+        "DeathFood": "{0} starved to death",
+        "DeathWater": "{0} dehydrated to death",
+        "DeathAdmin": "{0} was killed by an admin",
+        "DeathArena": "{0} was killed by the zone",
+        "DeathBones": "{0} has fallen to their death",
+        "DeathMelee": "{0} was stabbed by {1} with a {2}",
+        "DeathPunch": "{0} was punched to death by {1}",
+        "DeathShred": "{0} was shredded to death",
+        "DeathSpark": "{0} was electrocuted to death",
+        "DeathAnimal": "{0} was mauled by an animal",
+        "DeathBreath": "{0} ran out of air",
+        "DeathExplode": "{0} blew up",
+        "DeathSentry": "{0} was shot by a sentry",
+        "DeathZombie": "{0} was mauled by a zombie",
+        "DeathCrush": "{0} was crushed to death",
+        "DeathSuicide": "{0} killed themselves (me fr)",
+        "DeathVehicle": "{0} was hit by a car",
+        "DeathBleed": "{0} bled out",
+        "DeathFroze": "{0} froze to death",
+        "DeathDefault": "{0} died"
     }
 }

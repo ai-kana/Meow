@@ -4,12 +4,14 @@ using UnityEngine;
 using Meow.Core.Players;
 using Meow.Core.Translations;
 using Meow.Core.Extensions;
+using Meow.Core.Startup;
 
 namespace Meow.Unturnov.Doors;
 
+[Startup]
 internal static class DoorManager
 {
-    public static void Load()
+    static DoorManager()
     {
         BarricadeManager.onDeployBarricadeRequested += OnDeployRequested;
         BarricadeDrop.OnSalvageRequested_Global += OnSalvageRequested;

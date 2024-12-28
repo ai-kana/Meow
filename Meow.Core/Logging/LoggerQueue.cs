@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using System.Runtime.Remoting;
+using System.Text;
 
 namespace Meow.Core.Logging;
 
@@ -7,7 +9,7 @@ internal sealed class LoggerQueue : IDisposable
     private ConcurrentQueue<LogMessage> _Queue = new();
     private bool _IsWriting = false;
     private StreamWriter _FileWriter;
-    private StreamWriter _ConsoleWriter;
+    private TextWriter _ConsoleWriter;
 
     public void Enqueue(LogMessage message)
     {
@@ -32,7 +34,6 @@ internal sealed class LoggerQueue : IDisposable
         {
             await _FileWriter.WriteLineAsync(message.FileMessage);
             await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
-
         }
 
         await _FileWriter.FlushAsync();
@@ -50,7 +51,7 @@ internal sealed class LoggerQueue : IDisposable
 
     internal LoggerQueue(StreamWriter writer)
     {
-        _ConsoleWriter = new(Console.OpenStandardOutput());
+        _ConsoleWriter = Console.Out;
         _FileWriter = writer;
     }
 }
