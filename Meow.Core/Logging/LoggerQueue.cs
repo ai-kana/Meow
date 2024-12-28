@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Cysharp.Threading.Tasks;
 using Meow.Core.Bot;
 using SDG.Unturned;
@@ -31,7 +30,7 @@ internal sealed class LoggerQueue : IDisposable
         await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
         if (Level.isLoaded)
         {
-            BotManager.LogQueue.Enqueue(message.ConsoleMessage);
+            BotManager.LogQueue.Enqueue(message.FileMessage);
         }
 
         _Semaphore.Release();
