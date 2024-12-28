@@ -56,8 +56,8 @@ public class ZoneManager
     {
         foreach (Zone zone in _Zones)
         {
-            float distance = Vector3.Distance(zone.Center.ToVector3(), player.Movement.Position);
-            if (distance > zone.Radius)
+            float distance = Vector3.SqrMagnitude(player.Movement.Position - zone.Center.ToVector3());
+            if (distance > zone.Radius * zone.Radius)
             {
                 continue;
             }

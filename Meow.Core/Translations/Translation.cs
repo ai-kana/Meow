@@ -1,4 +1,3 @@
-using Meow.Core.Players;
 using Meow.Core.Formatting;
 
 namespace Meow.Core.Translations;
@@ -23,7 +22,7 @@ public readonly struct Translation : ITranslatable
         {
             object arg = args[i];
             
-            if (arg is TranslationPackage translation)
+            if (arg is ITranslatable translation)
             {
                 outArgs[i] = translation.Translate(language);
                 continue;
@@ -33,16 +32,6 @@ public readonly struct Translation : ITranslatable
         }
 
         return outArgs;
-    }
-
-    public string Translate(params object[] args)
-    {
-        return Translate("English", args);
-    }
-
-    public string Translate(IPlayer player, params object[] args)
-    {
-        return Translate(player.Language, args);
     }
 
     public string Translate(string language, params object[] args)
@@ -55,16 +44,6 @@ public readonly struct Translation : ITranslatable
         }
 
         return Formatter.Format(value, fixedArgs);
-    }
-
-    public string TranslateNoColor(params object[] args)
-    {
-        return TranslateNoColor("English", args);
-    }
-
-    public string TranslateNoColor(IPlayer player, params object[] args)
-    {
-        return TranslateNoColor(player.Language, args);
     }
 
     public string TranslateNoColor(string language, params object[] args)

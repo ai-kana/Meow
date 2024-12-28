@@ -49,7 +49,7 @@ public class NetMessages
     {
         NetPakWriter writer = NetMessageWriter;
         writer.Reset();
-        writer.WriteEnum(EClientMessage.PlayerDisconnected);
+        writer.WriteEnum(message);
 
         info(writer);
 
