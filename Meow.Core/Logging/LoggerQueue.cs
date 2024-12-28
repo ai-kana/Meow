@@ -6,7 +6,6 @@ namespace Meow.Core.Logging;
 
 internal sealed class LoggerQueue : IDisposable
 {
-    private bool _IsWriting = false;
     private StreamWriter _FileWriter;
     private TextWriter _ConsoleWriter;
 
@@ -23,7 +22,6 @@ internal sealed class LoggerQueue : IDisposable
     private SemaphoreSlim _Semaphore = new(1, 1);
     private async UniTask WriteAsync(LogMessage message)
     {
-        _IsWriting = true;
         await _Semaphore.WaitAsync();
 
         await _FileWriter.WriteLineAsync(message.FileMessage);
