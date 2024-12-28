@@ -5,6 +5,7 @@
 #include <concord/discord.h>
 
 #include <concord/types.h>
+#include <stddef.h>
 #include <string.h>
 #include <sys/time.h>
 #include <sys/epoll.h>
@@ -19,7 +20,8 @@
 
 static int socket_fd = 0;
 
-static int get_names_size(unsigned char* packet) {
+static int 
+get_names_size(unsigned char* packet) {
     unsigned char player_count = packet[0];
     int total_size = 0;
     int n = 1;
@@ -35,14 +37,16 @@ static int get_names_size(unsigned char* packet) {
 
 #define STATUS_MESSAGE 1316323247717093377
 
-static void update_status_offline() {
+static void 
+update_status_offline() {
     struct discord_edit_message msg = {
         .content = "The server is offline",
     };
     discord_edit_message(discord_client, 1277075166803001394, STATUS_MESSAGE, &msg, NULL);
 }
 
-static int update_status_embed(unsigned char* packet) {
+static int 
+update_status_embed(unsigned char* packet) {
     unsigned char player_count = packet[0];
 
     int size = get_names_size(packet) + 1;
@@ -97,7 +101,8 @@ static int update_status_embed(unsigned char* packet) {
 
 #define RCON_CHANNEL 1316321819044610090
 static const char* format = "<@%lu>: %s";
-static void handle_reply(const u64snowflake discordId, const unsigned int size, const char* msg) {
+static void 
+handle_reply(const u64snowflake discordId, const unsigned int size, const char* msg) {
     char buf[1028] = {0};
     snprintf(buf, 1027, format, discordId, msg);
     struct discord_create_message reply = {
@@ -107,7 +112,8 @@ static void handle_reply(const u64snowflake discordId, const unsigned int size, 
     discord_create_message(discord_client, RCON_CHANNEL, &reply, NULL);
 }
 
-static int process_replies(unsigned char* packet, int offset) {
+static int 
+process_replies(unsigned char* packet, int offset) {
     unsigned char cmd_count = packet[offset];
     offset++;
 
@@ -127,7 +133,8 @@ static int process_replies(unsigned char* packet, int offset) {
     return offset;
 }
 
-static void send_commands(int fd) {
+static void 
+send_commands(int fd) {
     int length = 0;
     const size_t count = rcon_requests_count;
     struct rcon_request** restrict base = rcon_requests;
@@ -166,6 +173,66 @@ static void send_commands(int fd) {
     write(fd, packet, length + 4);
 }
 
+static size_t
+get_log_size(const unsigned char* restrict packet, int offset) {
+    size_t size = 0;
+    unsigned char count = packet[offset];
+    offset++;
+
+    for (int i = 0; i < count; i++) {
+        unsigned int length = ((unsigned int*)packet)[offset];
+        offset += sizeof(unsigned int) + length;
+        size += length;
+    }
+
+    return size;
+}
+
+#define LOG_CHANNEL 1322693078447947786
+static void 
+flush_message(char* restrict buf) {
+    struct discord_create_message message = {
+        .content = buf,
+    };
+    discord_create_message(discord_client, LOG_CHANNEL, &message, NULL);
+}
+
+static int 
+process_logs(const unsigned char* restrict packet, int offset) {
+    char buf[2000] = {0};
+    const size_t buf_max = 2000 - 4;
+    size_t buf_off = 3;
+    const unsigned int code_block = (0 << 24) | ('`' << 16) | ('`' << 8) | '`';
+    *((unsigned int*)buf) = code_block;
+
+    const unsigned char entries = packet[offset];
+    offset++;
+    for (unsigned char i = 0; i < entries; i++) {
+        const unsigned int length = *(unsigned int*)(packet + offset);
+        offset += sizeof(unsigned int);
+        if (buf_off + length + 1 < buf_max) {
+            memcpy(buf + buf_off, packet + offset, length);
+            buf_off += length + 1;
+            buf[buf_off - 1] = '\n';
+            offset += length;
+        } else {
+            *((unsigned int*)(buf + buf_off - 1)) = code_block;
+            buf_off += 4;
+            flush_message(buf);
+            bzero(buf + 3, 2000);
+            buf_off = 3;
+        }
+    }
+
+    if (buf_off > 3) {
+        *((unsigned int*)(buf + buf_off - 1)) = code_block;
+        buf_off += 4;
+        flush_message(buf);
+    }
+
+    return offset;
+}
+
 static int 
 listen_for_server(int fd) {
     if (listen(fd, 1) != 0) {
@@ -194,7 +261,8 @@ listen_for_server(int fd) {
         if (read(client_fd, packet, size) == 0) return client_fd;
 
         int offset = update_status_embed(packet);
-        process_replies(packet, offset);
+        offset = process_replies(packet, offset);
+        offset = process_logs(packet, offset);
 
         send_commands(client_fd);
     }
@@ -233,11 +301,13 @@ thread_start(void* param) {
     return NULL;
 }
 
-void start_server() {
+void 
+start_server() {
     pthread_t thread;
     pthread_create(&thread, NULL, &thread_start, NULL);
 }
 
-void stop_server() {
+void 
+stop_server() {
     close(socket_fd);
 }

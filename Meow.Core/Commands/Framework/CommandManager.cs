@@ -96,9 +96,23 @@ internal class CommandManager
 
         return commandType;
     }
+    
+    private static string[] GetMultiCommands(string input)
+    {
+        return input.Split(["&&"], StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public static async UniTask ExecuteCommand(string commandText, IPlayer caller)
+    {
+        string[] commands = GetMultiCommands(commandText);
+        foreach (string command in commands)
+        {
+            await Execute(command, caller);
+        }
+    }
 
     public static readonly Translation NoCommandFound = new("NoCommandFound");
-    public static async UniTask ExecuteCommand(string commandText, IPlayer caller)
+    private static async UniTask Execute(string commandText, IPlayer caller)
     {
         CommandTokenizer parser = new(commandText);
         IEnumerable<string> arguments = parser.Parse();

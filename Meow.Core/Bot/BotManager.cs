@@ -6,6 +6,7 @@ using Meow.Core.Commands.Framework;
 using Meow.Core.Logging;
 using Meow.Core.Players;
 using Cysharp.Threading.Tasks;
+using SDG.Unturned;
 
 namespace Meow.Core.Bot;
 
@@ -22,22 +23,16 @@ internal readonly struct RconCommandReply
 
 internal class BotManager
 {
-    private static ConcurrentQueue<string> _LogQueue; 
-
     static ILogger _Logger;
 
     static BotManager()
     {
         _Logger = LoggerProvider.CreateLogger<BotManager>();
         CommandReplies = new();
-        _LogQueue = new();
+        LogQueue = new();
     }
 
-    public static void EnqueueLog(string message)
-    {
-        _LogQueue.Enqueue(message);
-    }
-
+    public static ConcurrentQueue<string> LogQueue; 
     public static ConcurrentQueue<RconCommandReply> CommandReplies;
 
     private static byte[] ConstructPacket()
@@ -55,6 +50,19 @@ internal class BotManager
         {
             builder.WriteUInt64(reply.InteractionId);
             builder.WriteString(reply.Text);
+        }
+
+        if (Level.isLoaded)
+        {
+            builder.WriteByte((byte)LogQueue.Count);
+            while (LogQueue.TryDequeue(out string entry))
+            {
+                builder.WriteString(entry);
+            }
+        }
+        else
+        {
+            builder.WriteByte(0);
         }
 
         return builder.Build();
