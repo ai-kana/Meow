@@ -11,15 +11,6 @@ namespace Meow.Core.Binds;
 [Startup]
 public static class BindManager
 {
-    private enum PluginKey : byte
-    {
-        Key1 = 10,
-        Key2 = 11,
-        Key3 = 12,
-        Key4 = 13,
-        Key5 = 14,
-    }
-
     static BindManager()
     {
         PlayerInput.onPluginKeyTick += OnPluginKeyTicked;
