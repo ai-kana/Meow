@@ -96,7 +96,7 @@ internal class StatsLifeCommand : Command
     {
     }
 
-    private static readonly Translation PlayerLifeStats = new("PlayerStats");
+    private static readonly Translation PlayerLifeStats = new("PlayerLifeStats");
 
     public override UniTask ExecuteAsync()
     {

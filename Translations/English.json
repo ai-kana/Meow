@@ -187,7 +187,7 @@
 
         "FailedToGetStats": "Failed to get {0}'s stats",
         "PlayerStats": "{0}'s stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}",
-        "PlayerStats": "{0}'s life stats: {1} fish caught {2} kills",
+        "PlayerLifeStats": "{0}'s life stats: {1} fish caught {2} kills",
         "PlayerSessionStats": "{0}'s session stats: {1} fish caught {2} kills {3} deaths K/D {4:F2}",
 
         "CommandHelp": "Parameters are wrapped in square brackets '[]'. Question marks '?' mean that the parameter is optional. Three dots '...' means it will take any continuing text as one argument ",
