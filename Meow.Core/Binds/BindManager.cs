@@ -57,11 +57,13 @@ public static class BindManager
 
     public static void SetBind(MeowPlayer player, byte number, string command)
     {
+        number--;
         player.SaveData.CustomBinds.AddOrUpdate(number, command);
     }
 
     public static bool RemoveBind(MeowPlayer player, byte number)
     {
+        number--;
         return player.SaveData.CustomBinds.Remove(number);
     }
 }
