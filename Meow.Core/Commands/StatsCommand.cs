@@ -35,7 +35,7 @@ internal class StatsCommand : Command
 
         string name = player?.Name ?? target.ToString();
 
-        PlayerStats? stats = await StatsManager.GetStats(target);
+        PlayerStats? stats = player?.Stats.Stats ?? await StatsManager.GetStats(target);
         if (stats == null)
         {
             throw Context.Reply(FailedToGetStats, name);

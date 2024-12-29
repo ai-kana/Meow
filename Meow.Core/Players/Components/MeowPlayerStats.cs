@@ -20,17 +20,33 @@ public class PlayerStats
 public class MeowPlayerStats
 {
     public MeowPlayer Owner;
+    private PlayerStats CachedStats = null!;
+    public PlayerStats Stats => new() 
+    {
+        Kills = CachedStats.Kills + ServerSession.Kills,
+        Deaths = CachedStats.Deaths + ServerSession.Deaths,
+        Fish = CachedStats.Fish + ServerSession.Fish,
+        ItemsLooted = CachedStats.ItemsLooted + ServerSession.ItemsLooted,
+        PlayTime = 0
+    };
+
     public MeowPlayerStats(MeowPlayer owner)
     {
         Owner = owner;
         MeowPlayerManager.OnPlayerKilled += OnPlayerKilled;
         FishingManager.OnFishCaught += OnFishCaught;
+        SetCacheStats().Forget();
     }
 
     ~MeowPlayerStats()
     {
         MeowPlayerManager.OnPlayerKilled -= OnPlayerKilled;
         FishingManager.OnFishCaught -= OnFishCaught;
+    }
+
+    private async UniTask SetCacheStats()
+    {
+        CachedStats = await StatsManager.GetStats(Owner.SteamID) ?? new();
     }
 
     private void OnFishCaught(MeowPlayer catcher)
