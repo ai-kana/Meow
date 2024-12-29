@@ -26,7 +26,7 @@ internal class ZoneCommand : Command
         Context.AssertArguments(2);
 
         Zone zone = new();
-        zone.Center = caller.Movement.Position;
+        zone.Center = caller.Position;
         zone.Radius = Context.Parse<float>();
 
         Context.MoveNext();

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Chat;
 using Meow.Core.Commands.Framework;
+using Meow.Core.Extensions;
 using Meow.Core.Players;
 using Meow.Core.Translations;
 using Steamworks;
@@ -18,6 +19,8 @@ internal class ReplyCommand : Command
     private static readonly Translation NoOneToReplyTo = new("NoOneToReplyTo");
     private static readonly Translation PlayerNotOnline = new("PlayerNotOnline");
 
+    public readonly  static Dictionary<MeowPlayer, CSteamID> LastMessage = new();
+
     public override UniTask ExecuteAsync()
     {
         Context.AssertArguments(1);
@@ -26,17 +29,17 @@ internal class ReplyCommand : Command
 
         Context.AssertPlayer(out MeowPlayer self);
         
-        if (self.LastPrivateMessage == CSteamID.Nil) 
+        if (!LastMessage.TryGetValue(self, out CSteamID last) || last == CSteamID.Nil)
         {
             throw Context.Reply(NoOneToReplyTo);
         }
 
-        if (!MeowPlayerManager.TryGetPlayer(self.LastPrivateMessage, out MeowPlayer target))
+        if (!MeowPlayerManager.TryGetPlayer(last, out MeowPlayer target))
         {
             throw Context.Reply(PlayerNotOnline);
         }
         
-        target.LastPrivateMessage = self.SteamID;
+        LastMessage.AddOrUpdate(target, self.SteamID);
         
         MeowChat.SendPrivateMessage(self, target, message);
         throw Context.Exit;

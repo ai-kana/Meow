@@ -40,7 +40,7 @@ internal class ReputationGetCommand : Command
         
         MeowPlayer target = Context.Parse<MeowPlayer>();
 
-        throw Context.Reply(CheckedReputation, target.Name, target.Quests.Reputation);
+        throw Context.Reply(CheckedReputation, target.Name, target.Reputation);
     }
 }
 
@@ -64,7 +64,7 @@ internal class ReputationSetCommand : Command
         Context.MoveNext();
         int reputation = Context.Parse<int>();
 
-        target.Quests.SetReputation(reputation);
+        target.SetReputation(reputation);
         
         throw Context.Reply(SetReputation, target.Name, reputation);
     }
@@ -88,7 +88,7 @@ internal class ReputationResetCommand : Command
         
         MeowPlayer target = Context.Parse<MeowPlayer>();
 
-        target.Quests.SetReputation(0);
+        target.SetReputation(0);
         
         throw Context.Reply(ResetReputation, target.Name);
     }
@@ -114,7 +114,7 @@ internal class ReputationAddCommand : Command
         Context.MoveNext();
         int reputation = Context.Parse<int>();
 
-        target.Quests.GiveReputation(reputation);
+        target.GiveReputation(reputation);
         
         throw Context.Reply(AddedReputation, reputation, target.Name);
     }
@@ -140,7 +140,7 @@ internal class ReputationTakeCommand : Command
         Context.MoveNext();
         int reputation = Context.Parse<int>();
 
-        target.Quests.RemoveReputation(reputation);
+        target.RemoveReputation(reputation);
         
         throw Context.Reply(TookReputation, reputation, target.Name);
     }

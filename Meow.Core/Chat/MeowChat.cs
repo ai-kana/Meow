@@ -46,7 +46,7 @@ public class MeowChat
 
         foreach (MeowPlayer player in MeowPlayerManager.Players)
         {
-            if (Vector3.SqrMagnitude(player.Movement.Position - sender.Movement.Position) > _LocalChatDistance)
+            if (Vector3.SqrMagnitude(player.Position - sender.Position) > _LocalChatDistance)
             {
                 continue;
             }
@@ -82,8 +82,8 @@ public class MeowChat
 
     private static string GetChatTag(MeowPlayer player)
     {
-        IEnumerable<string> roles = RoleManager.GetRoles(player.Roles.Roles)
-            .Where(x => x.DutyOnly ? player.Administration.OnDuty : true && x.ChatTag != string.Empty)
+        IEnumerable<string> roles = RoleManager.GetRoles(player.Roles)
+            .Where(x => x.DutyOnly ? player.OnDuty : true && x.ChatTag != string.Empty)
             .Select(x => x.ChatTag);
 
         if (roles.Count() == 0)
@@ -122,7 +122,7 @@ public class MeowChat
             return;
         }
 
-        if (player.Moderation.IsMuted && mode != EChatMode.GROUP)
+        if (player.IsMuted && mode != EChatMode.GROUP)
         {
             player.SendMessage(ChatMuted);
             return;
@@ -132,7 +132,7 @@ public class MeowChat
 
         if (ContainsSlur(message))
         {
-            if (!player.Permissions.HasPermission("chatbypass"))
+            if (!player.HasPermission("chatbypass"))
             {
                 player.SendMessage(SaidBannedWord);
                 return;
@@ -159,7 +159,7 @@ public class MeowChat
     {
         foreach (MeowPlayer player in MeowPlayerManager.Players)
         {
-            if (player.Permissions.HasPermission("staffchat"))
+            if (player.HasPermission("staffchat"))
             {
                 yield return player;
             }

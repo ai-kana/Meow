@@ -24,12 +24,12 @@ internal class HealCommand : Command
         {
             Context.AssertPermission("heal.other");
             MeowPlayer target = Context.Parse<MeowPlayer>();
-            target.Life.Heal();
+            target.Heal();
             throw Context.Reply(HealedOther, target.Name);
         }
         
         Context.AssertPlayer(out MeowPlayer self);
-        self.Life.Heal();
+        self.Heal();
         throw Context.Reply(HealedSelf);
     }
 }

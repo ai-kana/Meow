@@ -48,12 +48,12 @@ internal class TeleportCommand : Command
 
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
-                self.Movement.Teleport(node!.inspectablePosition);
+                self.Teleport(node!.inspectablePosition);
                 throw Context.Reply(TeleportedToOther, node.locationName);
             }
             
             MeowPlayer player = Context.Parse<MeowPlayer>();
-            self.Movement.Teleport(player);
+            self.Teleport(player);
             throw Context.Reply(TeleportedToOther, player.Name);
         }
 
@@ -64,13 +64,13 @@ internal class TeleportCommand : Command
             
             if (TryFindLocation(Context.Current, out LocationDevkitNode? node))
             {
-                player.Movement.Teleport(node!.inspectablePosition);
+                player.Teleport(node!.inspectablePosition);
                 throw Context.Reply(TeleportedOtherToOther, player.Name, node.locationName);
             }
             
             MeowPlayer target = Context.Parse<MeowPlayer>();
 
-            target.Movement.Teleport(player);
+            target.Teleport(player);
             throw Context.Reply(TeleportedOtherToOther, player.Name, target.Name);
         }
 
@@ -79,7 +79,7 @@ internal class TeleportCommand : Command
             Context.AssertPlayer(out MeowPlayer caller);
 
             Vector3 position = Context.Parse<Vector3>();
-            caller.Movement.Teleport(position);
+            caller.Teleport(position);
             throw Context.Reply(TeleportingToXYZ, position.x, position.y, position.z);
         }
 
@@ -87,7 +87,7 @@ internal class TeleportCommand : Command
             MeowPlayer player = Context.Parse<MeowPlayer>();
             Context.MoveNext();
             Vector3 position = Context.Parse<Vector3>();
-            player.Movement.Teleport(position);
+            player.Teleport(position);
             throw Context.Reply(TeleportingOtherToXYZ, player.Name, position.x, position.y, position.z);
         }
     }
@@ -110,12 +110,12 @@ internal class TeleportWaypointCommand : Command
         Context.AssertOnDuty();
         Context.AssertPlayer(out MeowPlayer self);
         
-        if (!self.Quests.TryGetMarkerPosition(out Vector3 position))
+        if (!self.TryGetMarkerPosition(out Vector3 position))
         {
             throw Context.Reply(NoWaypoint);
         }
         
-        self.Movement.Teleport(position);
+        self.Teleport(position);
         throw Context.Reply(TeleportingToWaypoint);
     }
 }
@@ -140,7 +140,7 @@ internal class TeleportHereCommand : Command
 
         MeowPlayer toTp = Context.Parse<MeowPlayer>();
         
-        toTp.Movement.Teleport(self);
+        toTp.Teleport(self);
         throw Context.Reply(TeleportingPlayerHere, toTp.Name);
     }
 }

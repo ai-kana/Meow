@@ -1,10 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Players;
-using Meow.Core.Players.Components;
 using Meow.Core.Sql;
 using MySqlConnector;
 using Steamworks;
-using Session = Meow.Core.Players.Components.MeowPlayerStats.Session;
+using Session = Meow.Core.Players.PlayerState.Session;
 
 namespace Meow.Core.Stats;
 
@@ -44,7 +43,7 @@ public class StatsManager
 
     private static void OnDisconnected(MeowPlayer player)
     {
-        _ = player.Stats.CommitStatsAsync();
+        _ = player.CommitStatsAsync();
     }
 
     public static async UniTask CreateTables()
@@ -106,7 +105,7 @@ public class StatsManager
     FROM {StatsTable}
     WHERE {SteamId}=@SteamId
     """;
-    public static async UniTask<PlayerStats?> GetStats(CSteamID steamId)
+    public static async UniTask<MeowPlayer.PlayerStats?> GetStats(CSteamID steamId)
     {
         await using MySqlConnection connection = SqlManager.CreateConnection();
         await connection.OpenAsync();

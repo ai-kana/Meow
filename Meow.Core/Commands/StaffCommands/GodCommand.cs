@@ -25,14 +25,14 @@ internal class GodCommand : Command
         {
             Context.AssertPermission("god.other");
             MeowPlayer player = Context.Parse<MeowPlayer>();
-            player.Administration.GodMode = !player.Administration.GodMode;
+            player.GodMode = !player.GodMode;
             
-            throw Context.Reply(GodModeOther, player.Name, player.Administration.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
+            throw Context.Reply(GodModeOther, player.Name, player.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
         }
 
         Context.AssertPlayer(out MeowPlayer self);
-        self.Administration.GodMode = !self.Administration.GodMode;
+        self.GodMode = !self.GodMode;
 
-        throw Context.Reply(GodModeSelf, self.Administration.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
+        throw Context.Reply(GodModeSelf, self.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }

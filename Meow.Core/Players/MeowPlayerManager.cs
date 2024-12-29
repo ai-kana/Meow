@@ -13,6 +13,7 @@ using System.Net;
 using Meow.Core.Startup;
 using UnityEngine;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace Meow.Core.Players;
 
@@ -41,18 +42,25 @@ public class MeowPlayerManager
         Provider.onServerConnected += OnServerConnected;
         Provider.onServerDisconnected += OnServerDisconnected;
 
-        // God mode
-        DamageTool.damagePlayerRequested += OnDamageRequested;
-        PlayerLife.OnTellHealth_Global += GodModeHandler;
-        PlayerLife.OnTellFood_Global += GodModeHandler;
-        PlayerLife.OnTellWater_Global += GodModeHandler;
-        PlayerLife.OnTellVirus_Global += GodModeHandler;
-        PlayerLife.OnTellBroken_Global += GodModeHandler;
-        PlayerLife.OnTellBleeding_Global += GodModeHandler;
-        PlayerVoice.onRelayVoice += OnRelayVoice;
-        
         PlayerLife.onPlayerDied += OnPlayerDied;
+        PlayerInput.onPluginKeyTick += OnPluginKeyTick;
     }
+
+    private static void OnPluginKeyTick(Player player, uint simulation, byte key, bool state)
+    {
+        if (!state)
+        {
+            return;
+        }
+        
+        if (!MeowPlayerManager.TryGetPlayer(player, out MeowPlayer p))
+        {
+            return;
+        }
+
+        p.OnPluginKeyPressed(key);
+    }
+
 
     private static TranslationPackage GetFriendlyLimbName(ELimb limb)
     {
@@ -85,16 +93,16 @@ public class MeowPlayerManager
         }
     }
 
-    private static TranslationPackage GetDeathMessage(MeowPlayer victim, EDeathCause cause, ELimb limb, MeowPlayer? killer)
+    private static TranslationPackage GetDeathMessage(MeowPlayer victim, EDeathCause cause, ELimb limb, MeowPlayer killer)
     {
         object[]? args = null;
         Translation translation;
         switch (cause)
         {
             case EDeathCause.GUN:
-                float distance = Vector3.Distance(victim.Movement.Position, killer!.Movement.Position);
+                float distance = Vector3.Distance(victim.Position, killer.Position);
                 TranslationPackage limbName = GetFriendlyLimbName(limb);
-                string gun = ((UseableGun)killer!.Player.equipment.useable).equippedGunAsset.FriendlyName;
+                string gun = ((UseableGun)killer.Player.equipment.useable).equippedGunAsset.FriendlyName;
                 args = [victim.Name, killer.Name, gun, limbName, (int)distance];
                 translation = new("DeathGun");
                 break;
@@ -120,7 +128,7 @@ public class MeowPlayerManager
                 translation = new("DeathFall");
                 break;
             case EDeathCause.MELEE: 
-                string melee = ((UseableMelee)killer!.Player.equipment.useable).equippedMeleeAsset.FriendlyName;
+                string melee = ((UseableMelee)killer.Player.equipment.useable).equippedMeleeAsset.FriendlyName;
                 args = [victim.Name, killer.Name, melee];
                 translation = new("DeathMelee");
                 break;
@@ -185,7 +193,7 @@ public class MeowPlayerManager
             return;
         }
 
-        if (TryGetPlayer(instigator, out MeowPlayer? killer))
+        if (TryGetPlayer(instigator, out MeowPlayer killer))
         {
             OnPlayerKilled?.Invoke(victim, killer);
         }
@@ -195,24 +203,7 @@ public class MeowPlayerManager
 
     private static void OnRelayVoice(PlayerVoice speaker, bool wantsToUseWalkieTalkie, ref bool shouldAllow, ref bool shouldBroadcastOverRadio, ref PlayerVoice.RelayVoiceCullingHandler cullingHandler)
     {
-        TryGetPlayer(speaker.player, out MeowPlayer player);
-        shouldAllow = !player.Moderation.IsMuted;
-    }
-
-    private static void GodModeHandler(PlayerLife life)
-    {
-        // Do this with a patch later
-        TryGetPlayer(life.player, out MeowPlayer player);
-        if (player.Administration.GodMode)
-        {
-            life.sendRevive();
-        }
-    }
-
-    private static void OnDamageRequested(ref DamagePlayerParameters parameters, ref bool shouldAllow)
-    {
-        TryGetPlayer(parameters.player, out MeowPlayer player);
-        shouldAllow = !player?.Administration.GodMode ?? true;
+        shouldAllow = !IsMuted(speaker.player.channel.owner.playerID.steamID);
     }
 
     private static IEnumerable<MeowPlayer> GetPlayerListCopy()
@@ -225,7 +216,7 @@ public class MeowPlayerManager
         IEnumerable<MeowPlayer> players = GetPlayerListCopy();
         foreach (MeowPlayer player in players)
         {
-            player.Moderation.Kick(reason);
+            Kick(player, reason);
         }
     }
 
@@ -234,13 +225,13 @@ public class MeowPlayerManager
         IEnumerable<MeowPlayer> players = GetPlayerListCopy();
         foreach (MeowPlayer player in players)
         {
-            player.Moderation.Kick(translation, args);
+            Kick(player, translation.Translate(player, args));
         }
     }
 
     private static bool TryFindPlayer(CSteamID steamId, out MeowPlayer player)
     {
-        player = null!;
+        player = default;
         for (int i = 0; i < Players.Count; i++)
         {
             player = Players[i];
@@ -281,7 +272,7 @@ public class MeowPlayerManager
         }
 
         player = MeowPlayerManager.Players.FirstOrDefault(x => x.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
-        if (player == null)
+        if (player == default)
         {
             return false;
         }
@@ -328,7 +319,7 @@ public class MeowPlayerManager
         Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.IsPermanent);
         if (permBan != null)
         {
-            player.Moderation.Kick(BanPermanent, permBan.Reason, discord);
+            Kick(player, BanPermanent.Translate(player, permBan.Reason, discord));
             return;
         }
 
@@ -336,7 +327,7 @@ public class MeowPlayerManager
             .OrderByDescending(x => x.Remaining).FirstOrDefault();
         if (nonPermBan != null)
         {
-            player.Moderation.Kick(BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
+            Kick(player, BanTemporary.Translate(player, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord));
         }
     }
 
@@ -346,7 +337,6 @@ public class MeowPlayerManager
         if (permMute != null)
         {
             player.SendMessage(MutePermanent, permMute.Reason, discord);
-            player.Moderation.IsMuted = true;
             return;
         }
 
@@ -355,8 +345,7 @@ public class MeowPlayerManager
         if (tempMute != null)
         {
             player.SendMessage(MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
-            player.Moderation.IsMuted = true;
-            player.Moderation.EnqueueUnmute(tempMute.Remaining);
+            EnqueueUnmute(player.SteamID, tempMute.Remaining);
         }
     }
 
@@ -413,19 +402,112 @@ public class MeowPlayerManager
             return;
         }
 
-        if (player.Administration.FakedDisconnected)
-        {
-           return;
-        }
-
         OnPlayerDisconnected?.Invoke(player);
+        player.Dispose();
 
         Players.Remove(player);
         await PlayerDataManager.SaveDataAsync(player);
 
-        player.Moderation.CancelUnmute();
+        CancelUnmute(steamID);
 
         MeowChat.BroadcastMessage(PlayerDisconnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has left the server");
+    }
+
+    private static readonly Dictionary<CSteamID, CancellationTokenSource> Unmutes = new();
+
+    private static async UniTask WaitForUnmute(CSteamID offender, long time, CancellationToken token)
+    {
+        await UniTask.Delay((int)(time * 1000), cancellationToken: token);
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
+        if (MeowPlayerManager.TryGetPlayer(offender, out MeowPlayer player))
+        {
+            CancelUnmute(offender);
+            player.SendMessage(new Translation("Unmuted"));
+        }
+    }
+
+    public static bool IsMuted(CSteamID player) => Unmutes.ContainsKey(player);
+
+    public static void CancelUnmute(CSteamID offender)
+    {
+        if (!Unmutes.TryGetValue(offender, out CancellationTokenSource source))
+        {
+            return;
+        }
+
+        Unmutes.Remove(offender);
+        source.Cancel();
+        source.Dispose();
+    }
+
+    private static void EnqueueUnmute(CSteamID offender, long duration)
+    {
+        CancellationTokenSource source = new();
+        if (Unmutes.TryGetValue(offender, out CancellationTokenSource oldSource))
+        {
+            oldSource.Cancel();
+            oldSource.Dispose();
+        }
+
+        Unmutes.AddOrUpdate(offender, source);
+        WaitForUnmute(offender, duration, source.Token).Forget();
+    }
+
+    public static void Mute(CSteamID offender, CSteamID issuer, long duration, string reason)
+    {
+        if (duration != 0 && TryGetPlayer(offender, out MeowPlayer player))
+        {
+            EnqueueUnmute(offender, duration);
+        }
+
+        OffenseManager.AddOffense(Offense.Create(OffenseType.Mute, offender, issuer, reason, duration)).Forget();
+    }
+
+    public static void Ban(CSteamID offender, CSteamID issuer, long duration, string reason)
+    {
+        string discordInvite = MeowHost.Configuration.GetValue<string>("DiscordInviteLink")!;
+        if (TryGetPlayer(offender, out MeowPlayer player))
+        {
+            Kick(player, 
+                duration == 0 ? 
+                BanPermanent.Translate(reason, discordInvite)
+                : BanTemporary.Translate(reason, duration, discordInvite));
+        }
+        OffenseManager.AddOffense(Offense.Create(OffenseType.Ban, offender, issuer, reason, duration)).Forget();
+    }
+
+    public static void Kick(MeowPlayer player, string reason)
+    {
+        DoKick(player, reason).Forget();
+    }
+
+    private static readonly Translation KickMessage = new("KickMessage");
+    private static async UniTask DoKick(MeowPlayer player, string reason)
+    {
+        await UniTask.Yield();
+        Provider.reject(player.SteamID, ESteamRejection.PLUGIN, KickMessage.TranslateNoColor(player, reason));
+        CleanupPlayer(player);
+    }
+
+    private static readonly MethodInfo ValidateIndex = typeof(Provider).GetMethod("validateDisconnectedMaintainedIndex", BindingFlags.Static | BindingFlags.NonPublic);
+    private static readonly MethodInfo RemoveClient = typeof(Provider).GetMethod("RemoveClient", BindingFlags.Static | BindingFlags.NonPublic);
+    private static readonly MethodInfo ReplicateRemoveClient = typeof(Provider).GetMethod("ReplicateRemoveClient", BindingFlags.Static | BindingFlags.NonPublic);
+    private static void CleanupPlayer(MeowPlayer player)
+    {
+        byte index = (byte)Provider.clients.IndexOf(player.SteamPlayer);
+
+        try
+        {
+            Provider.onServerDisconnected?.Invoke(player.SteamID);
+        }
+        catch {}
+        ValidateIndex.Invoke(null, [player.SteamID, index]);
+        RemoveClient.Invoke(null, [player.SteamPlayer]);
+        ReplicateRemoveClient.Invoke(null, [player.SteamPlayer]);
     }
 }

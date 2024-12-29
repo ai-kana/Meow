@@ -42,7 +42,7 @@ internal class RoleAddCommand : Command
         Context.MoveNext();
         Role role = Context.Parse<Role>();
 
-        player.Roles.AddRole(role.Id);
+        player.AddRole(role.Id);
         throw Context.Reply(AddedRole, player.Name, role.Id);
     }
 }
@@ -67,12 +67,12 @@ internal class RoleRemoveCommand : Command
         Context.MoveNext();
         Role role = Context.Parse<Role>();
 
-        if (!player.Roles.HasRole(role.Id))
+        if (!player.HasRole(role.Id))
         {
             throw Context.Reply(DoesNotHaveRole, player.Name, role.Id);
         }
 
-        player.Roles.AddRole(role.Id);
+        player.AddRole(role.Id);
         throw Context.Reply(RemovedRole, player.Name, role.Id);
     }
 }
@@ -99,7 +99,7 @@ internal class RoleListCommand : Command {
 
         MeowPlayer player = Context.Parse<MeowPlayer>();
 
-        HashSet<Role> roles = RoleManager.GetRoles(player.Roles.Roles);
+        HashSet<Role> roles = RoleManager.GetRoles(player.Roles);
         throw Context.Reply(RoleHasRole, player.Name, Formatter.FormatList(roles.Select(x => x.Id), ", "));
     }
 }

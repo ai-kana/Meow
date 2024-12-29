@@ -24,10 +24,10 @@ internal class FreezeCommand : Command
         
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
-        if(player.Movement.IsFrozen)
+        if(player.IsFrozen)
             throw Context.Reply(PlayerAlreadyFrozen, player.Name);
         
-        player.Movement.Freeze();
+        player.Freeze();
         throw Context.Reply(PlayerFrozen, player.Name);
     }
 }

@@ -26,7 +26,7 @@ internal class LobbyCommand : Command
         float y = section.GetValue<float>("Y");
         float z = section.GetValue<float>("Z");
 
-        caller.Movement.Teleport(new Vector3(x, y, z));
+        caller.Teleport(new Vector3(x, y, z));
 
         throw Context.Reply(LobbyTeleport);
     }

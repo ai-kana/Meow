@@ -27,8 +27,9 @@ internal class MuteCommand : Command
         Context.AssertArguments(3);
 
         CSteamID id = CSteamID.Nil;
-        MeowPlayer? player = null;
-        if (Context.TryParse<MeowPlayer>(out player))
+        MeowPlayer player = default;
+        bool gotPlayer = Context.TryParse<MeowPlayer>(out player);
+        if (gotPlayer)
         {
             id = player.SteamID;
         } 
@@ -45,14 +46,14 @@ internal class MuteCommand : Command
 
         if (player != null)
         {
-            player.Moderation.Mute(Context.Caller.SteamID, length, reason);
+            player.Mute(Context.Caller.SteamID, length, reason);
         }
         else
         {
             await OffenseManager.AddOffense(Offense.Create(OffenseType.Mute, id, Context.Caller.SteamID, reason, length));
         }
 
-        string name = player?.Name ?? id.ToString();
+        string name = gotPlayer ? player.Name : id.ToString();
 
         MeowChat.BroadcastMessage(length == 0 ? PlayerMutePerm : PlayerMuteTemp, name, reason, Formatter.FormatTime(length));
         throw Context.Exit;

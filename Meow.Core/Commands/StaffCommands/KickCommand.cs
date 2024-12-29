@@ -27,14 +27,14 @@ internal class KickCommand : Command
 
         if (Context.HasExactArguments(1))
         {
-            target.Moderation.Kick();
+            target.Kick();
             throw Context.Reply(Kicked, target.Name);
         }
         
         Context.MoveNext();
         string reason = Context.Form();
         
-        target.Moderation.Kick(reason);
+        target.Kick(reason);
         throw Context.Reply(KickedReason, target.Name, reason);
     }
 }

@@ -32,7 +32,7 @@ public class DoorTpCommand : Command
             throw Context.Reply(NoDoorFound);
         }
 
-        caller.Movement.Teleport(position);
+        caller.Teleport(position);
         Context.AddCooldown(5);
 
         throw Context.Reply(TeleportedToDoor);

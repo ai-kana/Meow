@@ -24,7 +24,7 @@ internal class SpyCommand : Command
         Context.AssertPlayer(out MeowPlayer self);
         MeowPlayer target = Context.Parse<MeowPlayer>();
         
-        target.Moderation.Spy(self);
+        target.Spy(self);
         throw Context.Reply(SpyingOn, target.Name);
     }
 }

@@ -67,7 +67,7 @@ public readonly struct CommandContext
             return;
         }
 
-        if (!player.Permissions.HasPermission(permission))
+        if (!player.HasPermission(permission))
         {
             throw Reply(AssertPermissionFailed);
         }
@@ -100,7 +100,7 @@ public readonly struct CommandContext
             return;
         }
 
-        long time = player.Cooldowns.GetCooldown(_Type.FullName);
+        long time = player.GetCooldown(_Type.FullName);
         if (time == 0)
         {
             return;
@@ -117,7 +117,7 @@ public readonly struct CommandContext
             return;
         }
 
-        if (!player.Administration.OnDuty)
+        if (!player.OnDuty)
         {
             throw Reply(AssertDuty);
         }
@@ -131,7 +131,7 @@ public readonly struct CommandContext
             return;
         }
 
-        if (!player.Movement.HasZoneFlag(flag))
+        if (!player.HasZoneFlag(flag))
         {
             throw Reply(AssertZone);
         }
@@ -144,7 +144,7 @@ public readonly struct CommandContext
             return;
         }
 
-        player.Cooldowns.AddCooldown(_Type.FullName, length);
+        player.AddCooldown(_Type.FullName, length);
     }
 
 

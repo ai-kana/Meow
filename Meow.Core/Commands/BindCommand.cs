@@ -32,7 +32,7 @@ internal class BindCommand : Command
 
         Context.MoveNext();
         string command = Context.Form();
-        caller.Input.SetBind(bindNumber, command);
+        caller.SetBind(bindNumber, command);
 
         throw Context.Reply(SetBind, bindNumber, command);
     }
@@ -59,7 +59,7 @@ internal class BindRemoveCommand : Command
             throw Context.Reply(TranslationList.LessThanX, 5);
         }
 
-        caller.Input.RemoveBind(bindNumber);
+        caller.RemoveBind(bindNumber);
 
         throw Context.Reply(RemoveBind, bindNumber);
     }

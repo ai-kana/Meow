@@ -1,10 +1,11 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
-using Meow.Core.Players.Components;
 using Meow.Core.Stats;
 using Meow.Core.Translations;
 using Steamworks;
+using Session = Meow.Core.Players.PlayerState.Session;
+using PlayerStats = Meow.Core.Players.MeowPlayer.PlayerStats;
 
 namespace Meow.Core.Commands;
 
@@ -21,29 +22,35 @@ internal class StatsCommand : Command
 
     public override async UniTask ExecuteAsync()
     {
-        MeowPlayer? player = null;
-        if (!Context.TryParse<CSteamID>(out CSteamID target))
+        MeowPlayer player = default;
+        string name;
+        CSteamID target;
+        if (Context.HasExactArguments(0))
         {
             Context.AssertPlayer(out player);
             target = player.SteamID;
+            name = player.Name;
         }
-
-        if (player == null)
+        else if (Context.TryParse<MeowPlayer>(out player))
         {
-            Context.TryParse(out player);
+            name = player.Name;
+            target = player.SteamID;
+        }
+        else
+        {
+            target = Context.Parse<CSteamID>();
+            name = target.ToString();
         }
 
-        string name = player?.Name ?? target.ToString();
-
-        PlayerStats? stats = player?.Stats.Stats ?? await StatsManager.GetStats(target);
+        PlayerStats? stats = player.Stats ?? await StatsManager.GetStats(target);
         if (stats == null)
         {
             throw Context.Reply(FailedToGetStats, name);
         }
 
-        uint fish = stats.Fish + player?.Stats.ServerSession.Fish ?? 0;
-        uint kills = stats.Kills + player?.Stats.ServerSession.Kills ?? 0;
-        uint deaths = stats.Deaths + player?.Stats.ServerSession.Deaths ?? 0;
+        uint fish = stats.Fish + player.ServerSession.Fish;
+        uint kills = stats.Kills + player.ServerSession.Kills;
+        uint deaths = stats.Deaths + player.ServerSession.Deaths;
 
         float kd = kills / (deaths == 0 ? 1 : deaths);
         throw Context.Reply(PlayerStats, name, fish, kills, deaths, kd);
@@ -63,7 +70,7 @@ internal class StatsSessionCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        MeowPlayer? target;
+        MeowPlayer target;
         if (Context.HasArguments(1))
         {
             target = Context.Parse<MeowPlayer>();
@@ -73,7 +80,7 @@ internal class StatsSessionCommand : Command
             Context.AssertPlayer(out target);
         }
 
-        MeowPlayerStats.Session stats = target.Stats.ServerSession;
+        Session stats = target.ServerSession;
 
         float kd = stats.Kills / (stats.Deaths == 0 ? 1 : stats.Deaths);
         throw Context.Reply(PlayerSessionStats, target.Name, stats.Fish, stats.Kills, stats.Deaths, kd);
@@ -93,7 +100,7 @@ internal class StatsLifeCommand : Command
 
     public override UniTask ExecuteAsync()
     {
-        MeowPlayer? target;
+        MeowPlayer target;
         if (Context.HasArguments(1))
         {
             target = Context.Parse<MeowPlayer>();
@@ -103,7 +110,7 @@ internal class StatsLifeCommand : Command
             Context.AssertPlayer(out target);
         }
 
-        MeowPlayerStats.Session stats = target.Stats.LifeSession;
+        Session stats = target.LifeSession;
 
         throw Context.Reply(PlayerLifeStats, target.Name, stats.Fish, stats.Kills);
     }

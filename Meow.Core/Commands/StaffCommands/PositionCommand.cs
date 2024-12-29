@@ -27,9 +27,9 @@ internal class PositionCommand : Command
         {
             Context.AssertPlayer(out MeowPlayer self);
             
-            x = self.Movement.Position.x.ToString("F1");
-            y = self.Movement.Position.y.ToString("F1");
-            z = self.Movement.Position.z.ToString("F1");
+            x = self.Position.x.ToString("F1");
+            y = self.Position.y.ToString("F1");
+            z = self.Position.z.ToString("F1");
             
             throw Context.Reply(PositionSelf, x, y, z);
         }
@@ -37,9 +37,9 @@ internal class PositionCommand : Command
         Context.AssertArguments(1);
         MeowPlayer target = Context.Parse<MeowPlayer>();
         
-        x = target.Movement.Position.x.ToString("F1");
-        y = target.Movement.Position.y.ToString("F1");
-        z = target.Movement.Position.z.ToString("F1");
+        x = target.Position.x.ToString("F1");
+        y = target.Position.y.ToString("F1");
+        z = target.Position.z.ToString("F1");
         
         throw Context.Reply(PositionTarget, target.Name, x, y, z);
     }

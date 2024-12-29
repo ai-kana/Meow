@@ -51,7 +51,7 @@ internal class MovementSpeedCommand : Command
         }
 
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
-        target.Movement.SetSpeed(multiplier);
+        target.SetSpeed(multiplier);
         throw Context.HasArguments(2) ?
             Context.Reply(SetSpeedOther, target.Name, multiplier)
             : Context.Reply(SetSpeedSelf, multiplier);
@@ -88,7 +88,7 @@ internal class MovementJumpCommand : Command
         }
 
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
-        target.Movement.SetJump(multiplier);
+        target.SetJump(multiplier);
         throw Context.HasArguments(2) ?
             Context.Reply(SetJumpOther, target.Name, multiplier)
             : Context.Reply(SetJumpSelf, multiplier);
@@ -125,7 +125,7 @@ internal class MovementGravityCommand : Command
         }
 
         float multiplier = Context.MatchParameter("reset", "r") ? 1f : Context.Parse<float>();
-        target.Movement.SetGravity(multiplier);
+        target.SetGravity(multiplier);
         throw Context.HasArguments(2) ?
             Context.Reply(SetGravityOther, target.Name, multiplier)
             : Context.Reply(SetGravitySelf, multiplier);

@@ -21,7 +21,7 @@ internal class DutyCommand : Command
         Context.AssertPermission("duty");
         Context.AssertPlayer(out MeowPlayer caller);
 
-        bool state = caller.Administration.ToggleDuty();
+        bool state = caller.ToggleDuty();
         MeowChat.BroadcastMessage(DutyStateGlobal, caller.Name, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
         throw Context.Exit;
     }
@@ -42,7 +42,7 @@ internal class DutySlientCommand : Command
         Context.AssertPermission("sduty");
         Context.AssertPlayer(out MeowPlayer caller);
 
-        bool state = caller.Administration.ToggleDuty();
+        bool state = caller.ToggleDuty();
         throw Context.Reply(DutyStateSilent, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }
@@ -62,6 +62,6 @@ internal class DutyCheckCommand : Command
         Context.AssertPermission("duty");
         Context.AssertPlayer(out MeowPlayer caller);
 
-        throw Context.Reply(DutyStateCheck, caller.Administration.OnDuty ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
+        throw Context.Reply(DutyStateCheck, caller.OnDuty ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }

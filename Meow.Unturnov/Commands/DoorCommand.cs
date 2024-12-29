@@ -21,7 +21,7 @@ internal class DoorCommand : Command
         Context.AssertCooldown();
 
         ushort doorId = UnturnovPlugin.Configuration.GetValue<ushort>("DoorId");
-        caller.Inventory.GiveItem(doorId);
+        caller.GiveItem(doorId);
 
         Context.AddCooldown((long)new TimeSpan(12, 0, 0).TotalSeconds);
         throw Context.Reply(GaveDoor);

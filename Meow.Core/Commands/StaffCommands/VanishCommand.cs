@@ -21,7 +21,7 @@ internal class VanishCommand : Command
         Context.AssertPermission("vanish");
         Context.AssertOnDuty();
 
-        caller.Administration.VanishMode = !caller.Administration.VanishMode;
-        throw Context.Reply(caller.Administration.VanishMode ? Vanished : Unvanished);
+        caller.VanishMode = !caller.VanishMode;
+        throw Context.Reply(caller.VanishMode ? Vanished : Unvanished);
     }
 }

@@ -52,7 +52,7 @@ internal class ExperienceAddCommand : Command
             throw Context.Reply(TranslationList.BadNumber);
         }
         
-        player.Skills.GiveExperience(amount);
+        player.GiveExperience(amount);
         
         throw Context.Reply(AddedExperience, amount, player.Name);
     }
@@ -84,7 +84,7 @@ internal class ExperienceRemoveCommand : Command
             throw Context.Reply(TranslationList.BadNumber);
         }
         
-        player.Skills.RemoveExperience(amount);
+        player.RemoveExperience(amount);
         
         throw Context.Reply(RemovedExperience, amount, player.Name);
     }
@@ -109,7 +109,7 @@ internal class ExperienceResetCommand : Command
 
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
-        player.Skills.SetExperience(0);
+        player.SetExperience(0);
         
         throw Context.Reply(ResetExperience, player.Name);
     }
@@ -141,7 +141,7 @@ internal class ExperienceSetCommand : Command
             throw Context.Reply(TranslationList.BadNumber);
         }
         
-        player.Skills.SetExperience(amount);
+        player.SetExperience(amount);
         
         throw Context.Reply(SetExperience, player.Name, amount);
     }
@@ -166,6 +166,6 @@ internal class ExperienceCheckCommand : Command
 
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
-        throw Context.Reply(CheckedExperience, player.Name, player.Skills.Experience);
+        throw Context.Reply(CheckedExperience, player.Name, player.Experience);
     }
 }

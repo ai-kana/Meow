@@ -72,11 +72,11 @@ internal class GiveCommand : Command
                 throw Context.Reply(TranslationList.BadNumber);
             }
                 
-            self.Inventory.GiveItems(itemAsset!.id, count);
+            self.GiveItems(itemAsset!.id, count);
             throw Context.Reply(ItemSelfAmount, count, itemAsset.FriendlyName, itemAsset.id);
         }
             
-        self.Inventory.GiveItem(itemAsset!.id);
+        self.GiveItem(itemAsset!.id);
         throw Context.Reply(ItemSelf, itemAsset.FriendlyName, itemAsset.id);
     }
 }

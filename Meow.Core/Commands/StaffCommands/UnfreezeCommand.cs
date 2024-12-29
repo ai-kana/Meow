@@ -24,10 +24,10 @@ internal class UnfreezeCommand : Command
         
         MeowPlayer player = Context.Parse<MeowPlayer>();
         
-        if(!player.Movement.IsFrozen)
+        if(!player.IsFrozen)
             throw Context.Reply(PlayerNotFrozen, player.Name);
         
-        player.Movement.Unfreeze();
+        player.Unfreeze();
         throw Context.Reply(PlayerUnfrozen, player.Name);
     }
 }

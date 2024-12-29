@@ -15,7 +15,7 @@ internal class ExitCommand : Command
     {
         Context.AssertPermission("exit");
         Context.AssertPlayer(out MeowPlayer self);
-        self.Moderation.Kick();
+        self.Kick();
         throw Context.Exit;
     }
 }

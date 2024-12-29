@@ -87,7 +87,7 @@ public class FishingManager
         LootTable table = new(items, player.FishingSkill.Level);
 
         LootItem item = table.GetItem();
-        player.Inventory.GiveItem(item.Id);
+        player.GiveItem(item.Id);
         skill.AddExperience(item.Xp);
 
         player.SendMessage(FishCaught, new Item(item.Id, true).GetAsset().FriendlyName, item.Xp);

@@ -43,7 +43,7 @@ internal class ClearGroundCommand : Command
         
         float radius = Context.Parse<float>();
 
-        ItemManager.ServerClearItemsInSphere(self.Movement.Position, radius);
+        ItemManager.ServerClearItemsInSphere(self.Position, radius);
         throw Context.Reply(ClearedGroundDistance, radius);
     }
 }
@@ -92,7 +92,7 @@ internal class ClearInventoryCommand : Command
         {
             Context.AssertPermission("clear.other");
             
-            if(target.Inventory.ClearInventory() && target.Clothing.ClearClothes())
+            if(target.ClearInventory() && target.ClearClothes())
                 throw Context.Reply(ClearedInventoryOther, target.Name);
 
             throw Context.Reply(FailedToClearInventoryOther, target.Name);
@@ -100,7 +100,7 @@ internal class ClearInventoryCommand : Command
         
         Context.AssertPlayer(out MeowPlayer self);
         
-        if(self.Inventory.ClearInventory() && self.Clothing.ClearClothes())
+        if(self.ClearClothes())
             throw Context.Reply(ClearedInventorySelf);
         
         throw Context.Reply(FailedToClearInventorySelf);

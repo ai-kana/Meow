@@ -49,12 +49,12 @@ internal class FlagGetCommand : Command
             throw Context.Reply(TranslationList.GreaterThanZero);
         }
 
-        if (!player.Quests.FlagExists(flag))
+        if (!player.FlagExists(flag))
         {
             throw Context.Reply(FlagDoesNotExist, player.Name, flag);
         }
         
-        player.Quests.TryGetFlag(flag, out short value);
+        player.TryGetFlag(flag, out short value);
         throw Context.Reply(FlagGet, flag, player.Name, value);
     }
 }
@@ -82,7 +82,7 @@ internal class FlagSetCommand : Command
         Context.MoveNext();
         short value = Context.Parse<short>();
 
-        player.Quests.SetFlag(flag, value);
+        player.SetFlag(flag, value);
         throw Context.Reply(FlagSet, flag, player.Name, value);
     }
 }
@@ -109,12 +109,12 @@ internal class FlagUnsetCommand : Command
         Context.MoveNext();
         ushort flag = Context.Parse<ushort>();
 
-        if (!player.Quests.FlagExists(flag))
+        if (!player.FlagExists(flag))
         {
             throw Context.Reply(FlagDoesNotExist, player.Name, flag);
         }
         
-        player.Quests.RemoveFlag(flag);
+        player.RemoveFlag(flag);
         throw Context.Reply(FlagUnset, flag, player.Name);
     }
 }

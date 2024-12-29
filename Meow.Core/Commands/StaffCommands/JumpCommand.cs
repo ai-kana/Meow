@@ -24,7 +24,7 @@ internal class JumpCommand : Command
             return false;
         }
 
-        player.Movement.Teleport(hit.point);
+        player.Teleport(hit.point);
         return true;
     }
 

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
-using Meow.Core.Players.Components;
 using Meow.Core.Translations;
 
 namespace Meow.Unturnov.Commands
@@ -33,15 +27,15 @@ namespace Meow.Unturnov.Commands
             Context.MoveNext();
             uint amount = Context.Parse<uint>();
             
-            if (amount > caller.Skills.Experience)
+            if (amount > caller.Experience)
             {
-                throw Context.Reply(LessThanX, caller.Skills.Experience+1);
+                throw Context.Reply(LessThanX, caller.Experience+1);
             }
 
-            caller.Skills.RemoveExperience(amount);
+            caller.RemoveExperience(amount);
             caller.SendMessage(PlayerPaid, amount, target);
 
-            target.Skills.GiveExperience(amount);
+            target.GiveExperience(amount);
             target.SendMessage(PlayerReceived, amount, caller);
 
             throw Context.Exit;

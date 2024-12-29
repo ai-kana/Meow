@@ -24,6 +24,6 @@ public class LootItem
 
     public void SendReward(MeowPlayer player)
     {
-        player.Inventory.GiveItem(Id);
+        player.GiveItem(Id);
     }
 }

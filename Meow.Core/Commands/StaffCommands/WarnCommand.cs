@@ -46,7 +46,7 @@ internal class WarnAddCommand : Command
         Context.MoveNext();
         string reason = Context.Form();
         
-        _ = target.Moderation.AddWarn(self.SteamID, reason);
+        target.AddWarn(self.SteamID, reason).Forget();
         
         throw Context.Reply(WarnedReason, target.Name, reason);
     }
@@ -70,7 +70,7 @@ internal class WarnRemoveCommand : Command
         
         int id = Context.Parse<int>();
 
-        _ = OffenseManager.PardonOffense(id);
+        OffenseManager.PardonOffense(id).Forget();
         
         throw Context.Reply(PardonedWarn, id);
     }
@@ -96,7 +96,7 @@ internal class WarnListCommand : Command
         
         MeowPlayer target = Context.Parse<MeowPlayer>();
 
-        IEnumerable<Offense> warns = await target.Moderation.GetWarns();
+        IEnumerable<Offense> warns = await target.GetWarns();
         List<Offense> warnsList = warns.Where(w => w.Pardoned == false).ToList();
         
         if (!warnsList.Any())

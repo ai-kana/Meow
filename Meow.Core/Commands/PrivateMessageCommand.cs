@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Meow.Core.Chat;
 using Meow.Core.Commands.Framework;
+using Meow.Core.Extensions;
 using Meow.Core.Players;
 using Meow.Core.Translations;
 
@@ -30,7 +31,7 @@ internal class PrivateMessageCommand : Command
             throw Context.Reply(PrivateMessageSelf);
         }
         
-        target.LastPrivateMessage = self.SteamID;
+        ReplyCommand.LastMessage.AddOrUpdate(target, self.SteamID);
 
         MeowChat.SendPrivateMessage(self, target, message);
         throw Context.Exit;

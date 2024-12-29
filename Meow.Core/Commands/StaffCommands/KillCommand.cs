@@ -23,7 +23,7 @@ internal class KillCommand : Command
         
         MeowPlayer target = Context.Parse<MeowPlayer>();
         
-        target.Life.Kill();
+        target.Kill();
         throw Context.Reply(Killed, target.Name);
     }
 }
