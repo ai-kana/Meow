@@ -6,7 +6,6 @@ using Meow.Core.Commands.Framework;
 using Meow.Core.Logging;
 using Meow.Core.Players;
 using Cysharp.Threading.Tasks;
-using SDG.Unturned;
 
 namespace Meow.Core.Bot;
 

@@ -10,9 +10,9 @@ using Meow.Core.Logging;
 using Meow.Core.Offenses;
 using Meow.Core.Translations;
 using System.Net;
-using Meow.Core.Ranks;
 using Meow.Core.Startup;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 namespace Meow.Core.Players;
 
@@ -217,16 +217,12 @@ public class MeowPlayerManager
 
     private static IEnumerable<MeowPlayer> GetPlayerListCopy()
     {
-        foreach (MeowPlayer player in Players)
-        {
-            yield return player;
-        }
+        return Players.ToArray();
     }
 
     public static void KickAll(string reason)
     {
-        MeowPlayer[] players = new MeowPlayer[Players.Count];
-        Players.CopyTo(players);
+        IEnumerable<MeowPlayer> players = GetPlayerListCopy();
         foreach (MeowPlayer player in players)
         {
             player.Moderation.Kick(reason);
@@ -235,8 +231,7 @@ public class MeowPlayerManager
 
     public static void KickAll(Translation translation, params object[] args)
     {
-        MeowPlayer[] players = new MeowPlayer[Players.Count];
-        Players.CopyTo(players);
+        IEnumerable<MeowPlayer> players = GetPlayerListCopy();
         foreach (MeowPlayer player in players)
         {
             player.Moderation.Kick(translation, args);
@@ -328,6 +323,51 @@ public class MeowPlayerManager
     private static readonly Translation BanPermanent = new("BanPermanent");
     private static readonly Translation BanTemporary = new("BanTemporary");
 
+    private static void CheckBanned(MeowPlayer player, IEnumerable<Offense> offenses, string discord)
+    {
+        Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.IsPermanent);
+        if (permBan != null)
+        {
+            player.Moderation.Kick(BanPermanent, permBan.Reason, discord);
+            return;
+        }
+
+        Offense? nonPermBan = offenses.Where(x => x.OffenseType == OffenseType.Ban && !x.IsPermanent && x.IsActive)
+            .OrderByDescending(x => x.Remaining).FirstOrDefault();
+        if (nonPermBan != null)
+        {
+            player.Moderation.Kick(BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
+        }
+    }
+
+    private static void CheckMuted(MeowPlayer player, IEnumerable<Offense> offenses, string discord)
+    {
+        Offense? permMute = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Mute && x.IsPermanent);
+        if (permMute != null)
+        {
+            player.SendMessage(MutePermanent, permMute.Reason, discord);
+            player.Moderation.IsMuted = true;
+            return;
+        }
+
+        Offense? tempMute = offenses.Where(x => x.OffenseType == OffenseType.Mute && !x.IsPermanent && x.IsActive)
+            .OrderByDescending(x => x.Remaining).FirstOrDefault();
+        if (tempMute != null)
+        {
+            player.SendMessage(MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
+            player.Moderation.IsMuted = true;
+            player.Moderation.EnqueueUnmute(tempMute.Remaining);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void CheckOffenses(MeowPlayer player, IEnumerable<Offense> offenses)
+    {
+        string discord = MeowHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord invite";
+        CheckBanned(player, offenses, discord);
+        CheckMuted(player, offenses, discord);
+    }
+
     private static async UniTask OnConnected(CSteamID steamID)
     {
         SteamPlayer steamPlayer = Provider.clients.Find(x => x.playerID.steamID == steamID);
@@ -342,69 +382,12 @@ public class MeowPlayerManager
         Players.Add(player);
 
         IEnumerable<Offense> offenses = await PlayerIdManager.GetOffensesAsync(player);
-
-        string discord = MeowHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord link";
-
-        Offense? permBan = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Ban && x.Duration == 0 && !x.Pardoned);
-        if (permBan != null)
-        {
-            player.Moderation.Kick(BanPermanent, permBan.Reason, discord);
-            return;
-        }
-        else
-        {
-            Offense? nonPermBan = offenses.Where(x => x.OffenseType == OffenseType.Ban && !x.IsPermanent && x.IsActive)
-                .OrderByDescending(x => x.Remaining).FirstOrDefault();
-            if (nonPermBan != null)
-            {
-                player.Moderation.Kick(BanTemporary, nonPermBan.Reason, Formatter.FormatTime(nonPermBan.Remaining), discord);
-                return;
-            }
-        }
-
-        Offense? permMute = offenses.FirstOrDefault(x => x.OffenseType == OffenseType.Mute && x.IsPermanent);
-        if (permMute != null)
-        {
-            player.SendMessage(MutePermanent, permMute.Reason, discord);
-            player.Moderation.IsMuted = true;
-        }
-        else
-        {
-            Offense? tempMute = offenses.Where(x => x.OffenseType == OffenseType.Mute && !x.IsPermanent && x.IsActive)
-                .OrderByDescending(x => x.Remaining).FirstOrDefault();
-            if (tempMute != null)
-            {
-                player.SendMessage(MuteTemporary, tempMute.Reason, Formatter.FormatTime(tempMute.Remaining), discord);
-                player.Moderation.IsMuted = true;
-                player.Moderation.EnqueueUnmute(tempMute.Remaining);
-            }
-        }
-
-        Rank rank = await player.Rank.GetRankAsync();
-        sbyte rankByte = (sbyte)(rank - 1);
-
-        foreach (string role in RanksRoles)
-        {
-            player.Roles.RemoveRole(role);
-        }
-
-        if (rankByte > -1)
-        {
-            player.Roles.AddRole(RanksRoles[rankByte]);
-        }
+        CheckOffenses(player, offenses);
 
         MeowChat.BroadcastMessage(PlayerConnected, player.Name);
         _Logger.LogInformation($"{player.LogName} has joined the server");
         OnPlayerConnected?.Invoke(player);
     }
-
-    private readonly static string[] RanksRoles = 
-    [
-        "vip",
-        "vipplus",
-        "mvp",
-        "mvpplus",
-    ];
 
     public static readonly Translation PlayerConnected = new("PlayerConnected");
     public static readonly Translation PlayerDisconnected = new("PlayerDisconnected");
@@ -415,9 +398,9 @@ public class MeowPlayerManager
         {
             await OnConnected(steamID);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            _Logger.LogError(ex, "Exception while player connection; Kicking...");
+            _Logger.LogError(exception, "Exception while player connection; Kicking...");
             string discord = MeowHost.Configuration.GetValue<string>("DiscordInviteLink") ?? "Failed to get discord link";
             Provider.kick(steamID, $"Something failed while connecting; Please contact staff; {discord ?? "Failed to get link :C"}");
         }

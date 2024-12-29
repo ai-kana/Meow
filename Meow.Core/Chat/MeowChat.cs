@@ -13,7 +13,6 @@ using Cysharp.Threading.Tasks;
 using Meow.Core.Extensions;
 using System.Runtime.CompilerServices;
 using Meow.Core.Startup;
-using System.Text;
 
 namespace Meow.Core.Chat;
 

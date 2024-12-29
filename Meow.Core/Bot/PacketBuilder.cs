@@ -8,7 +8,7 @@ internal class PacketBuilder
 
     public PacketBuilder()
     {
-        Init(4);
+        Init(0);
     }
 
     public PacketBuilder(int size)
