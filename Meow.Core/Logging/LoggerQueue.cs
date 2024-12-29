@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Cysharp.Threading.Tasks;
 using Meow.Core.Bot;
 using SDG.Unturned;
@@ -8,6 +9,15 @@ internal sealed class LoggerQueue : IDisposable
 {
     private StreamWriter _FileWriter;
     private TextWriter _ConsoleWriter;
+    private bool _IsWriting = false;
+    private ConcurrentQueue<LogMessage> _Queue;
+
+    internal LoggerQueue(StreamWriter writer)
+    {
+        _ConsoleWriter = Console.Out;
+        _FileWriter = writer;
+        _Queue = new();
+    }
 
     public void Enqueue(LogMessage message)
     {
@@ -16,27 +26,32 @@ internal sealed class LoggerQueue : IDisposable
             throw new ObjectDisposedException(nameof(LoggerQueue));
         }
 
-        WriteAsync(message).Forget();
+        _Queue.Enqueue(message);
+        if (_IsWriting)
+        {
+            return;
+        }
+
+        _IsWriting = true;
+        WriteAsync().Forget();
     }
 
-    private SemaphoreSlim _Semaphore = new(1, 1);
-    private async UniTask WriteAsync(LogMessage message)
+    private async UniTask WriteAsync()
     {
-        await _Semaphore.WaitAsync();
-
-        await _FileWriter.WriteLineAsync(message.FileMessage);
-        await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
-        if (Level.isLoaded)
+        while (_Queue.TryDequeue(out LogMessage message))
         {
-            BotManager.LogQueue.Enqueue(message.FileMessage);
+            await _FileWriter.WriteLineAsync(message.FileMessage);
+            await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
+            if (Level.isLoaded)
+            {
+                BotManager.LogQueue.Enqueue(message.FileMessage);
+            }
         }
 
-        _Semaphore.Release();
-        if (_Semaphore.CurrentCount == 0)
-        {
-            await _FileWriter.FlushAsync();
-            await _ConsoleWriter.FlushAsync();
-        }
+        await _FileWriter.FlushAsync();
+        await _ConsoleWriter.FlushAsync();
+
+        _IsWriting = false;
     }
 
     private bool _IsDisposed = false;
@@ -44,11 +59,5 @@ internal sealed class LoggerQueue : IDisposable
     {
         _IsDisposed = true;
         _FileWriter.Dispose();
-    }
-
-    internal LoggerQueue(StreamWriter writer)
-    {
-        _ConsoleWriter = Console.Out;
-        _FileWriter = writer;
     }
 }

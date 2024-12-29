@@ -40,10 +40,13 @@ internal class VaultCommand : Command
 
         await UniTask.Yield();
 
-        caller.Player.inventory.storage = null;
-        caller.Player.inventory.isStoring = true;
-        caller.Player.inventory.updateItems(7, vaultItems.Items);
-        caller.Player.inventory.sendStorage();
+        if (!caller.Player.inventory.isStoring)
+        {
+            caller.Player.inventory.storage = null;
+            caller.Player.inventory.isStoring = true;
+            caller.Player.inventory.updateItems(7, vaultItems.Items);
+            caller.Player.inventory.sendStorage();
+        }
 
         throw Context.Exit;
     }

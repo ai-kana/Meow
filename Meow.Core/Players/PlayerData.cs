@@ -44,4 +44,7 @@ public class PlayerData
 
     [JsonProperty]
     public FishingSkill Fishing {get; private set;} = new();
+
+    [JsonProperty]
+    public Dictionary<byte, string> CustomBinds {get; private set;} = new();
 }

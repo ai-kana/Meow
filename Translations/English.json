@@ -239,6 +239,9 @@
         "DeathVehicle": "{0} was hit by a car",
         "DeathBleed": "{0} bled out",
         "DeathFroze": "{0} froze to death",
-        "DeathDefault": "{0} died"
+        "DeathDefault": "{0} died",
+
+        "SetBind": "Set key #{0} to {1}",
+        "RemoveBind": "Removed bind from key #{0}"
     }
 }
