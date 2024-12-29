@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Meow.Core.Binds;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Players;
 using Meow.Core.Translations;
@@ -33,7 +32,7 @@ internal class BindCommand : Command
 
         Context.MoveNext();
         string command = Context.Form();
-        BindManager.SetBind(caller, bindNumber, command);
+        caller.Input.SetBind(bindNumber, command);
 
         throw Context.Reply(SetBind, bindNumber, command);
     }
@@ -60,7 +59,7 @@ internal class BindRemoveCommand : Command
             throw Context.Reply(TranslationList.LessThanX, 5);
         }
 
-        BindManager.RemoveBind(caller, bindNumber);
+        caller.Input.RemoveBind(bindNumber);
 
         throw Context.Reply(RemoveBind, bindNumber);
     }

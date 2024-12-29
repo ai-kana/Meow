@@ -41,6 +41,7 @@ public class MeowPlayer :
     public readonly MeowPlayerRank Rank;
     public readonly MeowPlayerStats Stats;
     public readonly MeowPlayerConnection Connection;
+    public readonly MeowPlayerInput Input;
 
     public FishingSkill FishingSkill => SaveData.Fishing;
 
@@ -76,6 +77,7 @@ public class MeowPlayer :
         Rank = new(this);
         Stats = new(this);
         Connection = new(this);
+        Input = new(this);
     }
 
     public override int GetHashCode()

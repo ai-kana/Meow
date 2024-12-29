@@ -21,19 +21,18 @@ internal class GodCommand : Command
         Context.AssertPermission("god");
         Context.AssertOnDuty();
 
-        bool state;
         if (Context.HasArguments(1))
         {
             Context.AssertPermission("god.other");
             MeowPlayer player = Context.Parse<MeowPlayer>();
-            state = player.Administration.ToggleGod();
+            player.Administration.GodMode = !player.Administration.GodMode;
             
-            throw Context.Reply(GodModeOther, player.Name, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
+            throw Context.Reply(GodModeOther, player.Name, player.Administration.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
         }
 
         Context.AssertPlayer(out MeowPlayer self);
-        state = self.Administration.ToggleGod();
+        self.Administration.GodMode = !self.Administration.GodMode;
 
-        throw Context.Reply(GodModeSelf, state ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
+        throw Context.Reply(GodModeSelf, self.Administration.GodMode ? TranslationList.On.AsPackage() : TranslationList.Off.AsPackage());
     }
 }

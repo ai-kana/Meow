@@ -8,8 +8,21 @@ public class MeowPlayerAdministration
 {
     private readonly MeowPlayer Owner;
     public bool OnDuty {get; private set;} = false;
-    public bool GodMode {get; private set;} = false;
     public bool FakedDisconnected {get; private set;} = false;
+
+    private bool _GodMode = false;
+    public bool GodMode 
+    {
+        get => _GodMode; 
+        set 
+        {
+            _GodMode = value;
+            if (_GodMode)
+            {
+                Owner.Life.Heal();
+            }
+        }
+    }
     
     public MeowPlayerAdministration(MeowPlayer owner)
     {
@@ -77,44 +90,39 @@ public class MeowPlayerAdministration
         }
     }
 
-            /*
-            foreach (MeowPlayer player in MeowPlayerManager.Players.Values.Where(x => x != Owner))
-            {
-                NetPakWriter writer = NetMessages.NetMessageWriter;
-                writer.Reset();
-                writer.WriteEnum(EClientMessage.PlayerConnected);
-                WriteConnected(writer, Owner.SteamPlayer, player.SteamPlayer);
-                writer.Flush();
-                player.SteamPlayer.transportConnection.Send(writer.buffer, writer.writeByteIndex, ENetReliability.Reliable);
-            }
-
-            foreach (MeowPlayer player in MeowPlayerManager.Players.Values.Where(x => x != Owner))
-            {
-                SendInitialState.Invoke(player.Player, [Owner.SteamPlayer]);
-            }
-
-            try
-            {
-                Provider.onServerConnected.Invoke(Owner.SteamID);
-                Provider.onEnemyConnected.Invoke(Owner.SteamPlayer);
-            }
-            catch 
-            {
-            }
-            */
-
-    public bool ToggleGod()
+    /*
+    foreach (MeowPlayer player in MeowPlayerManager.Players.Values.Where(x => x != Owner))
     {
-        Owner.Life.Heal();
-        GodMode = !GodMode;
-        return GodMode;
+        NetPakWriter writer = NetMessages.NetMessageWriter;
+        writer.Reset();
+        writer.WriteEnum(EClientMessage.PlayerConnected);
+        WriteConnected(writer, Owner.SteamPlayer, player.SteamPlayer);
+        writer.Flush();
+        player.SteamPlayer.transportConnection.Send(writer.buffer, writer.writeByteIndex, ENetReliability.Reliable);
+    
+    foreach (MeowPlayer player in MeowPlayerManager.Players.Values.Where(x => x != Owner))
+    {
+        SendInitialState.Invoke(player.Player, [Owner.SteamPlayer]);
+    
+    try
+    {
+        Provider.onServerConnected.Invoke(Owner.SteamID);
+        Provider.onEnemyConnected.Invoke(Owner.SteamPlayer);
     }
+    catch 
+    {
+    }
+    */
 
     public bool ToggleDuty()
     {
         OnDuty = !OnDuty;
         GodMode = OnDuty;
         //VanishMode = false;
+
+        Owner.Movement.SetSpeed(1f);
+        Owner.Movement.SetJump(1f);
+        Owner.Movement.SetGravity(1f);
 
         if (Owner.Permissions.HasPermission("spectator"))
         {
