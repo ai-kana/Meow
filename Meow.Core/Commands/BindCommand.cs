@@ -7,6 +7,7 @@ using Meow.Core.Translations;
 namespace Meow.Core.Commands;
 
 [CommandData("bind")]
+[CommandSyntax("[<Switch: remove> <Params: pluginkey>] [<Params: command...>]")]
 internal class BindCommand : Command
 {
     public BindCommand(CommandContext context) : base(context)
@@ -40,6 +41,7 @@ internal class BindCommand : Command
 
 [CommandParent(typeof(BindCommand))]
 [CommandData("remove")]
+[CommandSyntax("[<Params: pluginkey>]")]
 internal class BindRemoveCommand : Command
 {
     public BindRemoveCommand(CommandContext context) : base(context)
