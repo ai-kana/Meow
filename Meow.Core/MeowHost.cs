@@ -22,7 +22,7 @@ namespace Meow.Core;
 public sealed class MeowHost 
 {
     private ILogger? _Logger;
-    private Harmony? _Harmony;
+    public static Harmony Harmony = null!;
 
     public static IConfiguration Configuration {get; private set;} = null!;
 
@@ -60,8 +60,8 @@ public sealed class MeowHost
 
         StartupManager.RunStartup(Assembly.GetExecutingAssembly());
 
-        _Harmony = new(typeof(MeowHost).Namespace);
-        _Harmony.PatchAll();
+        Harmony = new(typeof(MeowHost).Namespace);
+        Harmony.PatchAll();
 
         CommandManager.RegisterCommandTypes(Assembly.GetExecutingAssembly());
         await RoleManager.RegisterRoles();
@@ -83,7 +83,7 @@ public sealed class MeowHost
 
     public UniTask UnloadAsync()
     { 
-        _Harmony?.UnpatchAll();
+        Harmony?.UnpatchAll();
         return UniTask.CompletedTask;
     }
 }
