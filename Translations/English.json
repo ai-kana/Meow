@@ -245,6 +245,12 @@
         "RemoveBind": "Removed bind from key #{0}",
 
         "PlayerPaid": "Sent {0} to {1}",
-        "PlayerReceived": "Received {0} from {1}"
+        "PlayerReceived": "Received {0} from {1}",
+
+        "GroupLeaveSelf": "You have left your group",
+        "GroupLeaveOther": "{0} has left your group",
+
+        "GroupLeavingSelf": "You will leave your group in {0}",
+        "GroupLeavingOther": "{0} will leave your group in {0}"
     }
 }

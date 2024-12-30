@@ -366,6 +366,11 @@ public struct MeowPlayer :
         _Skills.askRep(rep - _Skills.reputation);
     }
 
+    public bool IsInSameGroup(MeowPlayer other)
+    {
+        return Player.quests.isMemberOfSameGroupAs(other.Player);
+    }
+
     //
     //
     // Cooldown
