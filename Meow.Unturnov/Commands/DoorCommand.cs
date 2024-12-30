@@ -27,4 +27,3 @@ internal class DoorCommand : Command
         throw Context.Reply(GaveDoor);
     }
 }
-

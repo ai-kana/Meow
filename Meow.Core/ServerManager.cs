@@ -4,6 +4,8 @@ using Meow.Core.Formatting;
 using Meow.Core.Players;
 using Meow.Core.Translations;
 using Cysharp.Threading.Tasks;
+using Meow.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Meow.Core;
 
@@ -16,15 +18,31 @@ public class ServerManager
     public static ServerSave? OnServerSave;
 
     private static CancellationTokenSource? _Source;
+    private static readonly ILogger _Logger;
+
+    static ServerManager()
+    {
+        _Logger = LoggerProvider.CreateLogger<ServerManager>();
+    }
 
     private static void DoSave()
     {
-        try
+        IEnumerable<ServerSave>? saves = OnServerSave?.GetInvocationList().Cast<ServerSave>() ?? null;
+        if (saves == null)
         {
-            OnServerSave?.Invoke();
+            return;
         }
-        catch (Exception)
+
+        foreach (ServerSave save in saves)
         {
+            try
+            {
+                save?.Invoke();
+            }
+            catch (Exception exception)
+            {
+                _Logger.LogError(exception, "Exception on saving");
+            }
         }
     }
 
@@ -46,6 +64,8 @@ public class ServerManager
         }
 
         await UniTask.Yield();
+
+        SaveManager.save();
         Provider.shutdown(0);
     }
 
