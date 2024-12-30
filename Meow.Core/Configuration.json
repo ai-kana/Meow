@@ -51,5 +51,10 @@
         }
     ],
     "BannedWords": [
-    ]
+    ],
+    "Motd": {
+        "Delay": 600,
+        "Messages": [
+        ]
+    }
 }
