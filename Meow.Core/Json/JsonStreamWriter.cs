@@ -15,6 +15,7 @@ public readonly struct JsonStreamWriter : IDisposable
     {
         string content = JsonConvert.SerializeObject(ob);
         await _Writer.WriteAsync(content);
+        await _Writer.FlushAsync();
     }
 
     public void Dispose()

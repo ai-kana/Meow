@@ -8,15 +8,13 @@ namespace Meow.Core.Chat;
 [Startup]
 public class MeowMotd
 {
-    public static CancellationTokenSource TokenSource;
+    public static CancellationTokenSource? TokenSource;
 
     private static string[]? Messages = null;
     private static int DelaySeconds;
 
     static MeowMotd()
     {
-        TokenSource = new CancellationTokenSource();
-
         OnConfigurationReloaded();
         ConfigurationEvents.OnConfigurationReloaded += OnConfigurationReloaded;
     }
@@ -27,8 +25,8 @@ public class MeowMotd
         Messages = section.GetValue<IEnumerable<string>>("Messages")?.ToArray() ?? null;
         DelaySeconds = section.GetValue<int>("Delay");
 
-        TokenSource.Cancel();
-        TokenSource.Dispose();
+        TokenSource?.Cancel();
+        TokenSource?.Dispose();
         TokenSource = new CancellationTokenSource();
 
         if (Messages == null || Messages.Length == 0)
