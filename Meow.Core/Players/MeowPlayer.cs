@@ -60,6 +60,8 @@ public struct MeowPlayer :
 
         MeowPlayerManager.OnPlayerKilled += OnPlayerKilled;
         FishingManager.OnFishCaught += OnFishCaught;
+
+        _Quests.groupIDChanged += OnGroupChanged;
         SetCacheStats().Forget();
     }
 
@@ -68,6 +70,7 @@ public struct MeowPlayer :
         DutyStates.Remove(this);
         MeowPlayerManager.OnPlayerKilled -= OnPlayerKilled;
         FishingManager.OnFishCaught -= OnFishCaught;
+        _Quests.groupIDChanged -= OnGroupChanged;
     }
 
     public string ToString(string format, IFormatProvider formatProvider)
@@ -366,9 +369,49 @@ public struct MeowPlayer :
         _Skills.askRep(rep - _Skills.reputation);
     }
 
+    public CSteamID GroupID => _Quests.groupID;
+
     public bool IsInSameGroup(MeowPlayer other)
     {
         return Player.quests.isMemberOfSameGroupAs(other.Player);
+    }
+
+    private static readonly ClientInstanceMethod<ulong, ulong> SendOwnerAndGroup = ClientInstanceMethod<ulong, ulong>.Get(typeof(BarricadeDrop), "ReceiveOwnerAndGroup");
+    private async UniTask TransferBarricades(CSteamID newGroup)
+    {
+        await UniTask.Yield();
+
+        const uint maxPerTick = 100;
+        uint totalThisTick = 0;
+
+        foreach (BarricadeRegion region in BarricadeManager.regions)
+        for (int i = 0; i < region.drops.Count; i++)
+        {
+            BarricadeDrop drop = region.drops[i];
+            BarricadeData data = drop.GetServersideData();
+            if (data.owner != SteamID.m_SteamID)
+            {
+                continue;
+            }
+
+            if (totalThisTick >= maxPerTick)
+            {
+                await UniTask.Yield();
+            }
+
+            BarricadeManager.changeOwnerAndGroup(drop.model.transform, SteamID.m_SteamID, newGroup.m_SteamID);
+            totalThisTick++;
+        }
+    }
+
+    private void OnGroupChanged(PlayerQuests sender, CSteamID oldGroupID, CSteamID newGroupID)
+    {
+        if (newGroupID == CSteamID.Nil)
+        {
+            return;
+        }
+
+        TransferBarricades(newGroupID).Forget();
     }
 
     //

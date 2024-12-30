@@ -20,6 +20,7 @@ public class ZoneManager
     private static List<Zone> _Zones = new();
 
     private const string ZonesFile = "Zones.json";
+    private const string ZonesSwapFile = "Zones.json.swp";
     public static async UniTask LoadZonesAsync()
     {
         if (!File.Exists(ZonesFile))
@@ -43,8 +44,11 @@ public class ZoneManager
 
     private static void OnServerSave()
     {
-        using JsonStreamWriter writer = new(File.Open(ZonesFile, FileMode.Create, FileAccess.Write));
+        using JsonStreamWriter writer = new(File.Open(ZonesSwapFile, FileMode.Create, FileAccess.Write));
         writer.WriteObject(_Zones).AsTask().Wait();
+
+        File.Copy(ZonesSwapFile, ZonesFile, true);
+        File.Delete(ZonesSwapFile);
     }
 
     public static void AddZone(Zone zone)

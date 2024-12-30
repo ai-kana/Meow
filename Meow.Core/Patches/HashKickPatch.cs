@@ -9,6 +9,7 @@ using SDG.Unturned;
 
 namespace Meow.Core.Patches;
 
+/*
 [Startup]
 [HarmonyPatch]
 internal static class HashKickPatch
@@ -20,7 +21,7 @@ internal static class HashKickPatch
         const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
 
         Assembly assembly = typeof(Provider).Assembly;
-        Type type = assembly.GetType("ClientAssetIntegrity");
+        Type type = assembly.GetType("ClientAssetIntegrity", true);
         RuntimeHelpers.RunClassConstructor(type.TypeHandle);
 
         FieldInfo info = type.GetField("serverKnownMissingGuids", PrivateStatic);
@@ -34,6 +35,9 @@ internal static class HashKickPatch
         ValidatedGuidsField = typeof(SteamPlayer).GetField("validatedGuids", PrivateInstance);
 
         SendKickForInvalidGuid = ClientStaticMethod<Guid>.Get(Assets.ReceiveKickForInvalidGuid);
+
+        int? x = 1;
+        Console.WriteLine(x ?? 5);
     }
 
     private static HashSet<Guid> ServerKnownMissingGuids;
@@ -161,3 +165,4 @@ internal static class HashKickPatch
         return false;
     }
 }
+*/

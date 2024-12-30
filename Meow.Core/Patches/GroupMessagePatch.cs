@@ -17,9 +17,9 @@ internal static class GroupMessagePatch
 
     [HarmonyPatch(typeof(GroupManager), "alertGroupmatesTimer", typeof(Player), typeof(uint))]
     [HarmonyPrefix]
-    public static bool AlertGroupmatesTimer(Player p, uint remainingSeconds) 
+    public static bool AlertGroupmatesTimer(Player player, uint remainingSeconds) 
     {
-        if (!MeowPlayerManager.TryGetPlayer(p, out MeowPlayer self))
+        if (!MeowPlayerManager.TryGetPlayer(player, out MeowPlayer self))
         {
             return false;
         }
@@ -27,11 +27,11 @@ internal static class GroupMessagePatch
         TranslationPackage time = Formatter.FormatTime(remainingSeconds);
         self.SendMessage(GroupLeaveSelf, time);
 
-        foreach (MeowPlayer player in MeowPlayerManager.Players) 
+        foreach (MeowPlayer p in MeowPlayerManager.Players) 
         {
-            if (self.SteamID != player.SteamID && player.IsInSameGroup(self))
+            if (self.SteamID != p.SteamID && p.IsInSameGroup(self))
             {
-                player.SendMessage(GroupLeaveOther, self.Name, time);
+                p.SendMessage(GroupLeaveOther, self.Name, time);
             }
         }
 
@@ -40,20 +40,20 @@ internal static class GroupMessagePatch
 
     [HarmonyPatch(typeof(GroupManager), "alertGroupmatesLeft", typeof(Player))]
     [HarmonyPrefix]
-    private static bool AlertGroupmatesLeft(Player uPlayer) 
+    private static bool AlertGroupmatesLeft(Player player) 
     {
-        if (!MeowPlayerManager.TryGetPlayer(uPlayer, out MeowPlayer self))
+        if (!MeowPlayerManager.TryGetPlayer(player, out MeowPlayer self))
         {
             return false;
         }
             
         self.SendMessage(GroupLeaveSelf);
 
-        foreach (MeowPlayer player in MeowPlayerManager.Players) 
+        foreach (MeowPlayer p in MeowPlayerManager.Players) 
         {
-            if (self.SteamID != player.SteamID && player.IsInSameGroup(self))
+            if (self.SteamID != p.SteamID && p.IsInSameGroup(self))
             {
-                player.SendMessage(GroupLeaveOther, self.Name);
+                p.SendMessage(GroupLeaveOther, self.Name);
             }
         }
 

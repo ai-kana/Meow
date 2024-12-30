@@ -16,6 +16,7 @@ public class SqlManager
     static SqlManager()
     {
         ConfigurationEvents.OnConfigurationReloaded += OnReloaded;
+        OnReloaded();
     }
 
     private static void OnReloaded()
