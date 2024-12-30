@@ -101,9 +101,7 @@ public struct MeowPlayer :
 
     public override int GetHashCode()
     {
-        // Returns bottom half of the steam id
-        // 00 00 00 00 11 11 11 11
-        return (int)(SteamID.m_SteamID & (0 << 32));
+        return SteamID.GetHashCode();
     }
 
     public static bool operator ==(MeowPlayer p1, MeowPlayer p2)
@@ -152,7 +150,7 @@ public struct MeowPlayer :
 
     public void Teleport(MeowPlayer player)
     {
-        Teleport(Position, Rotation);
+        Teleport(player.Position, player.Rotation);
     }
 
     public void SetSpeed(float speed)
@@ -676,7 +674,7 @@ public struct MeowPlayer :
 
     public bool GodMode 
     {
-        get => _Life.onHealthUpdated.GetInvocationList().Contains(OnLifeUpdate);
+        get => _Life.onHealthUpdated?.GetInvocationList().Contains(OnLifeUpdate) ?? false;
         set => SetGodeMode(value);
     }
     private void SetGodeMode(bool state)
