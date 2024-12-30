@@ -33,10 +33,10 @@ namespace Meow.Unturnov.Commands
             }
 
             caller.RemoveExperience(amount);
-            caller.SendMessage(PlayerPaid, amount, target);
+            caller.SendMessage(PlayerPaid, amount, target.Name);
 
             target.GiveExperience(amount);
-            target.SendMessage(PlayerReceived, amount, caller);
+            target.SendMessage(PlayerReceived, amount, caller.Name);
 
             throw Context.Exit;
         }
