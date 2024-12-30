@@ -215,6 +215,7 @@
         "LimbArm": "arm",
         "LimbSpine": "spine",
         "LimbFront": "front",
+        "LimbLeg": "front",
         "LimbBack": "back",
         "LimbNotFound": "D:",
 

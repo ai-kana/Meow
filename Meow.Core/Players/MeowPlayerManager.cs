@@ -79,7 +79,7 @@ public class MeowPlayerManager
             case ELimb.RIGHT_LEG:
             case ELimb.LEFT_FOOT:
             case ELimb.RIGHT_FOOT:
-                return new(new("LimbLeftLeg"));
+                return new(new("LimbLeg"));
 
             case ELimb.LEFT_FRONT:
             case ELimb.RIGHT_FRONT:
@@ -183,7 +183,7 @@ public class MeowPlayerManager
                 break;
         }
 
-        return translation.AsPackage(args ?? []);
+        return translation.AsPackage(args ?? [victim.Name]);
     }
 
     private static void OnPlayerDied(PlayerLife sender, EDeathCause cause, ELimb limb, CSteamID instigator)
