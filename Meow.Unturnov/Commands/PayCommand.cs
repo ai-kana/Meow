@@ -29,7 +29,7 @@ namespace Meow.Unturnov.Commands
             
             if (amount > caller.Experience)
             {
-                throw Context.Reply(LessThanX, caller.Experience+1);
+                throw Context.Reply(LessThanX, caller.Experience + 1);
             }
 
             caller.RemoveExperience(amount);

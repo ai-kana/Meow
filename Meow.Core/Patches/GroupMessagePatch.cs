@@ -25,13 +25,13 @@ internal static class GroupMessagePatch
         }
 
         TranslationPackage time = Formatter.FormatTime(remainingSeconds);
-        self.SendMessage(GroupLeaveSelf, time);
+        self.SendMessage(GroupLeavingSelf, time);
 
         foreach (MeowPlayer p in MeowPlayerManager.Players) 
         {
             if (self.SteamID != p.SteamID && p.IsInSameGroup(self))
             {
-                p.SendMessage(GroupLeaveOther, self.Name, time);
+                p.SendMessage(GroupLeavingOther, self.Name, time);
             }
         }
 
