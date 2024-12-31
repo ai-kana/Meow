@@ -61,5 +61,6 @@ public class UnturnovPlugin : Plugin
         string path = PlayerDataPath(player);
         using JsonStreamWriter writer = new(File.Open(path, FileMode.Create, FileAccess.Write));
         await writer.WriteObject(Position.FromVector3(value));
+        DoorPositions.Remove(player.SteamID);
     }
 }

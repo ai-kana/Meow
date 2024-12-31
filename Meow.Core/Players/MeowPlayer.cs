@@ -14,6 +14,7 @@ using Meow.Core.Stats;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Extensions;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Meow.Core.Players;
 
@@ -56,6 +57,7 @@ public struct MeowPlayer :
         SteamPlayer.player.interact.sendSalvageTimeOverride(2f);
 
         DutyStates.Add(this, false);
+        GodStates.Add(this, false);
         HandleRank().Forget();
 
         MeowPlayerManager.OnPlayerKilled += OnPlayerKilled;
@@ -68,6 +70,7 @@ public struct MeowPlayer :
     public void Dispose()
     {
         DutyStates.Remove(this);
+        GodStates.Remove(this);
         MeowPlayerManager.OnPlayerKilled -= OnPlayerKilled;
         FishingManager.OnFishCaught -= OnFishCaught;
         _Quests.groupIDChanged -= OnGroupChanged;
@@ -665,18 +668,20 @@ public struct MeowPlayer :
     //
     //
 
-    private static Dictionary<MeowPlayer, bool> DutyStates = new();
+    private static readonly Dictionary<MeowPlayer, bool> DutyStates = new();
     public bool OnDuty 
     {
         get => DutyStates[this];
         set => DutyStates[this] = value;
     }
 
+    private static readonly Dictionary<MeowPlayer, bool> GodStates = new();
     public bool GodMode 
     {
-        get => _Life.onHealthUpdated?.GetInvocationList().Contains(OnLifeUpdate) ?? false;
-        set => SetGodeMode(value);
+        get => GodStates[this];
+        set => GodStates[this] = value;
     }
+
     private void SetGodeMode(bool state)
     {
         if (state == GodMode)
@@ -718,7 +723,7 @@ public struct MeowPlayer :
     public bool ToggleDuty()
     {
         OnDuty = !OnDuty;
-        SetGodeMode(OnDuty);
+        GodMode = OnDuty;
         VanishMode = false;
 
         SetSpeed(1f);

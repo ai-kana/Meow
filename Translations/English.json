@@ -252,6 +252,8 @@
         "GroupLeaveOther": "{0} has left your group",
 
         "GroupLeavingSelf": "You will leave your group in {0}",
-        "GroupLeavingOther": "{0} will leave your group in {0}"
+        "GroupLeavingOther": "{0} will leave your group in {0}",
+
+        "ServerSave": "Server is saving. There maybe lag"
     }
 }

@@ -35,10 +35,7 @@ internal class TestCommand : Command
         Context.AssertPermission("all");
         Context.AssertPlayer(out MeowPlayer caller);
 
-        for (int i = 0; i < 50; i++)
-        {
-            Test(caller).Forget();
-        }
+        ServerManager.LoadBarricadeBackup();
 
         throw Context.Exit;
     }

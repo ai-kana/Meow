@@ -44,7 +44,7 @@ public class ZoneManager
     private static void OnServerSave()
     {
         using JsonStreamWriter writer = new(File.Open(ZonesFile, FileMode.Create, FileAccess.Write));
-        writer.WriteObject(_Zones).AsTask().Wait();
+        writer.WriteObject(_Zones).AsTask().ConfigureAwait(false);
     }
 
     public static void AddZone(Zone zone)
