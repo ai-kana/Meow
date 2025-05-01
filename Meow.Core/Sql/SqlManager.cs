@@ -35,7 +35,7 @@ public class SqlManager
             Server = Server,
             Database = Database,
             UserID = UserID,
-            Password = Password 
+            Password = Password
         };
 
         return new(builder.ConnectionString);

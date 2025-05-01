@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using SDG.Unturned;
 
 namespace Meow.Core.Logging;
 
@@ -24,6 +25,7 @@ internal sealed class MeowLoggerProvider : ILoggerProvider
             SaveFile();
         }
 
+        UnturnedLog.info($"Creating meow log file {FullPath}");
         StreamWriter writer = new(File.Create(FullPath));
         _Queue = new(writer);
     }

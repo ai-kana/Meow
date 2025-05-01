@@ -26,7 +26,7 @@ internal class CommandManager
         string fixedName = name.ToLower();
         if (_CommandTypes.TryAdd(fixedName, type))
         {
-            _Logger.LogInformation(isAlias ? $"Register command alias {fixedName}" : $"Registered command {fixedName}");
+            _Logger.LogInformation(isAlias ? $"Registered command alias {fixedName}" : $"Registered command {fixedName}");
             return;
         }
 
@@ -36,7 +36,7 @@ internal class CommandManager
             return;
         }
 
-        _Logger.LogWarning($"Something failed trying to register command alias");
+        _Logger.LogWarning($"Something failed while trying to register a command alias");
     }
 
     public static void RegisterCommandTypes(Assembly assembly)
@@ -97,14 +97,9 @@ internal class CommandManager
         return commandType;
     }
     
-    private static string[] GetMultiCommands(string input)
+    public static async UniTask ExecuteCommand(string input, IPlayer caller)
     {
-        return input.Split(["&&"], StringSplitOptions.RemoveEmptyEntries);
-    }
-
-    public static async UniTask ExecuteCommand(string commandText, IPlayer caller)
-    {
-        string[] commands = GetMultiCommands(commandText);
+        string[] commands = input.Split(["&&"], StringSplitOptions.RemoveEmptyEntries);
         foreach (string command in commands)
         {
             await Execute(command, caller);
@@ -112,10 +107,9 @@ internal class CommandManager
     }
 
     public static readonly Translation NoCommandFound = new("NoCommandFound");
-    private static async UniTask Execute(string commandText, IPlayer caller)
+    private static async UniTask Execute(string input, IPlayer caller)
     {
-        CommandTokenizer parser = new(commandText);
-        IEnumerable<string> arguments = parser.Parse();
+        IEnumerable<string> arguments = CommandTokenizer.Parse(input);
 
         Type? type = GetCommandType(arguments, out int depth);
         if (type == null)
@@ -127,7 +121,7 @@ internal class CommandManager
 
         CommandContext context = new(type, arguments, caller);
         Command command = (Command)Activator.CreateInstance(type, args: context);
-        _Logger.LogInformation($"Executing command [{caller.LogName}]: {commandText}");
+        _Logger.LogInformation($"Executing command [{caller.LogName}]: {input}");
         try
         {
             await command.ExecuteAsync();

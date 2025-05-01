@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using SDG.Framework.Modules;
+using SDG.Unturned;
 using UnityEngine.LowLevel;
 
 namespace Meow.Core;
@@ -20,7 +21,7 @@ public sealed class MeowModule : IModuleNexus
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            UnturnedLog.exception(ex);
         }
     }
 

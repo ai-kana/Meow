@@ -24,19 +24,29 @@ internal class BotManager
 {
     static ILogger _Logger;
 
+    public static readonly ConcurrentQueue<string> LogQueue; 
+    public static readonly ConcurrentQueue<RconCommandReply> CommandReplies;
+
+    private static readonly CancellationTokenSource Source = new();
+
     static BotManager()
     {
         _Logger = LoggerProvider.CreateLogger<BotManager>();
         CommandReplies = new();
         LogQueue = new();
+        ServerManager.OnPreShutdown += OnPreShutdown;
     }
 
-    public static ConcurrentQueue<string> LogQueue; 
-    public static ConcurrentQueue<RconCommandReply> CommandReplies;
+    private static void OnPreShutdown()
+    {
+        Source.Cancel();
+    }
 
     private static byte[] ConstructPacket()
     {
         PacketBuilder builder = new();
+
+        builder.WriteByte(0);
 
         builder.WriteByte((byte)MeowPlayerManager.Players.Count);
         foreach (MeowPlayer player in MeowPlayerManager.Players)
@@ -76,6 +86,13 @@ internal class BotManager
         }
     }
 
+    private static byte[] CreateShutdownPacket()
+    {
+        PacketBuilder builder = new(1);
+        builder.WriteByte(1);
+        return builder.Build();
+    }
+
     private static async UniTask HandleConnection(TcpClient client)
     {
         using Stream stream = client.GetStream();
@@ -92,7 +109,13 @@ internal class BotManager
             int x = await stream.ReadAsync(packet, 0, len);
             HandleCommands(packet);
 
-            await UniTask.Delay(10 * 1000);
+            await UniTask.Delay(10 * 1000, cancellationToken: Source.Token);
+            if (Source.IsCancellationRequested)
+            {
+                packet = CreateShutdownPacket();
+                await stream.WriteAsync(packet, 0, packet.Length);
+                return;
+            }
         }
     }
 

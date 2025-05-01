@@ -22,7 +22,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
         <PackageReference Include="MySqlConnector" Version="2.3.7" />
         <PackageReference Include="NewtonSoft.Json" Version="13.0.3" />
-        <PackageReference Include="OpenMod.UniTask" Version="2021.2.4.1" />
+        <PackageReference Include="Openmod.Unitask" Version="2021.2.4.1" />
     </ItemGroup>
 
     <ItemGroup>

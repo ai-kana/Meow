@@ -1,38 +1,28 @@
 using System.Text;
+using Meow.Core.Enumerable;
 
 namespace Meow.Core.Commands.Framework;
 
-internal class CommandTokenizer
+internal static class CommandTokenizer
 {
-    private readonly string Text;
-
-    public CommandTokenizer(string text)
-    {
-        Text = text;
-    }
-
-    private string ParseQuote(IEnumerator<char> enumerator, StringBuilder builder)
+    private static void ParseQuote(IEnumerator<char> enumerator, StringBuilder builder)
     {
         while (enumerator.MoveNext())
         {
             char c = enumerator.Current;
             if (c == '"')
             {
-                return builder.ToString();
+                return;
             }
 
             builder.Append(c);
         }
-
-        string ret = builder.ToString();
-        builder.Clear();
-        return ret;
     }
 
-    private IEnumerable<string> Tokenize()
+    private static IEnumerable<string> Tokenize(string text)
     {
         StringBuilder builder = new(32);
-        IEnumerator<char> enumerator = Text.TrimStart().TrimStart('/').GetEnumerator();
+        IEnumerator<char> enumerator = new FastCharEnumerator(text.TrimStart().TrimStart('/'));
 
         while (enumerator.MoveNext())
         {
@@ -41,7 +31,8 @@ internal class CommandTokenizer
             {
                 case '"':
                     yield return BuildString();
-                    yield return ParseQuote(enumerator, builder);
+                    ParseQuote(enumerator, builder);
+                    yield return BuildString();
                     continue;
                 case ' ':
                     yield return BuildString();
@@ -62,7 +53,7 @@ internal class CommandTokenizer
         }
     }
 
-    private IEnumerable<string> Sanitize(IEnumerable<string> tokens)
+    private static IEnumerable<string> Sanitize(IEnumerable<string> tokens)
     {
         foreach (string token in tokens)
         {
@@ -75,8 +66,8 @@ internal class CommandTokenizer
         }
     }
 
-    public IEnumerable<string> Parse()
+    public static IEnumerable<string> Parse(string input)
     {
-        return Sanitize(Tokenize());
+        return Sanitize(Tokenize(input));
     }
 }

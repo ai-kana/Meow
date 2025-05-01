@@ -363,8 +363,8 @@ public class MeowPlayerManager
         uint ip = steamPlayer.getIPv4AddressOrZero();
         if (ip == 0)
         {
-            Provider.kick(steamPlayer.playerID.steamID, "Do not connect using the server code");
-            return;
+            //Provider.kick(steamPlayer.playerID.steamID, "Do not connect using the server code");
+            //return;
         }
 
         MeowPlayer player = await MeowPlayer.CreateAsync(steamPlayer);

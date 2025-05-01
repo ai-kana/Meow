@@ -15,6 +15,7 @@ public class ZoneManager
     static ZoneManager()
     {
         _Logger = LoggerProvider.CreateLogger<ZoneManager>();
+        ServerManager.OnServerSave += OnServerSave;
     }
 
     private static List<Zone> _Zones = new();
@@ -37,8 +38,6 @@ public class ZoneManager
         {
             AddZone(zone);
         }
-
-        ServerManager.OnServerSave += OnServerSave;
     }
 
     private static void OnServerSave()

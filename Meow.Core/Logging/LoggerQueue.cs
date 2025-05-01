@@ -40,7 +40,9 @@ internal sealed class LoggerQueue : IDisposable
     {
         while (_Queue.TryDequeue(out LogMessage message))
         {
+            UnturnedLog.info("Writing to stdout");
             await _FileWriter.WriteLineAsync(message.FileMessage);
+            UnturnedLog.info("Writing to file");
             await _ConsoleWriter.WriteLineAsync(message.ConsoleMessage);
             if (Level.isLoaded)
             {

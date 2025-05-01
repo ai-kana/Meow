@@ -14,18 +14,17 @@ using Meow.Core.Stats;
 using Meow.Core.Commands.Framework;
 using Meow.Core.Extensions;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
 
 namespace Meow.Core.Players;
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
+[StructLayout(LayoutKind.Sequential, Pack = 4)]
 public struct MeowPlayer : 
     IPlayer, 
     IFormattable,
     IDisposable
 {
     // All state, 16 bytes
-    public SteamPlayer SteamPlayer {get; private set;}
+    public readonly SteamPlayer SteamPlayer;
     private readonly PlayerState _PlayerState;
 
     public PlayerData SaveData => _PlayerState.SaveData;

@@ -20,8 +20,7 @@ internal class HelpCommand : Command
         Context.AssertArguments(1);
 
         string command = Context.Form();
-        CommandTokenizer tokenizer = new(command);
-        IEnumerable<string> tokens = tokenizer.Parse();
+        IEnumerable<string> tokens = CommandTokenizer.Parse(command);
 
         Type? type = CommandManager.GetCommandType(tokens);
         if (type == null)

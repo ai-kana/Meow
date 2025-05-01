@@ -46,7 +46,7 @@ update_status_offline() {
 }
 
 static int 
-update_status_embed(unsigned char* packet) {
+update_status_embed(unsigned char* packet, int offset) {
     unsigned char player_count = packet[0];
 
     int size = get_names_size(packet) + 1;
@@ -54,18 +54,18 @@ update_status_embed(unsigned char* packet) {
     bzero(names, size);
     int names_i = 0;
 
-    int n = 1;
+    offset = 1;
     for (int i = 0; i < player_count; i++) {
-        int* name_size = (int*)(packet + n);
-        n += 4;
+        int* name_size = (int*)(packet + offset);
+        offset += 4;
 
-        char* name = (char*)(packet + n);
+        char* name = (char*)(packet + offset);
 
         memcpy(names + names_i, name, *name_size);
         names_i += (*name_size) + 1;
         names[names_i - 1] = '\n';
 
-        n += *name_size;
+        offset += *name_size;
     }
 
     struct discord_embed embed = {0};
@@ -96,7 +96,7 @@ update_status_embed(unsigned char* packet) {
 
     discord_embed_cleanup(&embed);
 
-    return n;
+    return offset;
 }
 
 #define RCON_CHANNEL 1316321819044610090
@@ -260,7 +260,12 @@ listen_for_server(int fd) {
         unsigned char packet[size];
         if (read(client_fd, packet, size) == 0) return client_fd;
 
-        int offset = update_status_embed(packet);
+        if (packet[0] == 1) {
+            return client_fd;
+        }
+
+        int offset = 1;
+        offset = update_status_embed(packet, offset);
         offset = process_replies(packet, offset);
         offset = process_logs(packet, offset);
 

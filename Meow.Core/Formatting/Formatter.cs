@@ -4,6 +4,7 @@ using Meow.Core.Configuration;
 using Meow.Core.Translations;
 using System.Text;
 using System.Collections;
+using Meow.Core.Enumerable;
 
 namespace Meow.Core.Formatting;
 
@@ -89,35 +90,6 @@ public static class Formatter
         return new(_Arguments[args.Count() - 1], args.ToArray());
     }
 
-    private struct FastCharEnumerator : IEnumerator<char>
-    {
-        public FastCharEnumerator(string str)
-        {
-            _String = str;
-            _Index = -1;
-        }
-
-        private int _Index;
-        private readonly string _String;
-
-        public char Current => _String[_Index];
-        object IEnumerator.Current => _String[_Index];
-
-        public bool MoveNext()
-        {
-            _Index++;
-            return _Index < _String.Length;
-        }
-
-        public void Reset()
-        {
-            _Index = -1;
-        }
-
-        public void Dispose()
-        {
-        }
-    }
 
     public static string RemoveRichText(string text)
     {

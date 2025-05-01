@@ -1,5 +1,3 @@
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using SDG.Unturned;
@@ -18,23 +16,6 @@ internal class ThreadConsole : ICommandInputOutput
 
     public void initialize(CommandWindow commandWindow)
     {
-        // Blatantly ripped from OM
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            CommandLineFlag? shouldManageConsole = null;
-            bool previousShouldManageConsoleValue = true;
-
-            Type windowsConsole = typeof(Provider).Assembly.GetType("SDG.Unturned.WindowsConsole");
-            FieldInfo? shouldManageConsoleField = windowsConsole?.GetField("shouldManageConsole", BindingFlags.Static | BindingFlags.NonPublic);
-
-            if (shouldManageConsoleField != null)
-            {
-                shouldManageConsole = (CommandLineFlag)shouldManageConsoleField.GetValue(null);
-                previousShouldManageConsoleValue = shouldManageConsole.value;
-                shouldManageConsole.value = false;
-            }
-        }
-
         commandWindow.title = "Meow";
         _Logger = LoggerProvider.CreateLogger("SDG.Unturned");
 
